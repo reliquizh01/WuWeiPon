@@ -14,13 +14,14 @@ namespace DataManagement.Adapter
     {
         internal string currentUserIdentification = "";
         string localFileName = "test.xml";
-        string localFilePath = Application.streamingAssetsPath + "/SaveFiles/";
+        string localFilePath = "D:/SaveFiles/";
+        string localSavedFile = "";
 
         public SaveLoadAdapter() 
         {
             if (!ServerCallManager.IsConnectedToServer)
             {
-                localFilePath += localFileName;
+                localSavedFile = localFilePath + "/" + localFileName;
             }
         }
 
@@ -28,24 +29,28 @@ namespace DataManagement.Adapter
         {
             XmlSerializer serializer = new XmlSerializer(typeof(UserData));
 
-            
             if (ServerCallManager.IsConnectedToServer)
             {
                 DateTime latestUserServerUpdate = getPlayerDataFromServer().lastServerUpdate;
 
                 if (latestUserServerUpdate > UserDataBehavior.currentUserData.lastServerUpdate)
                 {
-                    // Disconnect Player
+                    // Disconnect Player if a someone else updated the savefile
                     Application.Quit();
                 }
-                else if(latestUserServerUpdate == UserDataBehavior.currentUserData.lastServerUpdate)
+                else if(latestUserServerUpdate == UserDataBehavior.currentUserData.lastServerUpdate ||
+                    latestUserServerUpdate < DateTime.UtcNow)
                 {
                     UserDataBehavior.currentUserData.lastServerUpdate = DateTime.UtcNow;
                 }
             }
 
             // TODO: Once DB Server is available, replace localFilePath with a way to connect to server
-            TextWriter writer = new StreamWriter(localFilePath);
+            if(!Directory.Exists(localFilePath))
+            {
+                Directory.CreateDirectory(localFilePath);
+            }
+            TextWriter writer = new StreamWriter(localSavedFile);
 
             serializer.Serialize(writer, UserDataBehavior.currentUserData);
             writer.Close();
@@ -58,10 +63,10 @@ namespace DataManagement.Adapter
 
             UserData serverData = null;
 
-            if (File.Exists(localFilePath))
+            if (File.Exists(localSavedFile))
             {
                 // Create a StreamReader
-                TextReader reader = new StreamReader(localFilePath);
+                TextReader reader = new StreamReader(localSavedFile);
 
                 // Deserialize the file
                 serverData = (UserData)serializer.Deserialize(reader);
@@ -71,7 +76,7 @@ namespace DataManagement.Adapter
             }
             else
             {
-                CreatePlayerData();
+                serverData = CreatePlayerData();
             }
 
             return serverData;

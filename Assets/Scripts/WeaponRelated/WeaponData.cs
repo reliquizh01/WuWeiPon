@@ -5,6 +5,8 @@ using WeaponRelated;
 public class WeaponData
 {
     public string weaponId = "";
+    public bool isEquipped = false;
+
     public WeaponRankEnum weaponRank;
     public WeaponTypeEnum weaponType;
 
@@ -15,4 +17,5 @@ public class WeaponData
 
     public float spirit_Experience = 0;
 
+    public List<string> sacrificedWeapons = new List<string>();
 }

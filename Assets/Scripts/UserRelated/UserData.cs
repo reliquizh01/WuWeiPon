@@ -6,16 +6,16 @@ namespace User.Data
 {
     public class UserData
     {
-        public string uniqueId;
-        public string email;
+        public string uniqueId = "";
+        public string email = "";
 
-        public List<WeaponData> weapons;
+        public List<WeaponData> weapons = new List<WeaponData>();
 
-        public string currentTokenAuthentication;
+        public string currentTokenAuthentication = "";
         public DateTime lastServerUpdate;
 
-        public int skillPills;
+        public int skillPills = 0;
 
-        public List<PlayerOnBoardingEnum> playerOnBoardingProgress;
+        public List<PlayerOnBoardingEnum> playerOnBoardingProgress = new List<PlayerOnBoardingEnum>();
     }
 }

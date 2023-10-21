@@ -7,6 +7,6 @@ namespace PlayerPulls.Chest
     {
         internal string transactionId = "";
         internal int skillPillsAmount = 0;
-        internal List<WeaponData> containedWeapon;
+        internal List<WeaponData> containedWeapon = new List<WeaponData>();
     }
 }

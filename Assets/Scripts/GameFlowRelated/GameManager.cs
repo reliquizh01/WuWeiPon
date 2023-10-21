@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     public GameObject EnvironmentItems;
     public Camera mainCam;
     
-
     #endregion References
 
     [SerializeField] private string userLoggedIn;
@@ -45,14 +44,11 @@ public class GameManager : MonoBehaviour
     private void CheckPlayerOnBoardingProgress()
     {
         int totalOnboardingSteps = Enum.GetNames(typeof(PlayerOnBoardingEnum)).Length;
-        if (totalOnboardingSteps > UserDataBehavior.currentUserData.playerOnBoardingProgress.Count)
+        int playerProgress = UserDataBehavior.currentUserData.playerOnBoardingProgress.Count;
+
+        if (totalOnboardingSteps > playerProgress)
         {
-            int playOnBoarding = UserDataBehavior.currentUserData.playerOnBoardingProgress.Count - (totalOnboardingSteps + 1);
-
-            PlayerOnBoardingTutorial tutorial = new PlayerOnBoardingTutorial(instance, (PlayerOnBoardingEnum)playOnBoarding);
+            PlayerOnBoardingTutorial tutorial = new PlayerOnBoardingTutorial(instance, (PlayerOnBoardingEnum)playerProgress);
         }
-
-
-
     }
 }

@@ -8,10 +8,8 @@ namespace WeaponRelated
 {
     public class WeaponDataBehavior
     {
-        public void InitializeWeaponData()
-        {
+        internal WeaponData weaponData;
 
-        }
         public void AddSpiritExperience(WeaponData killedEnemy)
         {
 

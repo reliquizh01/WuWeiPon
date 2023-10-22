@@ -1647,7 +1647,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Container/Weapon
+    path: Container
   m_CompressedRotationCurves: []
   m_EulerCurves: []
   m_PositionCurves:
@@ -1720,7 +1720,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Container/Weapon
+    path: Container
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves: []
@@ -1824,7 +1824,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1899,7 +1899,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1974,7 +1974,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3615,7 +3615,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.x
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5256,7 +5256,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.y
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -6897,7 +6897,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.z
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8538,7 +8538,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.w
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8596,7 +8596,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesBaked.x
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8653,7 +8653,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesBaked.y
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8710,7 +8710,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesBaked.z
-    path: Container/Weapon
+    path: Container
     classID: 4
     script: {fileID: 0}
     flags: 0

@@ -92,7 +92,7 @@ namespace DataManagement.Adapter
 
         internal void LoadPlayerData()
         {
-            UserDataBehavior.currentUserData = getPlayerDataFromServer();
+            UserDataBehavior.LoadUser(getPlayerDataFromServer());
         }
     }
 

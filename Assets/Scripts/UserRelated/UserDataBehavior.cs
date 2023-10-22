@@ -9,6 +9,10 @@ namespace User.Data
     {
         internal static UserData currentUserData;
 
+        public static void LoadUser(UserData userData)
+        {
+            currentUserData = new UserData(userData);
+        }
         public static void AddOnboardingProgress(PlayerOnBoardingEnum newOnboarding)
         {
             currentUserData.playerOnBoardingProgress.Add(newOnboarding);

@@ -1,5 +1,7 @@
 public enum WeaponBehaviorStateEnum
 {
     Idle,
-    Battle
+    Battle,
+    FromChest,
+    ToBattlePosition
 }

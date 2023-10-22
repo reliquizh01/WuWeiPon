@@ -37,7 +37,7 @@ public class PlayerOnBoardingTutorial
 
     public void FirstWeaponOpening()
     {
-        GameObject chest = PrefabManager.instance.CreateTreasureChest(new Vector2(0.5f, -7.0f), gameManager.EnvironmentItems.transform);
+        GameObject chest = PrefabManager.Instance.CreateTreasureChest(new Vector2(0.5f, -7.0f), gameManager.EnvironmentItems.transform);
 
 
         //Weapon is created

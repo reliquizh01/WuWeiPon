@@ -9,7 +9,7 @@ public class PrefabManager : MonoBehaviour
 {
     #region Constructor
 
-    public static PrefabManager instance;
+    public static PrefabManager Instance;
 
     #endregion Constructor
 
@@ -22,9 +22,9 @@ public class PrefabManager : MonoBehaviour
 
     public void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -50,17 +50,6 @@ public class PrefabManager : MonoBehaviour
         {
             newWeapon.transform.localPosition = instantiateToPosition;
         }
-
-        WeaponBehavior behavior = newWeapon.GetComponent<WeaponBehavior>();
-
-        Action afterGoingToCenter = () =>
-        {
-            behavior.animation.Play("WeaponIdleAnimation_1");
-        };
-
-        behavior.MoveToPosition(Vector2.zero, afterGoingToCenter);
-        behavior.animation.Play("WeaponFromChest");
-
 
         return newWeapon;
     }

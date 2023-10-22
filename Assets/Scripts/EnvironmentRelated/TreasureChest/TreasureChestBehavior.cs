@@ -1,4 +1,5 @@
 using Interactable;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,7 +34,18 @@ namespace PlayerPulls.Chest
                 {
                     if(UserDataBehavior.GetPlayerEquippedWeapon() == null)
                     {
-                        PrefabManager.instance.CreateWeaponContainer(this.transform.position);
+                        WeaponBehavior behavior = PrefabManager.Instance.CreateWeaponContainer(this.transform.position).GetComponent<WeaponBehavior>();
+                        GameManager.Instance.equippedWeaponContainer = behavior;
+
+                        Action afterGoingToCenter = () =>
+                        {
+                            behavior.SetWeaponState(WeaponBehaviorStateEnum.Idle);
+                        };
+
+                        behavior.MoveToPosition(Vector2.zero, afterGoingToCenter);
+                        behavior.SetWeaponState(WeaponBehaviorStateEnum.FromChest);    
+
+                        weapons.isEquipped = true;
                     }
 
                     UserDataBehavior.AddNewWeapon(weapons);

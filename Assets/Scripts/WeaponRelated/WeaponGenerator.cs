@@ -16,12 +16,64 @@ namespace WeaponRelated
                 weaponRank = weaponRank,
                 damage_physical = RandomPhysicalPoints(weaponRank),
                 damage_magic = RandomMagicPoints(weaponRank),
-                weaponType = type
+                weaponType = type,
+                behaviorSkillSlotCount = randomBehaviorSlotCount(weaponRank, type),
+                attributeSlotCount = randomAttributeSlotCount(weaponRank, type),
             };
 
             return newWeapon;
         }
-        
+
+        private int randomBehaviorSlotCount(WeaponRankEnum weaponRank, WeaponTypeEnum type)
+        {
+            int totalCount = 0;
+
+            switch (weaponRank)
+            {
+                case WeaponRankEnum.ordinary:
+                    break;
+                case WeaponRankEnum.rare:
+                    break;
+                case WeaponRankEnum.transcendant:
+                    break;
+                case WeaponRankEnum.ancient:
+                    break;
+                case WeaponRankEnum.divine:
+                    break;
+                case WeaponRankEnum.ancientDivine:
+                    break;
+                default:
+                    break;
+            }
+
+            return totalCount;
+        }
+
+        private int randomAttributeSlotCount(WeaponRankEnum weaponRank, WeaponTypeEnum type)
+        {
+            int totalCount = 0;
+
+            switch (weaponRank)
+            {
+                case WeaponRankEnum.ordinary:
+                    break;
+                case WeaponRankEnum.rare:
+                    break;
+                case WeaponRankEnum.transcendant:
+                    break;
+                case WeaponRankEnum.ancient:
+                    break;
+                case WeaponRankEnum.divine:
+                    break;
+                case WeaponRankEnum.ancientDivine:
+                    break;
+                default:
+                    break;
+            }
+
+            return totalCount;
+        }
+
         #region  Random Points
 
         internal float RandomMagicPoints(WeaponRankEnum weaponRank)

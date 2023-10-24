@@ -2389,7 +2389,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1422302082507783649}
   - component: {fileID: 321181706067967254}
-  m_Layer: 6
+  - component: {fileID: 2194080015474526410}
+  m_Layer: 7
   m_Name: Blade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2456,6 +2457,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.6341975, y: 2.9555717}
   m_EdgeRadius: 0
+--- !u!114 &2194080015474526410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3736386389484858282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25110409ccb7d0a4e866aedc898d8956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4498762477957836584
 GameObject:
   m_ObjectHideFlags: 0
@@ -3942,7 +3955,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7236966002882595148}
   - component: {fileID: 1998960837663782634}
-  m_Layer: 6
+  - component: {fileID: 3192833395058217384}
+  m_Layer: 7
   m_Name: Hilt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4009,6 +4023,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.7543577, y: 1.7883003}
   m_EdgeRadius: 0
+--- !u!114 &3192833395058217384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7142332979758998173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d37dd6e18344494880f61c05ea68fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7334144941465115170
 GameObject:
   m_ObjectHideFlags: 0
@@ -4694,7 +4720,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4730586799620485821}
   - component: {fileID: 414646774078724847}
-  - component: {fileID: 8743002995458196851}
+  - component: {fileID: 8639765953997627356}
   m_Layer: 0
   m_Name: Weapon_Container
   m_TagString: Untagged
@@ -4739,7 +4765,7 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &8743002995458196851
+--- !u!114 &8639765953997627356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4748,13 +4774,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8380107889543179399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36667792e46b6fb4d97d775f563afbf9, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a19130de76c0094fbca07bf1fc712ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  container: {fileID: 8759874877213765186}
+  container: {fileID: 4730586799620485821}
   myAnim: {fileID: 414646774078724847}
   state: 0
-  currentWeapon: {fileID: 5550341636321438296}
+  currentWeapon: {fileID: 6154874998320594949}
 --- !u!1 &8387142576976268635
 GameObject:
   m_ObjectHideFlags: 0
@@ -4977,6 +5003,7 @@ GameObject:
   - component: {fileID: 7556806568460225434}
   - component: {fileID: 5550341636321438296}
   - component: {fileID: 7618284643078150168}
+  - component: {fileID: 6154874998320594949}
   m_Layer: 6
   m_Name: Dagger
   m_TagString: Untagged
@@ -5138,7 +5165,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponRigidBody: {fileID: 7556806568460225434}
-  weaponBehaviorRef: {fileID: 8743002995458196851}
   constantForce2d: {fileID: 7618284643078150168}
 --- !u!247 &7618284643078150168
 ConstantForce2D:
@@ -5147,10 +5173,27 @@ ConstantForce2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9125024584720522628}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Force: {x: 0, y: 0}
   m_RelativeForce: {x: 0, y: 0}
   m_Torque: 0
+--- !u!114 &6154874998320594949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9125024584720522628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36667792e46b6fb4d97d775f563afbf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponMovement: {fileID: 5550341636321438296}
+  weaponHilts:
+  - {fileID: 3192833395058217384}
+  weaponBlades:
+  - {fileID: 2194080015474526410}
 --- !u!1 &9199495399275034007
 GameObject:
   m_ObjectHideFlags: 0

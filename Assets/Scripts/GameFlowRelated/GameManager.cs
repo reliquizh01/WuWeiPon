@@ -12,13 +12,16 @@ public class GameManager : MonoBehaviour
 
     public GameObject EnvironmentItems;
     public Camera mainCam;
-    public WeaponBehavior equippedWeaponContainer;
+    public WeaponContainer equippedWeaponContainer;
+
+    public GameObject TrainingUi;
+    public GameObject BattleUi;
 
     #endregion References
     [SerializeField] internal GameStateEnum currentGameState;
     [SerializeField] private string userLoggedIn;
 
-    private float battleCameSize = 20.0f;
+    private float battleCameSize = 15.0f;
     private float idleCameSize = 11.0f;
     private bool cameraTransitioning = false;
     private float camTargetSize = 0.0f;
@@ -73,9 +76,13 @@ public class GameManager : MonoBehaviour
         {
             case GameStateEnum.Idle:
                 camTargetSize = idleCameSize;
+                TrainingUi.SetActive(true);
+                BattleUi.SetActive(false);
                 break;
             case GameStateEnum.Battle:
                 camTargetSize = battleCameSize;
+                TrainingUi.SetActive(false);
+                BattleUi.SetActive(true);
                 break;
             default:
                 break;
@@ -89,7 +96,7 @@ public class GameManager : MonoBehaviour
     private void loadPlayerEquippedWeapon()
     {
         GameObject weapon = PrefabManager.Instance.CreateWeaponContainer(Vector2.zero);
-        equippedWeaponContainer = weapon.GetComponent<WeaponBehavior>();
+        equippedWeaponContainer = weapon.GetComponent<WeaponContainer>();
         equippedWeaponContainer.SetWeaponData(UserDataBehavior.GetPlayerEquippedWeapon());
         equippedWeaponContainer.SetWeaponState(WeaponBehaviorStateEnum.Idle);
     }

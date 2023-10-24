@@ -34,7 +34,7 @@ namespace PlayerPulls.Chest
                 {
                     if(UserDataBehavior.GetPlayerEquippedWeapon() == null)
                     {
-                        WeaponBehavior behavior = PrefabManager.Instance.CreateWeaponContainer(this.transform.position).GetComponent<WeaponBehavior>();
+                        WeaponContainer behavior = PrefabManager.Instance.CreateWeaponContainer(this.transform.position).GetComponent<WeaponContainer>();
                         GameManager.Instance.equippedWeaponContainer = behavior;
 
                         Action afterGoingToCenter = () =>

@@ -1,22 +1,25 @@
 using DataManagement;
 using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using User.Data;
 
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance;
 
-    #region References
+    public BattleUserInterface userInterface;
 
-    public Button FightButton;
+    #region References
 
     public Transform playerPosition;
     public Transform enemyPosition;
-    [SerializeField]WeaponBehavior enemyWeapon;
+    
+    WeaponContainer enemyWeapon;
+    WeaponContainer playerWeapon;
 
     #endregion References
+
     public void Awake()
     {
         if (Instance == null)
@@ -33,7 +36,7 @@ public class BattleManager : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
 
-        setupButtons();
+        userInterface.setupButtons(SearchBattle);
     }
 
 
@@ -47,26 +50,47 @@ public class BattleManager : MonoBehaviour
 
     public void PrepareBattle(WeaponData enemyInformation)
     {
-        enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position).GetComponent<WeaponBehavior>();
+        enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position).GetComponent<WeaponContainer>();
         enemyWeapon.SetWeaponData(enemyInformation);
 
-        GameManager.Instance.equippedWeaponContainer.MoveToPosition(playerPosition.position);
-        GameManager.Instance.equippedWeaponContainer.SetWeaponState(WeaponBehaviorStateEnum.ToBattlePosition);
-
+        playerWeapon = GameManager.Instance.equippedWeaponContainer;
+        playerWeapon.MoveToPosition(playerPosition.position);
+        playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.ToBattlePosition);
 
         GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
+
+        // Setup User Interface for Weapon
+        userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData);
+        userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData);
+
+        enemyWeapon.currentWeapon.AddBladeAction(userInterface.playerInformaton.OnWeaponDamaged);
+        playerWeapon.currentWeapon.AddBladeAction(userInterface.enemyInformation.OnWeaponDamaged);
     }
 
     private void StartBattle()
     {
-        GameManager.Instance.equippedWeaponContainer.SetWeaponState(WeaponBehaviorStateEnum.Battle);
+        Debug.Log("Battle Starts");
+        playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
         enemyWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
 
-        GameManager.Instance.equippedWeaponContainer.currentWeapon.AddForce(DirectionEnum.Right);
-        GameManager.Instance.equippedWeaponContainer.currentWeapon.AddRotationalForce(DirectionEnum.Right);
+        playerWeapon.currentWeapon.weaponMovement.AddConstantRotationForce(DirectionEnum.Right);
+        playerWeapon.currentWeapon.weaponMovement.AddTorqueForce(DirectionEnum.Right);
 
-        enemyWeapon.currentWeapon.AddForce(DirectionEnum.Left);
-        enemyWeapon.currentWeapon.AddRotationalForce(DirectionEnum.Left);
+        enemyWeapon.currentWeapon.weaponMovement.AddConstantRotationForce(DirectionEnum.Left);
+        enemyWeapon.currentWeapon.weaponMovement.AddTorqueForce(DirectionEnum.Left);
+
+        StartCoroutine(EnergizeBattle());
+    }
+
+    private IEnumerator EnergizeBattle()
+    {
+        yield return new WaitForSeconds(2);
+
+        playerWeapon.currentWeapon.weaponMovement.AddForce(DirectionEnum.Right);
+        enemyWeapon.currentWeapon.weaponMovement.AddForce(DirectionEnum.Left);
+
+        playerWeapon.currentWeapon.weaponMovement.constantForce2d.enabled = true;
+        enemyWeapon.currentWeapon.weaponMovement.constantForce2d.enabled = true;
     }
 
     private WeaponData generateRandomEnemy()
@@ -74,12 +98,5 @@ public class BattleManager : MonoBehaviour
         // TODO
         // Make a better way to generate an enemy
         return new WeaponData(UserDataBehavior.GetPlayerEquippedWeapon());
-    }
-
-    private void setupButtons()
-    {
-        FightButton.onClick.RemoveAllListeners();
-
-        FightButton.onClick.AddListener(SearchBattle);
     }
 }

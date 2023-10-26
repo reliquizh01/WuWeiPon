@@ -14,7 +14,16 @@ public class WeaponBladeBehavior : MonoBehaviour
     {
         if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
         {
-            OnCollisionActions.ForEach(x => x.Invoke(m_behavior.currentDamage));
+            List<Action<int>> tmpActions = new List<Action<int>>(OnCollisionActions);
+
+            foreach(Action<int> action in tmpActions)
+            {
+                action.Invoke(m_behavior.currentDamage);
+                if(OnCollisionActions.Count == 0)
+                {
+                    break;
+                }
+            }
         }
     }
 

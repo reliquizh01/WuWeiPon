@@ -72,4 +72,12 @@ public class WeaponMovement : MonoBehaviour
                 break;
         }
     }
+    
+    public void ResetTorque()
+    {
+        constantForce2d.torque = (constantForce2d.torque > 0) ? -constantForce2d.torque: constantForce2d.torque;
+        constantForce2d.force = Vector2.zero;
+
+        weaponRigidBody.velocity = Vector2.zero;
+    }
 }

@@ -9,18 +9,26 @@ using WeaponRelated;
 public class WeaponContainer : MonoBehaviour
 {
     internal WeaponDataBehavior dataBehavior = new WeaponDataBehavior();
-    public Transform container;
-    public Animation myAnim;
 
     public WeaponBehaviorStateEnum state = WeaponBehaviorStateEnum.Idle;
 
+    #region Reference
+    public Transform container;
+    public Animation myAnim;
+
+    public List<WeaponSlotsContainer> weaponSlotsContainer = new List<WeaponSlotsContainer>();
     public WeaponBehavior currentWeapon;
+
+    #endregion Reference
+
+    #region ForceMovement
 
     float forcedMovementSpeed = 40.0f;
     bool forcedToPosition = false;
     Vector2 forcedPositon = Vector2.zero;
-
     List<Action> forcedPositionReached = new List<Action>();
+
+    #endregion ForceMovement
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +61,8 @@ public class WeaponContainer : MonoBehaviour
             case WeaponBehaviorStateEnum.Idle:
                 myAnim.Play("WeaponIdleAnimation_1");
                 currentWeapon.SetWeaponDetection(false);
+                container.localPosition = Vector2.zero;
+                container.localRotation = Quaternion.identity;
                 break;
             case WeaponBehaviorStateEnum.Battle:
                 myAnim.Stop();
@@ -65,6 +75,12 @@ public class WeaponContainer : MonoBehaviour
                 myAnim.Play("WeaponGoToPosition_1");
                 container.localPosition = Vector2.zero;
                 container.localRotation = Quaternion.identity;
+                break;
+            case WeaponBehaviorStateEnum.ToIdlePosition:
+                currentWeapon.SetWeaponDetection(false);
+                currentWeapon.transform.localPosition = Vector2.zero;
+                currentWeapon.transform.localRotation = Quaternion.identity;
+                MoveToPosition(Vector2.zero, ()=> SetWeaponState(WeaponBehaviorStateEnum.Idle));
                 break;
             default:
                 break;
@@ -89,10 +105,22 @@ public class WeaponContainer : MonoBehaviour
         }
     }
 
+    internal void ResetWeaponCallbacks()
+    {
+        forcedPositionReached.Clear();
+        currentWeapon.ResestActons();
+    }
+
+    internal void ResetWeaponPhysics()
+    {
+        currentWeapon.weaponMovement.ResetTorque();
+    }
+
     private void positionReached()
     {
         forcedToPosition = false;
         forcedPositionReached.ForEach(x => x.Invoke());
         forcedPositionReached.Clear();
     }
+
 }

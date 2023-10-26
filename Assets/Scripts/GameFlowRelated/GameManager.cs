@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
             PlayerOnBoardingTutorial tutorial = new PlayerOnBoardingTutorial(Instance, (PlayerOnBoardingEnum)playerProgress);
         }
     }
-
+    
     private void cameraTransitionUpdate()
     {
         if (mainCam.orthographicSize >= camTargetSize)

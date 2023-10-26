@@ -1,6 +1,7 @@
 using DataManagement;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using User.Data;
 
@@ -67,6 +68,22 @@ public class BattleManager : MonoBehaviour
         playerWeapon.currentWeapon.AddBladeAction(userInterface.enemyInformation.OnWeaponDamaged);
     }
 
+    public void EndBattle()
+    {
+        enemyWeapon.ResetWeaponCallbacks();
+        enemyWeapon.ResetWeaponPhysics();
+        Destroy(enemyWeapon.gameObject);
+
+        playerWeapon.ResetWeaponCallbacks();
+        playerWeapon.ResetWeaponPhysics();
+
+        GameManager.Instance.SetGameState(GameStateEnum.Idle, () =>
+        {
+            playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.ToIdlePosition);
+        });
+
+    }
+
     private void StartBattle()
     {
         Debug.Log("Battle Starts");
@@ -99,4 +116,5 @@ public class BattleManager : MonoBehaviour
         // Make a better way to generate an enemy
         return new WeaponData(UserDataBehavior.GetPlayerEquippedWeapon());
     }
+
 }

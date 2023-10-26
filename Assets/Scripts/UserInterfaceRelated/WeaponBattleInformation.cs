@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,5 +36,11 @@ public class WeaponBattleInformation : MonoBehaviour
         {
             damageCount = x.ReceiveDamage(damageCount);
         });
+
+        // All HP is gone
+        if(!attributes.Any(x => x.behaviorPill.enabled))
+        {
+            BattleManager.Instance.EndBattle();
+        }
     }
 }

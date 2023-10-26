@@ -35,6 +35,15 @@ public class WeaponBehavior : MonoBehaviour
         {
             weaponHilts.ForEach(x => x.SetCollisionDetection(setTo));
         }
+
+        if (setTo)
+        {
+            weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Dynamic;
+        }
+        else
+        {
+            weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Static;
+        }
     }
 
     public void AddHiltAction(Action action)
@@ -45,5 +54,11 @@ public class WeaponBehavior : MonoBehaviour
     public void AddBladeAction(Action<int> action)
     {
         weaponBlades.ForEach(x => x.AddActionOnCollision(action));
+    }
+ 
+    public void ResestActons()
+    {
+        weaponHilts.ForEach(x => x.RemoveActionOnCollision());
+        weaponBlades.ForEach(x => x.RemoveActionOnCollision());
     }
 }

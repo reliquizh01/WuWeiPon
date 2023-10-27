@@ -6,121 +6,125 @@ using Unity.VisualScripting;
 using UnityEngine;
 using WeaponRelated;
 
-public class WeaponContainer : MonoBehaviour
+namespace WeaponRelated
 {
-    internal WeaponDataBehavior dataBehavior = new WeaponDataBehavior();
 
-    public WeaponBehaviorStateEnum state = WeaponBehaviorStateEnum.Idle;
-
-    #region Reference
-    public Transform container;
-    public Animation myAnim;
-
-    public List<WeaponSlotsContainer> weaponSlotsContainer = new List<WeaponSlotsContainer>();
-    public WeaponBehavior currentWeapon;
-
-    #endregion Reference
-
-    #region ForceMovement
-
-    float forcedMovementSpeed = 40.0f;
-    bool forcedToPosition = false;
-    Vector2 forcedPositon = Vector2.zero;
-    List<Action> forcedPositionReached = new List<Action>();
-
-    #endregion ForceMovement
-
-    // Start is called before the first frame update
-    void Start()
+    public class WeaponContainer : AnimationMonoBehavior
     {
+        internal WeaponDataBehavior dataBehavior = new WeaponDataBehavior();
 
-    }
+        public WeaponBehaviorStateEnum state = WeaponBehaviorStateEnum.Idle;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (forcedToPosition)
+        #region Reference
+        public Transform container;
+
+        public List<WeaponSlotsContainer> weaponSlotsContainer = new List<WeaponSlotsContainer>();
+        public WeaponBehavior currentWeapon;
+
+        #endregion Reference
+
+        #region ForceMovement
+
+        float forcedMovementSpeed = 40.0f;
+        bool forcedToPosition = false;
+        Vector2 forcedPositon = Vector2.zero;
+        List<Action> forcedPositionReached = new List<Action>();
+
+        #endregion ForceMovement
+
+        // Start is called before the first frame update
+        void Start()
         {
-            transform.position = Vector2.MoveTowards(transform.position, forcedPositon, forcedMovementSpeed * Time.deltaTime);
 
-            float dist = Vector2.Distance(forcedPositon, transform.position);
+        }
 
-            if(dist < 0.001f)
+        // Update is called once per frame
+        void Update()
+        {
+            if (forcedToPosition)
             {
-                positionReached();
+                transform.position = Vector2.MoveTowards(transform.position, forcedPositon, forcedMovementSpeed * Time.deltaTime);
+
+                float dist = Vector2.Distance(forcedPositon, transform.position);
+
+                if (dist < 0.001f)
+                {
+                    positionReached();
+                }
             }
         }
-    }
 
-    public void SetWeaponState(WeaponBehaviorStateEnum nextState)
-    {
-        state = nextState;
-
-        switch (state)
+        public void SetWeaponState  (WeaponBehaviorStateEnum nextState)
         {
-            case WeaponBehaviorStateEnum.Idle:
-                myAnim.Play("WeaponIdleAnimation_1");
-                currentWeapon.SetWeaponDetection(false);
-                container.localPosition = Vector2.zero;
-                container.localRotation = Quaternion.identity;
-                break;
-            case WeaponBehaviorStateEnum.Battle:
-                myAnim.Stop();
-                currentWeapon.SetWeaponDetection(true);
-                break;
-            case WeaponBehaviorStateEnum.FromChest:
-                myAnim.Play("WeaponFromChest");
-                break;
-            case WeaponBehaviorStateEnum.ToBattlePosition:
-                myAnim.Play("WeaponGoToPosition_1");
-                container.localPosition = Vector2.zero;
-                container.localRotation = Quaternion.identity;
-                break;
-            case WeaponBehaviorStateEnum.ToIdlePosition:
-                currentWeapon.SetWeaponDetection(false);
-                currentWeapon.transform.localPosition = Vector2.zero;
-                currentWeapon.transform.localRotation = Quaternion.identity;
-                MoveToPosition(Vector2.zero, ()=> SetWeaponState(WeaponBehaviorStateEnum.Idle));
-                break;
-            default:
-                break;
+            state = nextState;
+
+            switch (state)
+            {
+                case WeaponBehaviorStateEnum.Idle:
+                    Play("WeaponIdleAnimation_1");
+                    currentWeapon.SetWeaponDetection(false);
+                    container.localPosition = Vector2.zero;
+                    container.localRotation = Quaternion.identity;
+                    break;
+                case WeaponBehaviorStateEnum.Battle:
+                    myAnim.Stop();
+                    currentWeapon.SetWeaponDetection(true);
+                    break;
+                case WeaponBehaviorStateEnum.FromChest:
+                    MoveToPosition(Vector2.zero);
+                    Play("WeaponFromChest", () => SetWeaponState(WeaponBehaviorStateEnum.Idle));
+                    break;
+                case WeaponBehaviorStateEnum.ToBattlePosition:
+                    Play("WeaponGoToPosition_1");
+                    container.localPosition = Vector2.zero;
+                    container.localRotation = Quaternion.identity;
+                    break;
+                case WeaponBehaviorStateEnum.ToIdlePosition:
+                    currentWeapon.SetWeaponDetection(false);
+                    currentWeapon.transform.localPosition = Vector2.zero;
+                    currentWeapon.transform.localRotation = Quaternion.identity;
+                    MoveToPosition(Vector2.zero, () => SetWeaponState(WeaponBehaviorStateEnum.Idle));
+                    break;
+                default:
+                    break;
+            }
         }
-    }
-    public void SetWeaponData(WeaponData weaponData)
-    {
-        dataBehavior.weaponData = new WeaponData(weaponData);
-
-        //TODO
-        //LOAD THE DATA AND ITS PROPER EFFECTS HERE (WEAPON LOOKS SHOULD CHANGE)
-    }
-
-    public void MoveToPosition(Vector2 forcePosition, Action onPositionReached = null)
-    {
-        forcedToPosition = true;
-        forcedPositon = forcePosition;
-
-        if (onPositionReached != null)
+        public void SetWeaponData(WeaponData weaponData)
         {
-            forcedPositionReached.Add(onPositionReached);
+            dataBehavior.weaponData = new WeaponData(weaponData);
+
+            //TODO
+            //LOAD THE DATA AND ITS PROPER EFFECTS HERE (WEAPON LOOKS SHOULD CHANGE)
         }
-    }
 
-    internal void ResetWeaponCallbacks()
-    {
-        forcedPositionReached.Clear();
-        currentWeapon.ResestActons();
-    }
+        public void MoveToPosition(Vector2 forcePosition, Action onPositionReached = null)
+        {
+            forcedToPosition = true;
+            forcedPositon = forcePosition;
 
-    internal void ResetWeaponPhysics()
-    {
-        currentWeapon.weaponMovement.ResetTorque();
-    }
+            if (onPositionReached != null)
+            {
+                forcedPositionReached.Add(onPositionReached);
+            }
+        }
 
-    private void positionReached()
-    {
-        forcedToPosition = false;
-        forcedPositionReached.ForEach(x => x.Invoke());
-        forcedPositionReached.Clear();
-    }
+        internal void ResetWeaponCallbacks()
+        {
+            forcedPositionReached.Clear();
+            currentWeapon.ResestActons();
+        }
 
+        internal void ResetWeaponPhysics()
+        {
+            currentWeapon.weaponMovement.ResetTorque();
+        }
+
+        private void positionReached()
+        {
+            forcedToPosition = false;
+            forcedPositionReached.ForEach(x => x.Invoke());
+            forcedPositionReached.Clear();
+        }
+
+    }
 }

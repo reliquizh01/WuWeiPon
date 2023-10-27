@@ -4,6 +4,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using User.Data;
+using WeaponRelated;
 
 public class BattleManager : MonoBehaviour
 {

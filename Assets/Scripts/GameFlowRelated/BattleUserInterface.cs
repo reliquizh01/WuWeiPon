@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System;
 using TMPro;
+using WeaponRelated;
 
 public class BattleUserInterface : MonoBehaviour
 {

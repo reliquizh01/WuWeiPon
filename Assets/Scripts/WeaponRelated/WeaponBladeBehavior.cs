@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+namespace WeaponRelated
+{
+
 public class WeaponBladeBehavior : MonoBehaviour
 {
     private bool CanDetectCollision = false;
@@ -51,5 +54,7 @@ public class WeaponBladeBehavior : MonoBehaviour
     {
         OnCollisionActions.Clear();
     }
+
+}
 
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace WeaponRelated
+{
 public class WeaponHiltBehavior : MonoBehaviour
 {
     private bool CanDetectCollision = false;
@@ -35,5 +37,7 @@ public class WeaponHiltBehavior : MonoBehaviour
     {
         OnDamageReceived.Clear();
     }
+
+}
 
 }

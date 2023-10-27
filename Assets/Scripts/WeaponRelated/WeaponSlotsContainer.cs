@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponSlotsContainer : MonoBehaviour
+namespace WeaponRelated
 {
-    // Start is called before the first frame update
-    void Start()
+    public class WeaponSlotsContainer : MonoBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

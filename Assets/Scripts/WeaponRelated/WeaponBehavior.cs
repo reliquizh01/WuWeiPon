@@ -2,63 +2,67 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponBehavior : MonoBehaviour
+namespace WeaponRelated
 {
-    public WeaponMovement weaponMovement;
-    public SpriteRenderer weaponSprite;
 
-    public List<WeaponHiltBehavior> weaponHilts;
-    public List<WeaponBladeBehavior> weaponBlades;
-
-    internal int currentDamage = 1;
-
-    public void Start()
+    public class WeaponBehavior : MonoBehaviour
     {
-        if(weaponHilts != null && weaponHilts.Count > 0) 
-        {
-            weaponHilts.ForEach(x => x.m_behavior = this);
-        }
-        
-        if(weaponBlades != null && weaponBlades.Count > 0) 
-        {
-            weaponBlades.ForEach(x => x.m_behavior = this);
-        }
-    }
+        public WeaponMovement weaponMovement;
+        public SpriteRenderer weaponSprite;
 
-    public void SetWeaponDetection(bool setTo)
-    {
-        if(weaponHilts != null)
+        public List<WeaponHiltBehavior> weaponHilts;
+        public List<WeaponBladeBehavior> weaponBlades;
+
+        internal int currentDamage = 1;
+
+        public void Start()
         {
-            weaponHilts.ForEach(x => x.SetCollisionDetection(setTo));
-        }
-        if(weaponBlades != null)
-        {
-            weaponHilts.ForEach(x => x.SetCollisionDetection(setTo));
+            if (weaponHilts != null && weaponHilts.Count > 0)
+            {
+                weaponHilts.ForEach(x => x.m_behavior = this);
+            }
+
+            if (weaponBlades != null && weaponBlades.Count > 0)
+            {
+                weaponBlades.ForEach(x => x.m_behavior = this);
+            }
         }
 
-        if (setTo)
+        public void SetWeaponDetection(bool setTo)
         {
-            weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Dynamic;
+            if (weaponHilts != null)
+            {
+                weaponHilts.ForEach(x => x.SetCollisionDetection(setTo));
+            }
+            if (weaponBlades != null)
+            {
+                weaponHilts.ForEach(x => x.SetCollisionDetection(setTo));
+            }
+
+            if (setTo)
+            {
+                weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Dynamic;
+            }
+            else
+            {
+                weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Static;
+            }
         }
-        else
+
+        public void AddHiltAction(Action action)
         {
-            weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Static;
+            weaponHilts.ForEach(x => x.AddActionOnCollision(action));
         }
-    }
 
-    public void AddHiltAction(Action action)
-    {
-        weaponHilts.ForEach(x => x.AddActionOnCollision(action));
-    }
+        public void AddBladeAction(Action<int> action)
+        {
+            weaponBlades.ForEach(x => x.AddActionOnCollision(action));
+        }
 
-    public void AddBladeAction(Action<int> action)
-    {
-        weaponBlades.ForEach(x => x.AddActionOnCollision(action));
-    }
- 
-    public void ResestActons()
-    {
-        weaponHilts.ForEach(x => x.RemoveActionOnCollision());
-        weaponBlades.ForEach(x => x.RemoveActionOnCollision());
+        public void ResestActons()
+        {
+            weaponHilts.ForEach(x => x.RemoveActionOnCollision());
+            weaponBlades.ForEach(x => x.RemoveActionOnCollision());
+        }
     }
 }

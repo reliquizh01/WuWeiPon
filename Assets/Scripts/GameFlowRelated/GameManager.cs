@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using User.Data;
+using WeaponRelated;
 
 public class GameManager : MonoBehaviour
 {

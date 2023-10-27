@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using User.Data;
+using WeaponRelated;
 
 namespace PlayerPulls.Chest
 {
@@ -37,12 +38,6 @@ namespace PlayerPulls.Chest
                         WeaponContainer behavior = PrefabManager.Instance.CreateWeaponContainer(this.transform.position).GetComponent<WeaponContainer>();
                         GameManager.Instance.equippedWeaponContainer = behavior;
 
-                        Action afterGoingToCenter = () =>
-                        {
-                            behavior.SetWeaponState(WeaponBehaviorStateEnum.Idle);
-                        };
-
-                        behavior.MoveToPosition(Vector2.zero, afterGoingToCenter);
                         behavior.SetWeaponState(WeaponBehaviorStateEnum.FromChest);    
 
                         weapons.isEquipped = true;

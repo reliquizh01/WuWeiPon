@@ -5,7 +5,7 @@ using UnityEngine;
 public class WeaponBehavior : MonoBehaviour
 {
     public WeaponMovement weaponMovement;
-    public Sprite weaponSprite;
+    public SpriteRenderer weaponSprite;
 
     public List<WeaponHiltBehavior> weaponHilts;
     public List<WeaponBladeBehavior> weaponBlades;

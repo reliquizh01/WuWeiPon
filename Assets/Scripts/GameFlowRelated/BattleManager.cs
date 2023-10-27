@@ -38,6 +38,7 @@ public class BattleManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         userInterface.setupButtons(SearchBattle);
+        userInterface.setupSpeedUpButton(()=> UpdateBattleSpeed());
     }
 
 
@@ -51,21 +52,43 @@ public class BattleManager : MonoBehaviour
 
     public void PrepareBattle(WeaponData enemyInformation)
     {
-        enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position).GetComponent<WeaponContainer>();
-        enemyWeapon.SetWeaponData(enemyInformation);
-
         playerWeapon = GameManager.Instance.equippedWeaponContainer;
         playerWeapon.MoveToPosition(playerPosition.position);
         playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.ToBattlePosition);
 
+        enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position).GetComponent<WeaponContainer>();
+        enemyWeapon.SetWeaponData(enemyInformation);
+
+        if(playerWeapon.dataBehavior.weaponData.weaponType == 
+            enemyWeapon.dataBehavior.weaponData.weaponType)
+        {
+            enemyWeapon.currentWeapon.weaponSprite.color = Color.red;
+        }
+
+
         GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
 
         // Setup User Interface for Weapon
+        userInterface.gameObject.SetActive(true);
         userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData);
         userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData);
 
         enemyWeapon.currentWeapon.AddBladeAction(userInterface.playerInformaton.OnWeaponDamaged);
         playerWeapon.currentWeapon.AddBladeAction(userInterface.enemyInformation.OnWeaponDamaged);
+    }
+
+    public void UpdateBattleSpeed(bool reset = false)
+    {
+        if (!reset)
+        {
+            Time.timeScale = (Time.timeScale == 2.0f) ? 1f : 2f;
+            userInterface.speedupText.text = (Time.timeScale == 2.0f) ? "x2" : "x1";
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+            userInterface.speedupText.text = "x1";
+        }
     }
 
     public void EndBattle()
@@ -82,6 +105,8 @@ public class BattleManager : MonoBehaviour
             playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.ToIdlePosition);
         });
 
+        UpdateBattleSpeed(true);
+        userInterface.gameObject.SetActive(false);
     }
 
     private void StartBattle()

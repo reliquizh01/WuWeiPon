@@ -73,5 +73,11 @@ public class WeaponData
     public List<SkillData> skills = new List<SkillData>();
 
     [DataMember]
+    public SkillData skillSlotInQuestion = null;
+
+    [DataMember]
+    public SkillData skillPurchased= null;
+
+    [DataMember]
     public List<string> sacrificedWeapons = new List<string>();
 }

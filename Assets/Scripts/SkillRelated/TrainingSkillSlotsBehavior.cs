@@ -11,23 +11,27 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     public SpriteRenderer fakeCurrentSkillSlot;
 
     bool isSlotSpinning = false;
+    bool stillProcessing = false;
 
-    public Action onSlotClicked;
+    private SkillData currentSkillData;
+
+    private UserTransactionResultEnums currentTransactionResult;
+
     public void SlotClicked()
     {
         if(!isSlotSpinning && UserDataBehavior.DoesUserHaveSkillPill())
         {
             isSlotSpinning =true;
-            Play("SpinSlots", () => { isSlotSpinning = false; });
+            currentTransactionResult = UserDataBehavior.PurchaseSkill(currentSkillData);
 
-            if(onSlotClicked != null)
-            {
-                onSlotClicked.Invoke();
-            }
+            SetupTransaction();
         }
         else
         {
-            Play("SpinFail");
+            if (!stillProcessing)
+            {
+                Play("SpinFail");
+            }
         }
     }
 
@@ -36,6 +40,53 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         SlotClicked();
     }
 
+    internal void SetupTransaction()
+    {
+        switch (currentTransactionResult)
+        {
+            case UserTransactionResultEnums.SkillPurchaseSameSkill:
+                // TODO ADD LEVELUP ACTION
+                break;
+            case UserTransactionResultEnums.SkillPurchaseFailed:
+                // TODO: CHECK NETWORK CONNECTION ONCE WE SETUP DATABASE
+                break;
+            case UserTransactionResultEnums.SkillPurchaseAwaitingConfirmation:
+                PlaySpinSlots(UserDataBehavior.ObtainWaitingConfirmatonPurchase());
+                break;
+            case UserTransactionResultEnums.SkillPurchaseSuccesToEquip:
+                PlaySpinSlots(UserDataBehavior.ConfirmSkillPurchase());
+                break;
+        }
+    }
+
+    internal void PlaySpinSlots(SkillData generatedSkill)
+    {
+        List<Sprite> sprites = DataVaultManager.Instance.GetUniqueSkillSprites(fillerSlotIconList.Count);
+
+        for (int i = 0; i < fillerSlotIconList.Count; i++)
+        {
+            fillerSlotIconList[i].sprite = sprites[i];
+        }
+
+        if(currentSkillData != null)
+        {
+            fakeCurrentSkillSlot.sprite = DataVaultManager.Instance.GetSkillSprite(currentSkillData.skillIconFileName);
+        }
+        else
+        {
+            fakeCurrentSkillSlot.sprite = sprites[sprites.Count - 1];
+        }
+
+        originalCurrentSkillSlot.sprite = DataVaultManager.Instance.GetSkillSprite(generatedSkill.skillIconFileName);
+
+        Play("SpinSlots", EndSpinSlots);
+    }
+
+    internal void EndSpinSlots()
+    {
+        isSlotSpinning = false;
+        stillProcessing = false;
+    }
     public void SetupSkillSlot(SkillData skillData)
     {
         if(skillData == null)
@@ -46,7 +97,9 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         else
         {
             originalCurrentSkillSlot.sprite = 
-                DataVaultManager.Instance.GetSkillSprite(skillData.skillName + "_Icon");
+                DataVaultManager.Instance.GetSkillSprite(skillData.skillIconFileName);
+
+            currentSkillData = skillData;
         }
     }
 }

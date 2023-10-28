@@ -1,3 +1,6 @@
+using UnityEngine;
+using WeaponRelated;
+
 public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
 {
     public bool hasDamageBonus = false;
@@ -11,7 +14,7 @@ public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
         if (skillData.skillValues.ContainsKey(SkillVariableNames.ADD_DAMAGE_PERCENTAGE))
         {
             hasDamageBonus = true;
-            addDamagePercentage = skillData.skillValues[SkillVariableNames.ADD_DAMAGE_PERCENTAGE];
+            addDamagePercentage = (float)skillData.skillValues[SkillVariableNames.ADD_DAMAGE_PERCENTAGE];
         }
     }
 }

@@ -34,4 +34,16 @@ public class DataVaultManager : MonoBehaviour
         return SkillSprites.First(x => x.name == skillName);
     }
 
+    public List<Sprite> GetUniqueSkillSprites(int count)
+    {
+        List<Sprite> sprite = new List<Sprite>();
+
+        for (int i = 0; i < count; i++)
+        {
+            sprite.Add(SkillSprites.First(x => !sprite.Contains(x)));
+        }
+
+        return sprite;
+    }
+
 }

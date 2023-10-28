@@ -10,20 +10,14 @@ public class AttributeSlot : MonoBehaviour
     public Image behaviorPill;
     public Image frame;
 
-    public List<Action<int>> OnReceiveDamage = new List<Action<int>>();
+    public List<Action<float>> OnReceiveDamage = new List<Action<float>>();
 
-    public int ReceiveDamage(int amount)
+    public float ReceiveDamage(float amount)
     {
 
         if(OnReceiveDamage.Count > 0)
         {
             OnReceiveDamage.ForEach(x => x.Invoke(amount));
-        }
-
-        if(amount > 0 && behaviorPill.isActiveAndEnabled)
-        {
-            behaviorPill.enabled = false;
-            amount--;
         }
 
         return amount;

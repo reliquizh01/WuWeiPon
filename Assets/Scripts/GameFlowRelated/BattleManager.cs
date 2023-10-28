@@ -66,16 +66,18 @@ public class BattleManager : MonoBehaviour
             enemyWeapon.currentWeapon.weaponSprite.color = Color.red;
         }
 
+        enemyWeapon.currentWeapon.AddBladeAction(userInterface.playerInformaton.OnWeaponDamaged);
+        enemyWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData); 
 
-        GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
+        playerWeapon.currentWeapon.AddBladeAction(userInterface.enemyInformation.OnWeaponDamaged);
+        playerWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData); 
 
         // Setup User Interface for Weapon
         userInterface.gameObject.SetActive(true);
         userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData);
         userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData);
 
-        enemyWeapon.currentWeapon.AddBladeAction(userInterface.playerInformaton.OnWeaponDamaged);
-        playerWeapon.currentWeapon.AddBladeAction(userInterface.enemyInformation.OnWeaponDamaged);
+        GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
     }
 
     public void UpdateBattleSpeed(bool reset = false)
@@ -92,7 +94,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    public void EndBattle()
+    public void EndBattle(WeaponBattleInformation weaponThatHasLost)
     {
         enemyWeapon.ResetWeaponCallbacks();
         enemyWeapon.ResetWeaponPhysics();
@@ -107,6 +109,7 @@ public class BattleManager : MonoBehaviour
         });
 
         UpdateBattleSpeed(true);
+        userInterface.Reset();
         userInterface.gameObject.SetActive(false);
     }
 

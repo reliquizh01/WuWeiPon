@@ -16,6 +16,7 @@ namespace WeaponRelated
                 weaponRank = weaponRank,
                 damage_physical = RandomPhysicalPoints(weaponRank),
                 damage_magic = RandomMagicPoints(weaponRank),
+                weaponHealth = RandomHealthPoints(weaponRank),
                 weaponType = type,
                 behaviorSkillSlotCount = randomBehaviorSlotCount(weaponRank, type),
                 attributeSlotCount = randomAttributeSlotCount(weaponRank, type),
@@ -31,6 +32,7 @@ namespace WeaponRelated
             switch (weaponRank)
             {
                 case WeaponRankEnum.ordinary:
+                    totalCount = UnityEngine.Random.Range(1, 3);
                     break;
                 case WeaponRankEnum.rare:
                     break;
@@ -56,6 +58,7 @@ namespace WeaponRelated
             switch (weaponRank)
             {
                 case WeaponRankEnum.ordinary:
+                    totalCount = UnityEngine.Random.Range(1, 3);
                     break;
                 case WeaponRankEnum.rare:
                     break;
@@ -112,6 +115,31 @@ namespace WeaponRelated
             return points;
         }
         
+        internal float RandomHealthPoints(WeaponRankEnum weaponRank)
+        {
+            float points = 0;
+
+            switch (weaponRank)
+            {
+                case WeaponRankEnum.ordinary:
+                points = UnityEngine.Random.Range(15.0f, 20.0f);
+                    break;
+                case WeaponRankEnum.rare:
+                    break;
+                case WeaponRankEnum.transcendant:
+                    break;
+                case WeaponRankEnum.ancient:
+                    break;
+                case WeaponRankEnum.divine:
+                    break;
+                case WeaponRankEnum.ancientDivine:
+                    break;
+                default:
+                    break;
+            }
+
+            return points;
+        }
         #endregion Random Points
     }
 

@@ -9,7 +9,7 @@ namespace WeaponRelated
 public class WeaponBladeBehavior : MonoBehaviour
 {
     private bool CanDetectCollision = false;
-    private List<Action<int>> OnCollisionActions = new List<Action<int>>();
+    private List<Action<float>> OnCollisionActions = new List<Action<float>>();
 
     internal WeaponBehavior m_behavior;
 
@@ -17,9 +17,9 @@ public class WeaponBladeBehavior : MonoBehaviour
     {
         if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
         {
-            List<Action<int>> tmpActions = new List<Action<int>>(OnCollisionActions);
+            List<Action<float>> tmpActions = new List<Action<float>>(OnCollisionActions);
 
-            foreach(Action<int> action in tmpActions)
+            foreach(Action<float> action in tmpActions)
             {
                 action.Invoke(m_behavior.currentDamage);
                 if(OnCollisionActions.Count == 0)
@@ -45,7 +45,7 @@ public class WeaponBladeBehavior : MonoBehaviour
         }
     }
 
-    public void AddActionOnCollision(Action<int> action)
+    public void AddActionOnCollision(Action<float> action)
     {
         OnCollisionActions.Add(action);
     }

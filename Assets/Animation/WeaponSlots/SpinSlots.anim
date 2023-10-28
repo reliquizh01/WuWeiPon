@@ -197,7 +197,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: fake_Icon1
+    path: Filler_Icon1
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -258,7 +258,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: fake_Icon2
+    path: Filler_Icon2
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -310,7 +310,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: fake_icon3
+    path: Filler_Icon3
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves: []
@@ -801,7 +801,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: fake_Icon1
+    path: Filler_Icon1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -867,7 +867,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: fake_Icon1
+    path: Filler_Icon1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -933,7 +933,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: fake_Icon1
+    path: Filler_Icon1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -999,7 +999,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: fake_Icon2
+    path: Filler_Icon2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1065,7 +1065,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: fake_Icon2
+    path: Filler_Icon2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1131,7 +1131,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: fake_Icon2
+    path: Filler_Icon2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1188,7 +1188,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: fake_icon3
+    path: Filler_Icon3
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1245,7 +1245,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: fake_icon3
+    path: Filler_Icon3
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1302,7 +1302,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: fake_icon3
+    path: Filler_Icon3
     classID: 4
     script: {fileID: 0}
     flags: 0

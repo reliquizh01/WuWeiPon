@@ -13,7 +13,7 @@ namespace WeaponRelated
         public List<WeaponHiltBehavior> weaponHilts;
         public List<WeaponBladeBehavior> weaponBlades;
 
-        internal int currentDamage = 1;
+        internal float currentDamage = 1;
 
         public void Start()
         {
@@ -28,6 +28,10 @@ namespace WeaponRelated
             }
         }
 
+        public void SetWeaponBehavior(WeaponData weaponData)
+        {
+            currentDamage = weaponData.damage_physical;
+        }
         public void SetWeaponDetection(bool setTo)
         {
             if (weaponHilts != null)
@@ -54,7 +58,7 @@ namespace WeaponRelated
             weaponHilts.ForEach(x => x.AddActionOnCollision(action));
         }
 
-        public void AddBladeAction(Action<int> action)
+        public void AddBladeAction(Action<float> action)
         {
             weaponBlades.ForEach(x => x.AddActionOnCollision(action));
         }

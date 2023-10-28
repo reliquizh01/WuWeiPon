@@ -36,6 +36,8 @@ namespace PlayerPulls.Chest
                     if(UserDataBehavior.GetPlayerEquippedWeapon() == null)
                     {
                         WeaponContainer behavior = PrefabManager.Instance.CreateWeaponContainer(this.transform.position).GetComponent<WeaponContainer>();
+                        behavior.SetWeaponData(weapons);
+
                         GameManager.Instance.equippedWeaponContainer = behavior;
 
                         behavior.SetWeaponState(WeaponBehaviorStateEnum.FromChest);    

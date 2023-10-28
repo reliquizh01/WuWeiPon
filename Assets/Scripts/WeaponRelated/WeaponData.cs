@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using WeaponRelated;
 
+
+[DataContract]
 public class WeaponData
 {
+    #region Constructors
+
     public WeaponData()
     {
 
@@ -14,6 +19,8 @@ public class WeaponData
         isEquipped = weaponData.isEquipped;
         weaponRank = weaponData.weaponRank;
         weaponType = weaponData.weaponType;
+
+        weaponHealth = weaponData.weaponHealth;
 
         damage_physical = weaponData.damage_physical;
         damage_magic = weaponData.damage_magic;
@@ -27,21 +34,44 @@ public class WeaponData
         sacrificedWeapons = new List<string>(weaponData.sacrificedWeapons);
     }
 
+    #endregion Constructors
+
+    [DataMember]
     public string weaponId = "";
+
+    [DataMember]
     public bool isEquipped = false;
 
+    [DataMember]
     public WeaponRankEnum weaponRank;
+
+    [DataMember]
     public WeaponTypeEnum weaponType;
 
+    [DataMember]
+    public float weaponHealth = 0;
+
+    [DataMember]
     public float damage_physical = 0;
+
+    [DataMember]
     public float damage_magic = 0;
 
+    [DataMember]
     public float durability = 0;
 
+    [DataMember]
     public float spirit_Experience = 0;
 
+    [DataMember]
     public int behaviorSkillSlotCount = 0;
+
+    [DataMember]
     public int attributeSlotCount = 0;
 
+    [DataMember]
+    public List<SkillData> skills = new List<SkillData>();
+
+    [DataMember]
     public List<string> sacrificedWeapons = new List<string>();
 }

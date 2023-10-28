@@ -10,6 +10,9 @@ namespace WeaponRelated
     {
         public List<WeaponSkillSlot> slots = new List<WeaponSkillSlot>();
         public List<AttributeSlot> attributes = new List<AttributeSlot>();
+        public Image healthPointsbar;
+        private float currentHealth = 0;
+        private float maxHealth = 0;
 
         public void LoadWeaponInformation(WeaponData weaponData)
         {
@@ -17,7 +20,7 @@ namespace WeaponRelated
             {
                 if (i < weaponData.behaviorSkillSlotCount)
                 {
-                    slots[i].gameObject.SetActive(false);
+                    slots[i].gameObject.SetActive(true);
                 }
             }
 
@@ -27,22 +30,35 @@ namespace WeaponRelated
 
                 if (i < weaponData.attributeSlotCount)
                 {
-                    slots[i].gameObject.SetActive(false);
+                    attributes[i].gameObject.SetActive(true);
                 }
             }
+
+            currentHealth = weaponData.weaponHealth;
+            maxHealth = weaponData.weaponHealth;
+            healthPointsbar.fillAmount = currentHealth / maxHealth;
         }
 
-        public void OnWeaponDamaged(int damageCount)
+        public void ResetWeaponInformation()
+        {
+            slots.ForEach(x => x.gameObject.SetActive(false));
+            attributes.ForEach(x => x.gameObject.SetActive(false));
+        }
+
+        public void OnWeaponDamaged(float damageCount)
         {
             attributes.ForEach(x =>
             {
                 damageCount = x.ReceiveDamage(damageCount);
             });
 
+            currentHealth -= damageCount;
+            healthPointsbar.fillAmount = currentHealth / maxHealth;
+
             // All HP is gone
-            if (!attributes.Any(x => x.behaviorPill.enabled))
+            if (currentHealth <= 0)
             {
-                BattleManager.Instance.EndBattle();
+                BattleManager.Instance.EndBattle(this);
             }
         }
     }

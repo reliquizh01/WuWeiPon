@@ -36,5 +36,10 @@ namespace User.Data
         {
             return currentUserData.weapons.Find(x => x.isEquipped);
         }
+    
+        public static bool DoesUserHaveSkillPill()
+        {
+            return currentUserData.skillPills > 0;
+        }
     }
 }

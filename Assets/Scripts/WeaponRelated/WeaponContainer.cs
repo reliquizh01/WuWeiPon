@@ -18,7 +18,7 @@ namespace WeaponRelated
         #region Reference
         public Transform container;
 
-        public List<WeaponSlotsContainer> weaponSlotsContainer = new List<WeaponSlotsContainer>();
+        public WeaponSlotsContainer weaponSlotsContainer;
         public WeaponBehavior currentWeapon;
 
         #endregion Reference
@@ -63,12 +63,14 @@ namespace WeaponRelated
                 case WeaponBehaviorStateEnum.Idle:
                     Play("WeaponIdleAnimation_1");
                     currentWeapon.SetWeaponDetection(false);
+                    weaponSlotsContainer.gameObject.SetActive(true);
                     container.localPosition = Vector2.zero;
                     container.localRotation = Quaternion.identity;
                     break;
                 case WeaponBehaviorStateEnum.Battle:
                     myAnim.Stop();
                     currentWeapon.SetWeaponDetection(true);
+                    weaponSlotsContainer.gameObject.SetActive(false);
                     break;
                 case WeaponBehaviorStateEnum.FromChest:
                     MoveToPosition(Vector2.zero);
@@ -92,6 +94,7 @@ namespace WeaponRelated
         public void SetWeaponData(WeaponData weaponData)
         {
             dataBehavior.weaponData = new WeaponData(weaponData);
+            weaponSlotsContainer.SetupSkillSlots(weaponData);
 
             //TODO
             //LOAD THE DATA AND ITS PROPER EFFECTS HERE (WEAPON LOOKS SHOULD CHANGE)

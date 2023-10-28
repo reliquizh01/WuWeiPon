@@ -7,6 +7,8 @@ using User.Data;
 using System.IO;
 using Unity.VisualScripting;
 using System;
+using System.Runtime.Serialization;
+using TreeEditor;
 
 namespace DataManagement.Adapter
 {
@@ -27,8 +29,6 @@ namespace DataManagement.Adapter
 
         internal void SavePlayerData()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(UserData));
-
             if (ServerCallManager.IsConnectedToServer)
             {
                 DateTime latestUserServerUpdate = getPlayerDataFromServer().lastServerUpdate;
@@ -50,29 +50,28 @@ namespace DataManagement.Adapter
             {
                 Directory.CreateDirectory(localFilePath);
             }
-            TextWriter writer = new StreamWriter(localSavedFile);
 
-            serializer.Serialize(writer, UserDataBehavior.currentUserData);
+            DataContractSerializer serializer = new DataContractSerializer(typeof(UserData));
+            FileStream writer = new FileStream(localSavedFile, FileMode.Create);
+            serializer.WriteObject(writer, UserDataBehavior.currentUserData);
             writer.Close();
-
-        }
+        }   
 
         private UserData getPlayerDataFromServer()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(UserData));
-
             UserData serverData = null;
 
             if (File.Exists(localSavedFile))
             {
-                // Create a StreamReader
-                TextReader reader = new StreamReader(localSavedFile);
+                FileStream fs = new FileStream(localSavedFile, FileMode.Open);
 
-                // Deserialize the file
-                serverData = (UserData)serializer.Deserialize(reader);
-    
-                // Close the reader
+                XmlDictionaryReader reader =
+                XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
+                DataContractSerializer ser = new DataContractSerializer(typeof(UserData));
+
+                serverData = (UserData)ser.ReadObject(reader, true);
                 reader.Close();
+                fs.Close();
             }
             else
             {

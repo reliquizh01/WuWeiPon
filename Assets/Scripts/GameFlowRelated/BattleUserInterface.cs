@@ -14,6 +14,12 @@ public class BattleUserInterface : MonoBehaviour
     public WeaponBattleInformation playerInformaton;
     public WeaponBattleInformation enemyInformation;
 
+    public void Reset()
+    {
+        playerInformaton.ResetWeaponInformation();
+        enemyInformation.ResetWeaponInformation();
+    }
+
     internal void setupButtons(Action searchBattle)
     {
         FightButton.onClick.RemoveAllListeners();

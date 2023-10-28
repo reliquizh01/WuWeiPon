@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
-
+using System.Runtime.Serialization;
 
 namespace User.Data
 {
+    [DataContract]
     public class UserData
     {
+        #region Constructors
+
         public UserData() { }
         public UserData(UserData userData) 
         { 
@@ -18,16 +21,27 @@ namespace User.Data
             playerOnBoardingProgress = new List<PlayerOnBoardingEnum>(userData.playerOnBoardingProgress);
         }
 
+        #endregion Constructors
+
+        [DataMember]
         public string uniqueId = "";
+        
+        [DataMember]
         public string email = "";
 
+        [DataMember]
         public List<WeaponData> weapons = new List<WeaponData>();
 
+        [DataMember]
         public string currentTokenAuthentication = "";
+ 
+        [DataMember]
         public DateTime lastServerUpdate;
 
+        [DataMember]
         public int skillPills = 0;
 
+        [DataMember]
         public List<PlayerOnBoardingEnum> playerOnBoardingProgress = new List<PlayerOnBoardingEnum>();
     }
 }

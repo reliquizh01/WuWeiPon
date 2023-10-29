@@ -1,7 +1,7 @@
 public enum UserTransactionResultEnums
 {
-    SkillPurchaseSameSkill,
-    SkillPurchaseAwaitingConfirmation,
-    SkillPurchaseFailed,
-    SkillPurchaseSuccesToEquip
+    PurchasedSkillEquipped,
+    PurchasedSkillExists,
+    PurchasedSkillOnFilledSkillSlotNeedsConfirmation,
+    PurchaseFailed,
 }

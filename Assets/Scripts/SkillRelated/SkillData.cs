@@ -13,6 +13,9 @@ public class SkillData
         skillName = skillData.skillName;
         description = skillData.description;
         skillIconFileName = skillData.skillIconFileName;
+        slotNumber = skillData.slotNumber;
+        skillExperience = skillData.skillExperience;
+
         skillLevel = skillData.skillLevel;
         skillType = skillData.skillType;
         skillValues = new Dictionary<string, object>(skillData.skillValues);
@@ -34,6 +37,9 @@ public class SkillData
     public int skillLevel = 0;
 
     [DataMember]
+    public int skillExperience = 0;
+
+    [DataMember]
     public SkillTypeEnum skillType;
 
     [DataMember]
@@ -41,4 +47,7 @@ public class SkillData
 
     [DataMember]
     public bool isSkillConditionOnHit = false;
+
+    [DataMember]
+    public int slotNumber = -1;
 }

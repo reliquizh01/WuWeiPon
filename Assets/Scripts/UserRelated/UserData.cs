@@ -39,7 +39,7 @@ namespace User.Data
         public DateTime lastServerUpdate;
 
         [DataMember]
-        public int skillPills = 0;
+        public int skillPills = 50000;
 
         [DataMember]
         public List<PlayerOnBoardingEnum> playerOnBoardingProgress = new List<PlayerOnBoardingEnum>();

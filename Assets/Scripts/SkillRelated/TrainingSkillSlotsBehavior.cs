@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using User.Data;
+using System.Linq;
 
 public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 {
@@ -14,17 +15,33 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     bool stillProcessing = false;
 
     private SkillData currentSkillData;
+    [SerializeField]internal int slotNumber;
 
-    private UserTransactionResultEnums currentTransactionResult;
+    internal UserTransactionResultEnums currentTransactionResult;
+    public void SetupSkillSlot(SkillData skillData)
+    {
+        if(skillData == null)
+        {
+            originalCurrentSkillSlot.sprite = 
+                DataVaultManager.Instance.GetSkillSprite("Empty_Icon");
+        }
+        else
+        {
+            originalCurrentSkillSlot.sprite = 
+                DataVaultManager.Instance.GetSkillSprite(skillData.skillIconFileName);
+
+            currentSkillData = skillData;
+        }
+    }
 
     public void SlotClicked()
     {
         if(!isSlotSpinning && UserDataBehavior.DoesUserHaveSkillPill())
         {
             isSlotSpinning =true;
-            currentTransactionResult = UserDataBehavior.PurchaseSkill(currentSkillData);
+            currentTransactionResult = UserDataBehavior.PurchaseSkill(slotNumber);
 
-            SetupTransaction();
+            finalizedPurchase();
         }
         else
         {
@@ -40,21 +57,25 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         SlotClicked();
     }
 
-    internal void SetupTransaction()
+    private void finalizedPurchase()
     {
+        WeaponData weapon = UserDataBehavior.GetPlayerEquippedWeapon();
+        int lastSkillAdded = weapon.skills.Count - 1;
+
         switch (currentTransactionResult)
         {
-            case UserTransactionResultEnums.SkillPurchaseSameSkill:
-                // TODO ADD LEVELUP ACTION
+            case UserTransactionResultEnums.PurchasedSkillEquipped:
+                PlaySpinSlots(weapon.skills[lastSkillAdded]);
                 break;
-            case UserTransactionResultEnums.SkillPurchaseFailed:
-                // TODO: CHECK NETWORK CONNECTION ONCE WE SETUP DATABASE
+            case UserTransactionResultEnums.PurchasedSkillExists:
+                PlaySpinSlots(weapon.skills[lastSkillAdded]);
                 break;
-            case UserTransactionResultEnums.SkillPurchaseAwaitingConfirmation:
-                PlaySpinSlots(UserDataBehavior.ObtainWaitingConfirmatonPurchase());
+            case UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation:
+                PlaySpinSlots(weapon.skillPurchased);
                 break;
-            case UserTransactionResultEnums.SkillPurchaseSuccesToEquip:
-                PlaySpinSlots(UserDataBehavior.ConfirmSkillPurchase());
+            case UserTransactionResultEnums.PurchaseFailed:
+                break;
+            default:
                 break;
         }
     }
@@ -86,20 +107,30 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     {
         isSlotSpinning = false;
         stillProcessing = false;
-    }
-    public void SetupSkillSlot(SkillData skillData)
-    {
-        if(skillData == null)
-        {
-            originalCurrentSkillSlot.sprite = 
-                DataVaultManager.Instance.GetSkillSprite("Empty_Icon");
-        }
-        else
-        {
-            originalCurrentSkillSlot.sprite = 
-                DataVaultManager.Instance.GetSkillSprite(skillData.skillIconFileName);
 
-            currentSkillData = skillData;
+        WeaponData weapon = UserDataBehavior.GetPlayerEquippedWeapon();
+
+        switch (currentTransactionResult)
+        {
+            case UserTransactionResultEnums.PurchasedSkillEquipped:
+                break;
+            case UserTransactionResultEnums.PurchasedSkillExists:
+                break;
+            case UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation:
+                SkillData skillInThisSlot = weapon.skills.First(x => x.slotNumber == slotNumber);
+                SkillPurchasePopUpContainer.Instance.SetupSkillPurchase(skillInThisSlot, weapon.skillPurchased, this);
+                break;
+            case UserTransactionResultEnums.PurchaseFailed:
+                break;
+            default:
+                break;
         }
+    }
+
+    internal void ContinueLastTransaction()
+    {
+        WeaponData weapon = UserDataBehavior.GetPlayerEquippedWeapon();
+        currentTransactionResult = UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation;
+        PlaySpinSlots(weapon.skillPurchased);
     }
 }

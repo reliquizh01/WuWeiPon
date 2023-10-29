@@ -37,68 +37,84 @@ namespace User.Data
         {
             return currentUserData.weapons.Find(x => x.isEquipped);
         }
-    
+
+        #region Skill Purchase
+
         public static bool DoesUserHaveSkillPill()
         {
             return currentUserData.skillPills > 0;
         }
 
-        public static UserTransactionResultEnums PurchaseSkill(SkillData skillSlotInQuestion)
+        public static UserTransactionResultEnums PurchaseSkill(int slotNumber)
         {
-            UserTransactionResultEnums result = UserTransactionResultEnums.SkillPurchaseAwaitingConfirmation;
+            UserTransactionResultEnums transactionResult = UserTransactionResultEnums.PurchaseFailed;
 
-            WeaponData refCurrentEquippedWeapon = currentUserData.weapons.First(x => x.isEquipped);
-                
+            WeaponData weapon = GetPlayerEquippedWeapon();
 
-            if(skillSlotInQuestion != null)
+            SkillData skillEquippedInSlotNumberProvided = weapon.skills.FirstOrDefault(x => x.slotNumber == slotNumber);
+
+            SkillData generatePurchasedSkill = SkillGenerator.GenerateSkill();
+
+            if(weapon.skills.Find(x => x.skillName == generatePurchasedSkill.skillName) != null)
             {
-                refCurrentEquippedWeapon.skillSlotInQuestion = skillSlotInQuestion;
-                refCurrentEquippedWeapon.skillPurchased = SkillGenerator.GenerateSkill();
+                AddLevelToExistingSkill(generatePurchasedSkill);
+                currentUserData.skillPills--;
 
-                if(refCurrentEquippedWeapon.skillPurchased.skillName == refCurrentEquippedWeapon.skillSlotInQuestion.skillName)
-                {
-                    refCurrentEquippedWeapon.skillSlotInQuestion.skillLevel++;
-                    result = UserTransactionResultEnums.SkillPurchaseSameSkill;
-                }
+                transactionResult = UserTransactionResultEnums.PurchasedSkillExists;
+            }
+            else if (skillEquippedInSlotNumberProvided == null)
+            {
+                weapon.skills.Add(new SkillData(generatePurchasedSkill));
+                weapon.skills[weapon.skills.Count - 1].slotNumber = slotNumber;
+                currentUserData.skillPills--;
+
+                transactionResult = UserTransactionResultEnums.PurchasedSkillEquipped;
+            }
+            else if(skillEquippedInSlotNumberProvided != null)
+            {
+                weapon.skillPurchased = new SkillData(generatePurchasedSkill);
+                weapon.skillPurchased.slotNumber = slotNumber;
+
+                currentUserData.skillPills--;
+
+                transactionResult = UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation;
             }
             else
             {
-                refCurrentEquippedWeapon.skillPurchased = SkillGenerator.GenerateSkill();
-                result = UserTransactionResultEnums.SkillPurchaseSuccesToEquip;
+                transactionResult = UserTransactionResultEnums.PurchaseFailed;
             }
 
-            currentUserData.skillPills -= 1;
+            SaveLoadManager.SaveUser();
+            return transactionResult;
+        }
+
+        public static void PlayerChooseCurrentSkill(int slotNumber)
+        {
+            WeaponData weapon = GetPlayerEquippedWeapon();
+            weapon.skillPurchased = null;
 
             SaveLoadManager.SaveUser();
-
-            return result;
         }
 
-        public static void EquipPurchasedSkill()
+        public static void PlayerChooseNewSkill(int slotNumber)
         {
-
-        }
-
-        public static SkillData ObtainWaitingConfirmatonPurchase()
-        {
-            WeaponData refCurrentEquippedWeapon = currentUserData.weapons.First(x => x.isEquipped);
-            
-            SkillData skillData = new SkillData(refCurrentEquippedWeapon.skillPurchased);
-
-            return skillData;
-        }
-        public static SkillData ConfirmSkillPurchase()
-        {
-            WeaponData refCurrentEquippedWeapon = currentUserData.weapons.First(x => x.isEquipped);
-            refCurrentEquippedWeapon.skills.Add(refCurrentEquippedWeapon.skillPurchased);
-
-            SkillData skillData = new SkillData(refCurrentEquippedWeapon.skillPurchased);
-
-            refCurrentEquippedWeapon.skillPurchased = null;
+            WeaponData weapon = GetPlayerEquippedWeapon();
+            SkillData currentSkill = weapon.skills.First(x => x.slotNumber == slotNumber);
+            weapon.skills.Remove(currentSkill);
+            weapon.skills.Add(new SkillData(weapon.skillPurchased));
+            weapon.skillPurchased = null;
 
             SaveLoadManager.SaveUser();
-
-            return skillData;
         }
+        private static void AddLevelToExistingSkill(SkillData sacrificedSkill)
+        {
+            WeaponData weapon = GetPlayerEquippedWeapon();
+
+            int skillIdx = weapon.skills.FindIndex(x => x.skillName == sacrificedSkill.skillName);
+
+            weapon.skills[skillIdx].skillLevel += 1;
+        }
+
+        #endregion Skill Purchase
     }
 }

@@ -1,6 +1,7 @@
 using DataManagement;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using User.Data;
 using WeaponRelated;
@@ -55,6 +56,21 @@ public class GameManager : MonoBehaviour
         }
         
         checkPlayerOnBoardingProgress();
+        checkPlayerPendingTransactions();
+    }
+
+    private void checkPlayerPendingTransactions()
+    {
+        if(equippedWeaponContainer != null)
+        {
+            WeaponData weapon = UserDataBehavior.GetPlayerEquippedWeapon();
+
+            if(weapon.skillPurchased != null)
+            {
+                SkillData skillEquippedInSlot = weapon.skills.FirstOrDefault(x => x.slotNumber == weapon.skillPurchased.slotNumber);
+                equippedWeaponContainer.weaponSlotsContainer.skillSlots.First(x => x.slotNumber == weapon.skillPurchased.slotNumber).ContinueLastTransaction();
+            }
+        }
     }
 
     public void Update()

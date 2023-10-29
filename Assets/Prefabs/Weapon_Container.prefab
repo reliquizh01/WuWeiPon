@@ -1256,6 +1256,7 @@ MonoBehaviour:
   - {fileID: 361227389814728031}
   originalCurrentSkillSlot: {fileID: 6230538268389349598}
   fakeCurrentSkillSlot: {fileID: 8301945235633105210}
+  slotNumber: 0
 --- !u!60 &4016830232058456125
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1982,6 +1983,7 @@ MonoBehaviour:
   - {fileID: 8124641368583019644}
   originalCurrentSkillSlot: {fileID: 5711992105995890785}
   fakeCurrentSkillSlot: {fileID: 281262968468968218}
+  slotNumber: 2
 --- !u!60 &8016304227146059724
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3779,6 +3781,7 @@ MonoBehaviour:
   - {fileID: 7621488283300339923}
   originalCurrentSkillSlot: {fileID: 4717662523794633766}
   fakeCurrentSkillSlot: {fileID: 428544806296466102}
+  slotNumber: 1
 --- !u!60 &431422332550333486
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -4548,6 +4551,7 @@ MonoBehaviour:
   - {fileID: 1431276656006103374}
   originalCurrentSkillSlot: {fileID: 7579332359613008692}
   fakeCurrentSkillSlot: {fileID: 8382160348483578250}
+  slotNumber: 3
 --- !u!60 &6727546186206476216
 PolygonCollider2D:
   m_ObjectHideFlags: 0

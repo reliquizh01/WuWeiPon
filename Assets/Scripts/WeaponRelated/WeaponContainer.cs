@@ -128,6 +128,5 @@ namespace WeaponRelated
             forcedPositionReached.ForEach(x => x.Invoke());
             forcedPositionReached.Clear();
         }
-
     }
 }

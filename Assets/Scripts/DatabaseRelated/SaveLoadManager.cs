@@ -13,6 +13,7 @@ namespace DataManagement
         public static void SaveUser()
         {
             adapter.SavePlayerData();
+            GameManager.Instance.UpdateCurrentPlayer();
         }
 
         /// <summary>

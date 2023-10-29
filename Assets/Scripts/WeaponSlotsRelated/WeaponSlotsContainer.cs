@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace WeaponRelated
@@ -35,5 +36,9 @@ namespace WeaponRelated
             skillSlots.ForEach(x => x.gameObject.SetActive(false));
         }
 
+        public void UpgradeSkillSlot(SkillData skillData)
+        {
+            skillSlots.First(x => x.slotNumber == skillData.slotNumber).PlayUpgrade();
+        }
     }
 }

@@ -18,9 +18,11 @@ namespace SkillRelated
                     skillData.skillName = SkillEnum.FirstBloodSpill.ToString();
                     skillData.description = SkillVariableNames.FIRSTBLOODSPILL_DESCRIPTION;
                     skillData.skillIconFileName = SkillEnum.FirstBloodSpill.ToString() + "_Icon";
+                    skillData.skillType = SkillTypeEnum.Damage;
 
                     skillData.isSkillConditionOnHit = true;
 
+                    skillData.skillValues.Add(SkillVariableNames.SET_TARGET_TO_HILTS, true);
                     skillData.skillValues.Add(SkillVariableNames.SET_MAXIMUM_USAGE, true);
                     skillData.skillValues.Add(SkillVariableNames.ADD_MAXIMUM_USAGE, 1);
                     skillData.skillValues.Add(SkillVariableNames.ADD_DAMAGE_PERCENTAGE, 50.0f);
@@ -30,6 +32,7 @@ namespace SkillRelated
                     skillData.skillName = SkillEnum.CornerBoost.ToString();
                     skillData.description = SkillVariableNames.CORNERBOOST_DESCRIPTION;
                     skillData.skillIconFileName = SkillEnum.CornerBoost.ToString() + "_Icon";
+                    skillData.skillType = SkillTypeEnum.Movement;
                 
                     skillData.isSkillConditionOnHit = true;
 

@@ -66,16 +66,22 @@ public class BattleManager : MonoBehaviour
             enemyWeapon.currentWeapon.weaponSprite.color = Color.red;
         }
 
-        enemyWeapon.currentWeapon.AddBladeAction(userInterface.playerInformaton.OnWeaponDamaged);
-        enemyWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData); 
+        
+        //Setup Weapon stats and skills
+        enemyWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData, 2); 
+        playerWeapon.currentWeapon.SetWeaponBehavior(playerWeapon.dataBehavior.weaponData, 1); 
+        
+        // Add blade action on trigger2D
+        enemyWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.playerInformaton.OnWeaponDamaged);
+        playerWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.enemyInformation.OnWeaponDamaged);
 
-        playerWeapon.currentWeapon.AddBladeAction(userInterface.enemyInformation.OnWeaponDamaged);
-        playerWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData); 
 
         // Setup User Interface for Weapon
         userInterface.gameObject.SetActive(true);
         userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData);
         userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData);
+
+
 
         GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
     }

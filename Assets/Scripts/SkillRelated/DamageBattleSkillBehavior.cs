@@ -3,8 +3,10 @@ using WeaponRelated;
 
 public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
 {
-    public bool hasDamageBonus = false;
+    public bool hasDamageBonusByPercent = false;
     public float addDamagePercentage = 0.0f;
+
+    public bool hasDamageBonusByValue = false;
     public float addDamageValue = 0.0f;
 
     public override void InitializeSkill(SkillData skillData)
@@ -13,8 +15,28 @@ public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
 
         if (skillData.skillValues.ContainsKey(SkillVariableNames.ADD_DAMAGE_PERCENTAGE))
         {
-            hasDamageBonus = true;
+            hasDamageBonusByPercent = true;
             addDamagePercentage = (float)skillData.skillValues[SkillVariableNames.ADD_DAMAGE_PERCENTAGE];
+        }
+    }
+
+    /// <summary>
+    /// The method that the blade will call to modify the damage right before they send it to the hilt who took it.
+    /// </summary>
+    /// <param name="referencedAmountToModify">referenced damage that will be modified</param>
+    public void AddToBladeAction(ref float referencedAmountToModify)
+    {
+        if (hasDamageBonusByPercent)
+        {
+            float addedRealValue = 0;
+            addedRealValue += referencedAmountToModify * (addDamagePercentage / 100.0f);
+
+            referencedAmountToModify += addedRealValue;
+        }
+
+        if (hasDamageBonusByValue)
+        {
+            referencedAmountToModify += addDamageValue;
         }
     }
 }

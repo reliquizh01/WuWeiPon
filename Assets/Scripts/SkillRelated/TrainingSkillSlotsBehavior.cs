@@ -11,6 +11,15 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     public SpriteRenderer originalCurrentSkillSlot;
     public SpriteRenderer fakeCurrentSkillSlot;
 
+    public BaseNotificationBehavior expNotif;
+
+    bool isOtherSlotSpinning
+    {
+        get
+        {
+            return (GameManager.Instance.equippedWeaponContainer.weaponSlotsContainer.skillSlots.FirstOrDefault(x => x.isSlotSpinning) != null);
+        }
+    }
     bool isSlotSpinning = false;
     bool stillProcessing = false;
 
@@ -18,6 +27,9 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     [SerializeField]internal int slotNumber;
 
     internal UserTransactionResultEnums currentTransactionResult;
+
+    float clickCounter = 0.0f;
+    bool isClicked = false;
     public void SetupSkillSlot(SkillData skillData)
     {
         if(skillData == null)
@@ -36,7 +48,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     public void SlotClicked()
     {
-        if(!isSlotSpinning && UserDataBehavior.DoesUserHaveSkillPill())
+        if(!isOtherSlotSpinning && !isSlotSpinning && UserDataBehavior.DoesUserHaveSkillPill())
         {
             isSlotSpinning =true;
             currentTransactionResult = UserDataBehavior.PurchaseSkill(slotNumber);
@@ -45,16 +57,48 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         }
         else
         {
-            if (!stillProcessing)
+            if (!stillProcessing && !isSlotSpinning)
             {
                 Play("SpinFail");
             }
         }
     }
 
+    private void Update()
+    {
+        if (isClicked)
+        {
+            clickCounter += Time.deltaTime;
+            if(clickCounter > 0.5f)
+            {
+                // Show Skill Information
+                isClicked = false;
+            }
+        }
+    }
     public void OnMouseDown()
     {
-        SlotClicked();
+        isClicked = true;
+    }
+
+    public void OnMouseUp()
+    {
+        if(clickCounter <= 0.5f)
+        {
+            SlotClicked();
+        }
+        else
+        {
+            //Hide Skill Information
+        }
+
+        clickCounter = 0.0f;
+        isClicked = false;
+    }
+
+    public void PlayUpgrade()
+    {
+        expNotif.Play();
     }
 
     private void finalizedPurchase()
@@ -68,7 +112,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
                 PlaySpinSlots(weapon.skills[lastSkillAdded]);
                 break;
             case UserTransactionResultEnums.PurchasedSkillExists:
-                PlaySpinSlots(weapon.skills[lastSkillAdded]);
+                PlaySpinSlots(weapon.lastUpgradedSkill);
                 break;
             case UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation:
                 PlaySpinSlots(weapon.skillPurchased);
@@ -113,8 +157,13 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         switch (currentTransactionResult)
         {
             case UserTransactionResultEnums.PurchasedSkillEquipped:
+                SkillData equipThisSkill = weapon.skills[weapon.skills.Count - 1];
+                SetupSkillSlot(equipThisSkill);
                 break;
             case UserTransactionResultEnums.PurchasedSkillExists:
+                SkillData skillToUpgrade = weapon.skills.First(x => x.skillName == weapon.lastUpgradedSkill.skillName);
+                GameManager.Instance.equippedWeaponContainer.weaponSlotsContainer.UpgradeSkillSlot(skillToUpgrade);
+                SetupSkillSlot(currentSkillData);
                 break;
             case UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation:
                 SkillData skillInThisSlot = weapon.skills.First(x => x.slotNumber == slotNumber);

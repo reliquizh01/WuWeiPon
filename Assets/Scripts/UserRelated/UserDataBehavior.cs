@@ -57,7 +57,12 @@ namespace User.Data
 
             if(weapon.skills.Find(x => x.skillName == generatePurchasedSkill.skillName) != null)
             {
-                AddLevelToExistingSkill(generatePurchasedSkill);
+                int upgradeSkillSlotNumber = weapon.skills.FindIndex(x => x.skillName == generatePurchasedSkill.skillName);
+                UpgradeExistingSkill(generatePurchasedSkill, upgradeSkillSlotNumber);
+
+                weapon.lastUpgradedSkill = new SkillData(generatePurchasedSkill);
+                weapon.lastUpgradedSkill.slotNumber = upgradeSkillSlotNumber;
+
                 currentUserData.skillPills--;
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillExists;
@@ -106,13 +111,13 @@ namespace User.Data
 
             SaveLoadManager.SaveUser();
         }
-        private static void AddLevelToExistingSkill(SkillData sacrificedSkill)
+
+        public static void UpgradeExistingSkill(SkillData sacrificedSkill, int slotNumber)
         {
             WeaponData weapon = GetPlayerEquippedWeapon();
+            weapon.skills[slotNumber].skillLevel += 1;
 
-            int skillIdx = weapon.skills.FindIndex(x => x.skillName == sacrificedSkill.skillName);
-
-            weapon.skills[skillIdx].skillLevel += 1;
+            SaveLoadManager.SaveUser();
         }
 
         #endregion Skill Purchase

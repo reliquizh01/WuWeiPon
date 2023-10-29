@@ -32,7 +32,7 @@ namespace WeaponRelated
             switch (weaponRank)
             {
                 case WeaponRankEnum.ordinary:
-                    totalCount = UnityEngine.Random.Range(1, 3);
+                    totalCount = UnityEngine.Random.Range(2, 3);
                     break;
                 case WeaponRankEnum.rare:
                     break;

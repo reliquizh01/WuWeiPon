@@ -6,55 +6,84 @@ using UnityEngine;
 namespace WeaponRelated
 {
 
-public class WeaponBladeBehavior : MonoBehaviour
-{
-    private bool CanDetectCollision = false;
-    private List<Action<float>> OnCollisionActions = new List<Action<float>>();
-
-    internal WeaponBehavior m_behavior;
-
-    public void OnTriggerEnter2D(Collider2D col)
+    public class WeaponBladeBehavior : MonoBehaviour
     {
-        if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
-        {
-            List<Action<float>> tmpActions = new List<Action<float>>(OnCollisionActions);
+        private bool CanDetectCollision = false;
+        private List<Action<float>> callBackOnceBladeHitsOpposingHilt = new List<Action<float>>();
+        private List<DamageBattleSkillBehavior> OnSkillCollisionActions = new List<DamageBattleSkillBehavior>();
 
-            foreach(Action<float> action in tmpActions)
+        internal WeaponBehavior m_behavior;
+
+        public void OnTriggerEnter2D(Collider2D col)
+        {
+            if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
             {
-                action.Invoke(m_behavior.currentDamage);
-                if(OnCollisionActions.Count == 0)
+                m_behavior.nextDamageToInflict += m_behavior.currentDamage;
+
+                // Calls that are related to the Weapon Skill
+                if(OnSkillCollisionActions.Count > 0)
                 {
-                    break;
+                    List<DamageBattleSkillBehavior> copyOnSkillCollisionActions = new List<DamageBattleSkillBehavior>(OnSkillCollisionActions);
+
+                    foreach (DamageBattleSkillBehavior skill in copyOnSkillCollisionActions)
+                    {
+                        if (skill.CheckSkillConditionOnHit(col) == SkillTargetEnum.Hilt)
+                        {
+                            skill.AddToBladeAction(ref m_behavior.nextDamageToInflict);
+                        }
+                    }
+                }
+
+                // Calls that are related to damaging the enemy weapon
+                if(callBackOnceBladeHitsOpposingHilt.Count > 0)
+                {
+                    List<Action<float>> copyUpdateUiOnDamageDetection = new List<Action<float>>(callBackOnceBladeHitsOpposingHilt);
+
+                    foreach (Action<float> action in copyUpdateUiOnDamageDetection)
+                    {
+                        action.Invoke(m_behavior.nextDamageToInflict);
+                        if (callBackOnceBladeHitsOpposingHilt.Count == 0)
+                        {
+                            break;
+                        }
+                    }
+
+                    // Damage Already Inflicted, reset Next Damage to 0
+                    m_behavior.nextDamageToInflict = 0;
                 }
             }
         }
-    }
 
-    public void OnCollisionEnter2D(Collision2D col)
-    {
-
-    }
-
-    public void SetCollisionDetection(bool setTo)
-    {
-        CanDetectCollision = setTo;
-
-        if (!CanDetectCollision)
+        public void OnCollisionEnter2D(Collision2D col)
         {
-            RemoveActionOnCollision();
+
         }
+
+        public void SetCollisionDetection(bool setTo)
+        {
+            CanDetectCollision = setTo;
+
+            if (!CanDetectCollision)
+            {
+                RemoveActionOnCollision();
+            }
+        }
+
+        public void AddOnSkillCollisionActions(DamageBattleSkillBehavior skill)
+        {
+            OnSkillCollisionActions.Add(skill);
+        }
+
+        public void AddCallBackOnceBladeHitsHilt(Action<float> action)
+        {
+            callBackOnceBladeHitsOpposingHilt.Add(action);
+        }
+
+        public void RemoveActionOnCollision()
+        {
+            callBackOnceBladeHitsOpposingHilt.Clear();
+            OnSkillCollisionActions.Clear();
+        }
+
     }
-
-    public void AddActionOnCollision(Action<float> action)
-    {
-        OnCollisionActions.Add(action);
-    }
-
-    public void RemoveActionOnCollision()
-    {
-        OnCollisionActions.Clear();
-    }
-
-}
-
 }

@@ -22,6 +22,8 @@ public class WeaponData
 
         weaponHealth = weaponData.weaponHealth;
 
+        skills = new List<SkillData>(weaponData.skills);
+
         damage_physical = weaponData.damage_physical;
         damage_magic = weaponData.damage_magic;
 
@@ -76,7 +78,10 @@ public class WeaponData
     public SkillData skillSlotInQuestion = null;
 
     [DataMember]
-    public SkillData skillPurchased= null;
+    public SkillData skillPurchased = null;
+    
+    [DataMember]
+    public SkillData lastUpgradedSkill = null;
 
     [DataMember]
     public List<string> sacrificedWeapons = new List<string>();

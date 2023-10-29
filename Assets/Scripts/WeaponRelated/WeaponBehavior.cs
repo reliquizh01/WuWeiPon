@@ -7,6 +7,8 @@ namespace WeaponRelated
 
     public class WeaponBehavior : MonoBehaviour
     {
+        public WeaponData weapon;
+
         public WeaponMovement weaponMovement;
         public SpriteRenderer weaponSprite;
 
@@ -14,6 +16,8 @@ namespace WeaponRelated
         public List<WeaponBladeBehavior> weaponBlades;
 
         internal float currentDamage = 1;
+        internal float nextDamageToInflict = 0;
+        internal int teamNumber = -1;
 
         public void Start()
         {
@@ -28,10 +32,42 @@ namespace WeaponRelated
             }
         }
 
-        public void SetWeaponBehavior(WeaponData weaponData)
+        /// <summary>
+        /// Setup the Weapon behavior by providing the weaponData and the team the weapon is aligned to
+        /// </summary>
+        /// <param name="weaponData">the data used to create the weapon</param>
+        /// <param name="team">the team the weapon will not detect when dealing damage</param>
+        public void SetWeaponBehavior(WeaponData weaponData, int team)
         {
+            weapon = weaponData;
+            teamNumber = team;
+
             currentDamage = weaponData.damage_physical;
+
+            SetupWeaponSkills();
         }
+
+        public void SetupWeaponSkills()
+        {
+            foreach (SkillData skill in weapon.skills)
+            {
+                switch (skill.skillType)
+                {
+                    case SkillTypeEnum.Damage:
+                        DamageBattleSkillBehavior newDamage = new DamageBattleSkillBehavior();
+                        newDamage.InitializeSkill(skill);
+                        AddBladeSkillAction(newDamage);
+                        break;
+                    case SkillTypeEnum.Heal:
+                        break;
+                    case SkillTypeEnum.Movement:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         public void SetWeaponDetection(bool setTo)
         {
             if (weaponHilts != null)
@@ -53,14 +89,14 @@ namespace WeaponRelated
             }
         }
 
-        public void AddHiltAction(Action action)
+        private void AddBladeSkillAction(DamageBattleSkillBehavior action)
         {
-            weaponHilts.ForEach(x => x.AddActionOnCollision(action));
+            weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
 
-        public void AddBladeAction(Action<float> action)
+        public void AddBladeActionsForOpposingUserInterfaceUpdateOnHit(Action<float> action)
         {
-            weaponBlades.ForEach(x => x.AddActionOnCollision(action));
+            weaponBlades.ForEach(x => x.AddCallBackOnceBladeHitsHilt(action));
         }
 
         public void ResestActons()

@@ -21,6 +21,10 @@ namespace WeaponRelated
                 if (i < weaponData.behaviorSkillSlotCount)
                 {
                     slots[i].gameObject.SetActive(true);
+                    if(weaponData.skills.Count > i)
+                    {
+                        slots[i].SetupCurrentSkillAttached(weaponData.skills[i]);
+                    }
                 }
             }
 
@@ -41,7 +45,12 @@ namespace WeaponRelated
 
         public void ResetWeaponInformation()
         {
-            slots.ForEach(x => x.gameObject.SetActive(false));
+            slots.ForEach(x =>
+            {
+                x.ResetCurrentSetup();
+                x.gameObject.SetActive(false);
+            });
+
             attributes.ForEach(x => x.gameObject.SetActive(false));
         }
 

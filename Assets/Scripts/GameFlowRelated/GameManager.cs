@@ -118,6 +118,14 @@ public class GameManager : MonoBehaviour
         equippedWeaponContainer.SetWeaponState(WeaponBehaviorStateEnum.Idle);
     }
 
+    internal void UpdateCurrentPlayer()
+    {
+        if(equippedWeaponContainer != null)
+        {
+            equippedWeaponContainer.SetWeaponData(UserDataBehavior.GetPlayerEquippedWeapon());
+        }
+    }
+
     private void checkPlayerOnBoardingProgress()
     {
         int totalOnboardingSteps = Enum.GetNames(typeof(PlayerOnBoardingEnum)).Length;

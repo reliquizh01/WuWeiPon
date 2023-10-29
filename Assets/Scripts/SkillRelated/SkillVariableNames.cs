@@ -12,6 +12,8 @@ public static class SkillVariableNames
     public const string ADD_COOLDOWN = "ADD_COOLDOWN";
 
     public const string SET_TARGET_TO_WALLS = "SET_TARGET_TO_WALLS";
+    
+    public const string SET_TARGET_TO_HILTS = "SET_TARGET_TO_HILTS";
 
     public const string ADD_BURST_SPEED_FORCE = "ADD_BURST_SPEED_FORCE";
 

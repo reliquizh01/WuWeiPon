@@ -16,12 +16,17 @@ namespace User.Data
         {
             currentUserData = new UserData(userData);
         }
+
+        #region OnBoarding 
+
         public static void AddOnboardingProgress(PlayerOnBoardingEnum newOnboarding)
         {
             currentUserData.playerOnBoardingProgress.Add(newOnboarding);
 
             SaveLoadManager.SaveUser();
         }
+
+        #endregion OnBoarding
 
         public static void AddNewWeapon(WeaponData weaponData)
         {
@@ -38,6 +43,30 @@ namespace User.Data
         public static WeaponData GetPlayerEquippedWeapon()
         {
             return currentUserData.weapons.Find(x => x.isEquipped);
+        }
+
+        public static int GetCurrency(CurrencyEnum currency)
+        {
+            if(currentUserData == null)
+            {
+                return -1;
+            }
+
+            switch (currency)
+            {
+                case CurrencyEnum.spirtualEssence:
+                    return currentUserData.spiritualEssence;
+                case CurrencyEnum.skillPills:
+                    return currentUserData.skillPills;
+                case CurrencyEnum.fateGems:
+                    return currentUserData.fateGems;
+                case CurrencyEnum.consistencyPills:
+                    return currentUserData.consistencyPills;
+                default:
+                    break;
+            }
+
+            return -1;
         }
 
         #region Skill Purchase
@@ -65,8 +94,9 @@ namespace User.Data
                 weapon.lastUpgradedSkill = new SkillData(generatePurchasedSkill);
                 weapon.lastUpgradedSkill.slotNumber = upgradeSkillSlotNumber;
 
-                currentUserData.skillPills--;
-                AddSpiritualExperienceNoSave(spiritualEssenceForSkillPull);
+                addSkillPillNoSave(-1);
+
+                addSpiritualEssenceNoSave(spiritualEssenceForSkillPull);
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillExists;
             }
@@ -75,8 +105,9 @@ namespace User.Data
                 weapon.skills.Add(new SkillData(generatePurchasedSkill));
                 weapon.skills[weapon.skills.Count - 1].slotNumber = slotNumber;
 
-                currentUserData.skillPills--;
-                AddSpiritualExperienceNoSave(spiritualEssenceForSkillPull);
+                addSkillPillNoSave(-1);
+
+                addSpiritualEssenceNoSave(spiritualEssenceForSkillPull);
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillEquipped;
             }
@@ -85,8 +116,9 @@ namespace User.Data
                 weapon.skillPurchased = new SkillData(generatePurchasedSkill);
                 weapon.skillPurchased.slotNumber = slotNumber;
 
-                currentUserData.skillPills--;
-                AddSpiritualExperienceNoSave(spiritualEssenceForSkillPull);
+                addSkillPillNoSave(-1);
+
+                addSpiritualEssenceNoSave(spiritualEssenceForSkillPull);
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation;
             }
@@ -128,13 +160,21 @@ namespace User.Data
 
         #endregion Skill Purchase
 
-        #region Spiritual Essence
+        #region Currency
 
-        private static void AddSpiritualExperienceNoSave(int amount)
+        private static void addSpiritualEssenceNoSave(int amount)
         {
             currentUserData.spiritualEssence += amount;
+            GameManager.Instance.UpdateCurrencyValues(CurrencyEnum.spirtualEssence);
         }
 
-        #endregion
+        private static void addSkillPillNoSave(int amount)
+        {
+            currentUserData.skillPills += amount;
+            GameManager.Instance.UpdateCurrencyValues(CurrencyEnum.skillPills);
+        }
+
+
+        #endregion Currency
     }
 }

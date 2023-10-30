@@ -17,8 +17,12 @@ namespace User.Data
             weapons = new List<WeaponData>(userData.weapons);
             currentTokenAuthentication = new string(userData.currentTokenAuthentication);
             lastServerUpdate = userData.lastServerUpdate;
-            skillPills = userData.skillPills;
             playerOnBoardingProgress = new List<PlayerOnBoardingEnum>(userData.playerOnBoardingProgress);
+
+            skillPills = userData.skillPills;
+            spiritualEssence = userData.spiritualEssence;
+            fateGems = userData.fateGems;
+            consistencyPills = userData.consistencyPills;
         }
 
         #endregion Constructors

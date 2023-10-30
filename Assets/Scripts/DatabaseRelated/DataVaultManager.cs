@@ -11,6 +11,7 @@ public class DataVaultManager : MonoBehaviour
 
     public List<Sprite> SkillSprites;
 
+    public List<CurrencySpriteItem> CurrencySprites;
 
     public void Awake()
     {
@@ -29,6 +30,17 @@ public class DataVaultManager : MonoBehaviour
 
     }
 
+    #region Currency
+
+    public Sprite GetCurrencySprite(CurrencyEnum currency)
+    {
+        return CurrencySprites.First(x => x.type == currency).sprite;
+    }
+
+    #endregion Currency
+
+    #region Skills
+
     public Sprite GetSkillSprite(string skillName)
     {
         return SkillSprites.First(x => x.name == skillName);
@@ -46,4 +58,5 @@ public class DataVaultManager : MonoBehaviour
         return sprite;
     }
 
+    #endregion Skills
 }

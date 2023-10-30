@@ -23,12 +23,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] internal GameStateEnum currentGameState;
     [SerializeField] private string userLoggedIn;
 
+    internal bool loadPlayerDataComplete = false;
     private float battleCameSize = 15.0f;
     private float idleCameSize = 11.0f;
     private bool cameraTransitioning = false;
     private float camTargetSize = 0.0f;
     private float camTransitonSpeed = 20.0f;
     private List<Action> actionAfterTransiton = new List<Action>();
+    private List<Action<CurrencyEnum>> updateCurrencyValue = new List<Action<CurrencyEnum>>();
 
     public void Awake()
     {
@@ -57,6 +59,13 @@ public class GameManager : MonoBehaviour
         
         checkPlayerOnBoardingProgress();
         checkPlayerPendingTransactions();
+
+        loadPlayerDataComplete = true;
+
+        for (int i = 0; i < Enum.GetNames(typeof(CurrencyEnum)).Length; i++)
+        {
+            UpdateCurrencyValues((CurrencyEnum)i);
+        }
     }
 
     private void checkPlayerPendingTransactions()
@@ -80,6 +89,28 @@ public class GameManager : MonoBehaviour
             cameraTransitionUpdate();
         }
     }
+
+    public void UpdateCurrencyValues(CurrencyEnum currency)
+    {
+        if (loadPlayerDataComplete)
+        {
+            if(updateCurrencyValue.Count > 0)
+            {
+                updateCurrencyValue.ForEach(x => x.Invoke(currency));
+            }
+        }
+    }
+
+    public void AddToUpdateCurrencyCallBacks(Action<CurrencyEnum> action)
+    {
+        updateCurrencyValue.Add(action);
+    }
+
+    public void RemoveFromUpdateCurrencyCallbacks(Action<CurrencyEnum> action)
+    {
+        updateCurrencyValue.Remove(action);
+    }
+
     public void SetGameState(GameStateEnum gameState, Action afterTransitionAction = null)
     {
         currentGameState = gameState;

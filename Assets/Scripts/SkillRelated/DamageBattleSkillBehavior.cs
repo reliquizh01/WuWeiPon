@@ -17,6 +17,7 @@ public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
         {
             hasDamageBonusByPercent = true;
             addDamagePercentage = (float)skillData.skillValues[SkillVariableNames.ADD_DAMAGE_PERCENTAGE];
+            SkillProgressionBonus.AmplifyDamagePercentage(skillData, ref addDamagePercentage);
         }
     }
 
@@ -24,19 +25,24 @@ public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
     /// The method that the blade will call to modify the damage right before they send it to the hilt who took it.
     /// </summary>
     /// <param name="referencedAmountToModify">referenced damage that will be modified</param>
-    public void AddToBladeAction(ref float referencedAmountToModify)
+    public void EnhanceDamageToBeInflicted(ref float referencedAmountToModify)
     {
-        if (hasDamageBonusByPercent)
+        if(!isMaxUsageReached())
         {
-            float addedRealValue = 0;
-            addedRealValue += referencedAmountToModify * (addDamagePercentage / 100.0f);
+            if (hasDamageBonusByPercent)
+            {
+                float addedRealValue = 0;
+                addedRealValue += referencedAmountToModify * (addDamagePercentage / 100.0f);
 
-            referencedAmountToModify += addedRealValue;
-        }
+                referencedAmountToModify += addedRealValue;
+            }
 
-        if (hasDamageBonusByValue)
-        {
-            referencedAmountToModify += addDamageValue;
+            if (hasDamageBonusByValue)
+            {
+                referencedAmountToModify += addDamageValue;
+            }
+
+            IncrementMaxUsage();
         }
     }
 }

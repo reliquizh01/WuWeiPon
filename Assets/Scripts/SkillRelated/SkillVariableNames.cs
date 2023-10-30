@@ -1,4 +1,7 @@
 
+using System;
+using System.Text.RegularExpressions;
+
 public static class SkillVariableNames
 {
     #region Skill Values
@@ -21,7 +24,7 @@ public static class SkillVariableNames
 
     #region Skill Description
 
-    public const string FIRSTBLOODSPILL_DESCRIPTION = "On the first hit amplify damage by {0} percent";
+    public const string FIRSTBLOODSPILL_DESCRIPTION = "On the first hit amplify damage by {0}%, can be used {1} per battle";
 
     public const string CORNERBOOST_DESCRIPTION = "Bursts speed by {0} once every {1} seconds";
 

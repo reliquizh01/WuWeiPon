@@ -42,6 +42,29 @@ namespace User.Data
         public int skillPills = 50000;
 
         [DataMember]
+        public int spiritualEssence = 50000;
+
+        [DataMember]
+        public int fateGems = 1000;
+
+        /// <summary>
+        /// Currency that can be used to enhance the % rate of any RNG-based chest/treasures.
+        /// How to Gain:
+        /// +1 Consistency pill = 1 hour of playtime.
+        /// +10 Consistency pill = 24 hours of playtime.
+        /// +100 consistency pill = 1 week of playtime.
+        /// 
+        /// How to Use:
+        /// 1 Consistency Pill
+        /// +0.1% increase on Divine pull rate on chests/treasure
+        /// +0.5% increase on Ancient pull rate on chests/treasure
+        /// +2.5% increase on Heroic pull rate on chests/treasure
+        /// -3.6% decrease on Rare/Ordinary pull rate on chests/treasure
+        /// </summary>
+        [DataMember]
+        public int consistencyPills = 1000; 
+
+        [DataMember]
         public List<PlayerOnBoardingEnum> playerOnBoardingProgress = new List<PlayerOnBoardingEnum>();
     }
 }

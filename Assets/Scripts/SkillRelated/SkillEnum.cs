@@ -18,3 +18,13 @@ public enum SkillTargetEnum
     Walls,
     Blade
 }
+
+public enum SkillRankEnum
+{
+    ordinary,
+    rare,
+    transcendant,
+    ancient,
+    divine,
+    ancientDivine
+}

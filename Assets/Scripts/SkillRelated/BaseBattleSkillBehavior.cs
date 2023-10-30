@@ -78,7 +78,6 @@ public class BaseBattleSkillBehavior
             skillTargetEnums.Add(SkillTargetEnum.Walls);
         }
     }
-
     public virtual SkillTargetEnum CheckSkillConditionOnHit(Collider2D hitObject)
     {
         SkillTargetEnum hit = SkillTargetEnum.None;
@@ -104,5 +103,33 @@ public class BaseBattleSkillBehavior
 
         return hit;
     }
-    
+
+    /// <summary>
+    /// Checks if currentUseCount is greater than Max Use Count.
+    /// </summary>
+    /// <returns>Returns False if Max Use has been reached.</returns>
+    internal virtual bool isMaxUsageReached()
+    {
+        if (hasMaxUsage)
+        {
+            if (currentUseCount >= maxUseCount)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public virtual void IncrementMaxUsage()
+    {
+        if (hasMaxUsage)
+        {
+            if (!isMaxUsageReached())
+            {
+                currentUseCount++;
+            }
+        }
+    }
+
+
 }

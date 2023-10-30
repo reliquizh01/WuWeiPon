@@ -69,9 +69,10 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         if (isClicked)
         {
             clickCounter += Time.deltaTime;
-            if(clickCounter > 0.5f)
+            if(clickCounter > 0.15f)
             {
                 // Show Skill Information
+                InformationPopUpContainer.Instance.SetupSkillInformation(currentSkillData);
                 isClicked = false;
             }
         }
@@ -83,13 +84,14 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     public void OnMouseUp()
     {
-        if(clickCounter <= 0.5f)
+        if(clickCounter <= 0.15f)
         {
             SlotClicked();
         }
         else
         {
             //Hide Skill Information
+            InformationPopUpContainer.Instance.HideInformation();
         }
 
         clickCounter = 0.0f;

@@ -10,6 +10,8 @@ namespace User.Data
     {
         internal static UserData currentUserData;
 
+        internal const int spiritualEssenceForSkillPull = 15;
+
         public static void LoadUser(UserData userData)
         {
             currentUserData = new UserData(userData);
@@ -64,6 +66,7 @@ namespace User.Data
                 weapon.lastUpgradedSkill.slotNumber = upgradeSkillSlotNumber;
 
                 currentUserData.skillPills--;
+                AddSpiritualExperienceNoSave(spiritualEssenceForSkillPull);
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillExists;
             }
@@ -71,7 +74,9 @@ namespace User.Data
             {
                 weapon.skills.Add(new SkillData(generatePurchasedSkill));
                 weapon.skills[weapon.skills.Count - 1].slotNumber = slotNumber;
+
                 currentUserData.skillPills--;
+                AddSpiritualExperienceNoSave(spiritualEssenceForSkillPull);
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillEquipped;
             }
@@ -81,6 +86,7 @@ namespace User.Data
                 weapon.skillPurchased.slotNumber = slotNumber;
 
                 currentUserData.skillPills--;
+                AddSpiritualExperienceNoSave(spiritualEssenceForSkillPull);
 
                 transactionResult = UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation;
             }
@@ -121,5 +127,14 @@ namespace User.Data
         }
 
         #endregion Skill Purchase
+
+        #region Spiritual Essence
+
+        private static void AddSpiritualExperienceNoSave(int amount)
+        {
+            currentUserData.spiritualEssence += amount;
+        }
+
+        #endregion
     }
 }

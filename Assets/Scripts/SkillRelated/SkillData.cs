@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using WeaponRelated;
 
 [DataContract]
 public class SkillData
@@ -14,7 +15,9 @@ public class SkillData
         description = skillData.description;
         skillIconFileName = skillData.skillIconFileName;
         slotNumber = skillData.slotNumber;
+        
         skillExperience = skillData.skillExperience;
+        skillRarity = skillData.skillRarity;
 
         skillLevel = skillData.skillLevel;
         skillType = skillData.skillType;
@@ -32,6 +35,9 @@ public class SkillData
 
     [DataMember]
     public string skillIconFileName = "";
+
+    [DataMember]
+    public SkillRankEnum skillRarity = SkillRankEnum.ordinary;
 
     [DataMember]
     public int skillLevel = 0;

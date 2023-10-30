@@ -29,7 +29,7 @@ namespace WeaponRelated
                     {
                         if (skill.CheckSkillConditionOnHit(col) == SkillTargetEnum.Hilt)
                         {
-                            skill.AddToBladeAction(ref m_behavior.nextDamageToInflict);
+                            skill.EnhanceDamageToBeInflicted(ref m_behavior.nextDamageToInflict);
                         }
                     }
                 }

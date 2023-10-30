@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
         {
             UpdateCurrencyValues((CurrencyEnum)i);
         }
+
+        SetGameState(GameStateEnum.Idle);
     }
 
     private void checkPlayerPendingTransactions()
@@ -126,11 +128,15 @@ public class GameManager : MonoBehaviour
                 camTargetSize = idleCameSize;
                 TrainingUi.SetActive(true);
                 BattleUi.SetActive(false);
+
+                SoundManager.Instance.PlayBackgroundTheme(LocationEnum.GreenlandMountains);
                 break;
             case GameStateEnum.Battle:
                 camTargetSize = battleCameSize;
                 TrainingUi.SetActive(false);
                 BattleUi.SetActive(true);
+
+                SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalBattle);
                 break;
             default:
                 break;

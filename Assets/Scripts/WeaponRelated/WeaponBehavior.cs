@@ -43,12 +43,12 @@ namespace WeaponRelated
             teamNumber = team;
 
             currentDamage = weaponData.damage_physical;
-
-            SetupWeaponSkills();
         }
 
-        public void SetupWeaponSkills()
+        public List<BaseBattleSkillBehavior> SetupWeaponSkills()
         {
+            List<BaseBattleSkillBehavior> battleSkills = new List<BaseBattleSkillBehavior>();
+
             foreach (SkillData skill in weapon.skills)
             {
                 switch (skill.skillType)
@@ -57,6 +57,7 @@ namespace WeaponRelated
                         DamageBattleSkillBehavior newDamage = new DamageBattleSkillBehavior();
                         newDamage.InitializeSkill(skill);
                         AddBladeSkillAction(newDamage);
+                        battleSkills.Add(newDamage);
                         break;
                     case SkillTypeEnum.Heal:
                         break;
@@ -66,6 +67,8 @@ namespace WeaponRelated
                         break;
                 }
             }
+
+            return battleSkills;
         }
 
         public void SetWeaponDetection(bool setTo)

@@ -14,7 +14,7 @@ namespace WeaponRelated
         private float currentHealth = 0;
         private float maxHealth = 0;
 
-        public void LoadWeaponInformation(WeaponData weaponData)
+        public void LoadWeaponInformation(WeaponData weaponData,ref List<BaseBattleSkillBehavior> currentEquippedSkills)
         {
             for (int i = 0; i < slots.Count; i++)
             {
@@ -23,7 +23,14 @@ namespace WeaponRelated
                     slots[i].gameObject.SetActive(true);
                     if(weaponData.skills.Count > i)
                     {
+                        BaseBattleSkillBehavior skillBehavior = currentEquippedSkills.FirstOrDefault(x => x.skillName == weaponData.skills[i].skillName);
+
                         slots[i].SetupCurrentSkillAttached(weaponData.skills[i]);
+    
+                        if(skillBehavior != null)
+                        {
+                            slots[i].AttachToSkillBehavior(ref skillBehavior);
+                        }
                     }
                 }
             }

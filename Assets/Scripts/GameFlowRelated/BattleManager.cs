@@ -1,6 +1,7 @@
 using DataManagement;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using User.Data;
@@ -68,8 +69,11 @@ public class BattleManager : MonoBehaviour
 
         
         //Setup Weapon stats and skills
-        enemyWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData, 2); 
+        enemyWeapon.currentWeapon.SetWeaponBehavior(enemyWeapon.dataBehavior.weaponData, 2);
+        List<BaseBattleSkillBehavior> enemySkills = enemyWeapon.currentWeapon.SetupWeaponSkills();
+
         playerWeapon.currentWeapon.SetWeaponBehavior(playerWeapon.dataBehavior.weaponData, 1); 
+        List<BaseBattleSkillBehavior> playerSkills = playerWeapon.currentWeapon.SetupWeaponSkills();
         
         // Add blade action on trigger2D
         enemyWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.playerInformaton.OnWeaponDamaged);
@@ -78,8 +82,8 @@ public class BattleManager : MonoBehaviour
 
         // Setup User Interface for Weapon
         userInterface.gameObject.SetActive(true);
-        userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData);
-        userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData);
+        userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData,ref playerSkills);
+        userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData, ref enemySkills);
 
 
 

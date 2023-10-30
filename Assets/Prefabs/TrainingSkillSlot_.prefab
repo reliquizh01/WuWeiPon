@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 8381982733170716459}
   - component: {fileID: 1072917750197211566}
   m_Layer: 0
-  m_Name: SkillSlot_
+  m_Name: TrainingSkillSlot_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

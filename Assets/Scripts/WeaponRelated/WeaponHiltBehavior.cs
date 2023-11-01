@@ -1,6 +1,8 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace WeaponRelated
@@ -10,39 +12,72 @@ namespace WeaponRelated
         public AudioSource sfx;
         internal bool isPlayingSFX = false;
 
+        public Collider2D myCollision;
+
         private bool CanDetectCollision = false;
         private List<Action> OnDamageReceived = new List<Action>();
 
         internal WeaponBehavior m_behavior;
 
-        public void OnTriggerEnter2D(Collider2D col)
+        public void OnCollisionEnter2D(Collision2D col)
         {
-            if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
+            WeaponBehavior opposingWeapon = col.gameObject.GetComponent<WeaponBehavior>();
+
+            if(opposingWeapon != null )
             {
-                WeaponHiltBehavior enemyHilt = col.gameObject.GetComponent<WeaponHiltBehavior>();
-                //SFX
-                if (!enemyHilt.isPlayingSFX)
+                WeaponHiltBehavior hilt = opposingWeapon.weaponHilts.FirstOrDefault(x => x.myCollision == col.collider);
+
+                if (hilt != null)
                 {
-                    PlayHiltToHiltImpact();
+                    //SFX
+                    if (!hilt.isPlayingSFX)
+                    {
+                        PlayHiltToHiltImpact();
+                    }
                 }
-            }
-            else if(col.gameObject.GetComponent<WeaponBladeBehavior>() != null)
-            {
-                //SFX
-                PlayHiltToBladeImpact();
             }
         }
 
-        public void OnTriggerExit2D(Collider2D col)
+        public void OnCollisionExit2D(Collision2D col)
         {
-            if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
+            WeaponBehavior opposingWeapon = col.gameObject.GetComponent<WeaponBehavior>();
+
+            if(opposingWeapon != null)
             {
-                if (isPlayingSFX)
+                WeaponHiltBehavior hilt = opposingWeapon.weaponHilts.FirstOrDefault(x => x.myCollision == col.collider);
+                WeaponBladeBehavior blade = opposingWeapon.weaponBlades.FirstOrDefault(x => x.myCollision == col.collider);
+
+                if (hilt != null)
                 {
-                    isPlayingSFX = false;
+                    if (isPlayingSFX)
+                    {
+                        isPlayingSFX = false;
+                    }
+                }
+                else if (blade != null)
+                {
+                    //SFX
+                    PlayHiltToBladeImpact();
+                }
+                else
+                {
+                    //Skill Collision
+
+                    //CallbackOnceBladeHItsOpposingBlade
+
+                    //SFX
+                    PlayBladeToWeaponImpact();
                 }
             }
         }
+
+        public void PlayBladeToWeaponImpact()
+        {
+            int random = UnityEngine.Random.Range(0, SoundManager.Instance.hiltToHiltClips.Count);
+            sfx.clip = SoundManager.Instance.hiltToHiltClips[random];
+            sfx.Play();
+        }
+
         public void PlayHiltToBladeImpact()
         {
             int random = UnityEngine.Random.Range(0, SoundManager.Instance.bladeToHiltClips.Count);

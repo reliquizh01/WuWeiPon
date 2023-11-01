@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,87 +13,121 @@ namespace WeaponRelated
         public AudioSource sfx;
         internal bool isPlayingSFX = false;
 
+        public Collider2D myCollision;
+
         private bool CanDetectCollision = false;
         private List<Action<float>> callBackOnceBladeHitsOpposingHilt = new List<Action<float>>();
         private List<DamageBattleSkillBehavior> OnSkillCollisionActions = new List<DamageBattleSkillBehavior>();
 
         internal WeaponBehavior m_behavior;
 
-        public void OnTriggerEnter2D(Collider2D col)
+        public void OnCollisionEnter2D(Collision2D col)
         {
-            if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
+            WeaponBehavior opposingWeapon = col.gameObject.GetComponent<WeaponBehavior>();
+
+            if(opposingWeapon != null)
             {
-                m_behavior.nextDamageToInflict += m_behavior.currentDamage;
+                WeaponHiltBehavior hilt = opposingWeapon.weaponHilts.FirstOrDefault(x => x.myCollision == col.collider);
+                WeaponBladeBehavior blade = opposingWeapon.weaponBlades.FirstOrDefault(x => x.myCollision == col.collider);
 
-                // Calls that are related to the Weapon Skill
-                if(OnSkillCollisionActions.Count > 0)
+                if (hilt != null)
                 {
-                    List<DamageBattleSkillBehavior> copyOnSkillCollisionActions = new List<DamageBattleSkillBehavior>(OnSkillCollisionActions);
+                    m_behavior.nextDamageToInflict += m_behavior.currentDamage;
 
-                    foreach (DamageBattleSkillBehavior skill in copyOnSkillCollisionActions)
+                    // Calls that are related to the Weapon Skill
+                    if (OnSkillCollisionActions.Count > 0)
                     {
-                        if (skill.CheckSkillConditionOnHit(col) == SkillTargetEnum.Hilt)
-                        {
-                            skill.EnhanceDamageToBeInflicted(ref m_behavior.nextDamageToInflict);
-                        }
-                    }
-                }
+                        List<DamageBattleSkillBehavior> copyOnSkillCollisionActions = new List<DamageBattleSkillBehavior>(OnSkillCollisionActions);
 
-                // Calls that are related to damaging the enemy weapon
-                if(callBackOnceBladeHitsOpposingHilt.Count > 0)
-                {
-                    List<Action<float>> copyUpdateUiOnDamageDetection = new List<Action<float>>(callBackOnceBladeHitsOpposingHilt);
-
-                    foreach (Action<float> action in copyUpdateUiOnDamageDetection)
-                    {
-                        action.Invoke(m_behavior.nextDamageToInflict);
-                        if (callBackOnceBladeHitsOpposingHilt.Count == 0)
+                        foreach (DamageBattleSkillBehavior skill in copyOnSkillCollisionActions)
                         {
-                            break;
+                            if (skill.CheckSkillConditionOnHit(hilt) == SkillTargetEnum.Hilt)
+                            {
+                                skill.EnhanceDamageToBeInflicted(ref m_behavior.nextDamageToInflict);
+                            }
                         }
                     }
 
-                    // Damage Already Inflicted, reset Next Damage to 0
-                    m_behavior.nextDamageToInflict = 0;
+                    // Calls that are related to damaging the enemy weapon
+                    if (callBackOnceBladeHitsOpposingHilt.Count > 0)
+                    {
+                        List<Action<float>> copyUpdateUiOnDamageDetection = new List<Action<float>>(callBackOnceBladeHitsOpposingHilt);
+
+                        foreach (Action<float> action in copyUpdateUiOnDamageDetection)
+                        {
+                            action.Invoke(m_behavior.nextDamageToInflict);
+                            if (callBackOnceBladeHitsOpposingHilt.Count == 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        // Damage Already Inflicted, reset Next Damage to 0
+                        m_behavior.nextDamageToInflict = 0;
+                    }
                 }
-            }
-            else if(col.gameObject.GetComponent<WeaponBladeBehavior>() != null)
-            {
-                WeaponBladeBehavior enemyBlade = col.gameObject.GetComponent<WeaponBladeBehavior>();
-                //Skill Collision
-
-                //CallbackOnceBladeHItsOpposingBlade
-
-                //SFX
-                if (!enemyBlade.isPlayingSFX)
+                else if (blade != null)
                 {
-                    PlayBladeToBladeImpact();
+                    //Skill Collision
+
+                    //CallbackOnceBladeHItsOpposingBlade
+
+                    //SFX
+                    if (!blade.isPlayingSFX)
+                    {
+                        PlayBladeToBladeImpact();
+                    }
                 }
             }
         }
 
-        public void OnTriggerExit2D(Collider2D col)
+        public void OnCollisionExit2D(Collision2D col)
         {
-            if (col.gameObject.GetComponent<WeaponHiltBehavior>() != null)
+            WeaponBehavior opposingWeapon = col.gameObject.GetComponent<WeaponBehavior>();
+
+            if(opposingWeapon != null)
             {
-                // Calls that are related to the Weapon Skill
 
-                // Calls that are related to damaging the enemy weapon
+                WeaponHiltBehavior hilt = opposingWeapon.weaponHilts.FirstOrDefault(x => x.myCollision == col.collider);
+                WeaponBladeBehavior blade = opposingWeapon.weaponBlades.FirstOrDefault(x => x.myCollision == col.collider);
 
-                //SFX
-            }
-            else if (col.gameObject.GetComponent<WeaponBladeBehavior>() != null)
-            {
-                //Skill Collision
-
-                //CallbackOnceBladeHItsOpposingBlade
-
-                //SFX
-                if (isPlayingSFX)
+                if (hilt != null)
                 {
-                    isPlayingSFX = false;
+                    // Calls that are related to the Weapon Skill
+
+                    // Calls that are related to damaging the enemy weapon
+
+                    //SFX
+                }
+                else if (blade != null)
+                {
+                    //Skill Collision
+
+                    //CallbackOnceBladeHItsOpposingBlade
+
+                    //SFX
+                    if (isPlayingSFX)
+                    {
+                        isPlayingSFX = false;
+                    }
+                }
+                else if (col.gameObject.GetComponent<WeaponBehavior>() != null)
+                {
+                    //Skill Collision
+
+                    //CallbackOnceBladeHItsOpposingBlade
+
+                    //SFX
+                    PlayBladeToWeaponImpact();
                 }
             }
+        }
+
+        public void PlayBladeToWeaponImpact()
+        {
+            int random = UnityEngine.Random.Range(0, SoundManager.Instance.hiltToHiltClips.Count);
+            sfx.clip = SoundManager.Instance.hiltToHiltClips[random];
+            sfx.Play();
         }
 
         public void PlayBladeToBladeImpact()
@@ -104,6 +139,7 @@ namespace WeaponRelated
             isPlayingSFX = true;
             StartCoroutine(SetPlayingSFXToFalse(sfx.clip.length));
         }
+        
 
         IEnumerator SetPlayingSFXToFalse(float lastSfxLength)
         {

@@ -76,7 +76,7 @@ public class BaseBattleSkillBehavior
             skillTargetEnums.Add(SkillTargetEnum.Walls);
         }
     }
-    public virtual SkillTargetEnum CheckSkillConditionOnHit(Collider2D hitObject)
+    public virtual SkillTargetEnum CheckSkillConditionOnHit(object hitObject)
     {
         SkillTargetEnum hit = SkillTargetEnum.None;
 
@@ -85,14 +85,17 @@ public class BaseBattleSkillBehavior
             switch (item)
             {
                 case SkillTargetEnum.Hilt:
-                    if (hitObject.GetComponent<WeaponHiltBehavior>() != null) hit = SkillTargetEnum.Hilt;
+                    WeaponHiltBehavior hilt = (WeaponHiltBehavior)hitObject;
+                    if (hilt != null) hit = SkillTargetEnum.Hilt;
                     break;
                 case SkillTargetEnum.Walls:
                     int layer = LayerMask.NameToLayer("Walls");
-                    if (hitObject.gameObject.layer == layer) hit = SkillTargetEnum.Walls;
+                    Collider2D obj = (Collider2D)hitObject;
+                    if (obj != null && obj.gameObject.layer == layer) hit = SkillTargetEnum.Walls;
                     break;
                 case SkillTargetEnum.Blade:
-                    if (hitObject.GetComponent<WeaponBladeBehavior>() != null) hit = SkillTargetEnum.Blade;
+                    WeaponBladeBehavior blade = (WeaponBladeBehavior)hitObject;
+                    if (blade != null) hit = SkillTargetEnum.Blade;
                     break;
                 default:
                     break;

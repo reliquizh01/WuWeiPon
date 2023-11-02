@@ -16,9 +16,17 @@ public class WeaponSkillSlot : MonoBehaviour
 
     public void Update()
     {
-        if (currentSkillBehavior != null && currentSkillBehavior.isSkillOnCooldown())
+        if (currentSkillBehavior != null && currentSkillBehavior.hasCooldown)
         {
-            currentSkillBehavior.Update(Time.deltaTime);
+            if (currentSkillBehavior.isSkillOnCooldown())
+            {
+                currentSkillBehavior.Update(Time.deltaTime);
+
+                if(currentSkillBehavior.currentCooldown >= currentSkillBehavior.cooldown)
+                {
+                    currentSkillBehavior.SetSkillOnCooldown(false);
+                }
+            }
 
             frame.fillAmount = currentSkillBehavior.currentCooldown/currentSkillBehavior.cooldown;
         }

@@ -34,12 +34,17 @@ public class SoundManager : MonoBehaviour
 
     public void Start()
     {
+#if (UNITY_EDITOR)
 
+        introbackgroundSource.volume = 0.1f;
+        loopBackgroundSource.volume = 0.1f;
+
+        #endif 
     }
 
     public void PlayBackgroundTheme(LocationEnum location)
     {
-        ResetBackgroundTheme();
+        //ResetBackgroundTheme();
 
         string theme = location.ToString();
 

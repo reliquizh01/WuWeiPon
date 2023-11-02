@@ -31,6 +31,11 @@ public class InformationPopUpContainer : MonoBehaviour
 
     public void SetupSkillInformation(SkillData skillData)
     {
+        if(skillData == null)
+        {
+            return;
+        }
+
         Container.SetActive(true);
 
         skillSlot.SetupCurrentSkillAttached(skillData);

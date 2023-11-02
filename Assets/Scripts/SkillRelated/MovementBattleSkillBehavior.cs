@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class MovementBattleSkillBehavior : BaseBattleSkillBehavior
 {
     public bool hasMovementBonus = false;
@@ -8,14 +10,27 @@ public class MovementBattleSkillBehavior : BaseBattleSkillBehavior
     {
         base.InitializeSkill(skillData);
 
-        if (skillData.skillValues.ContainsKey(SkillVariableNames.SET_TARGET_TO_WALLS))
-        {
-            skillTargetEnums.Add(SkillTargetEnum.Walls);
-        }
-
         if (skillData.skillValues.ContainsKey(SkillVariableNames.ADD_BURST_SPEED_FORCE))
         {
+            hasMovementBonus = true;
             burstSpeedForce = (float)skillData.skillValues[SkillVariableNames.ADD_BURST_SPEED_FORCE];
+        }
+    }
+
+    public void AddSpeedForce(Rigidbody2D rigidBody)
+    {
+
+        if (hasCooldown)
+        {
+            if (!cooldownStarted)
+            {
+                rigidBody.AddRelativeForce(rigidBody.velocity * burstSpeedForce);
+                SetSkillOnCooldown(true);
+            }
+        }
+        else
+        {
+                rigidBody.AddRelativeForce(rigidBody.velocity * burstSpeedForce);
         }
     }
 }

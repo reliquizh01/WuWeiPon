@@ -48,7 +48,8 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     public void SlotClicked()
     {
-        if(!isOtherSlotSpinning && !isSlotSpinning && UserDataBehavior.DoesUserHaveSkillPill())
+        if(!isOtherSlotSpinning && 
+           !isSlotSpinning && UserDataBehavior.DoesUserHaveSkillPill())
         {
             isSlotSpinning =true;
             currentTransactionResult = UserDataBehavior.PurchaseSkill(slotNumber);
@@ -57,7 +58,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         }
         else
         {
-            if (!stillProcessing && !isSlotSpinning)
+            if (currentSkillData != null && !stillProcessing && !isSlotSpinning)
             {
                 Play("SpinFail");
             }

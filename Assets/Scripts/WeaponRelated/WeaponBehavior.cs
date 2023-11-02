@@ -32,6 +32,11 @@ namespace WeaponRelated
             }
         }
 
+        public void OnCollisionEnter2D(Collision2D collision)
+        {
+            
+        }
+
         /// <summary>
         /// Setup the Weapon behavior by providing the weaponData and the team the weapon is aligned to
         /// </summary>
@@ -56,12 +61,40 @@ namespace WeaponRelated
                     case SkillTypeEnum.Damage:
                         DamageBattleSkillBehavior newDamage = new DamageBattleSkillBehavior();
                         newDamage.InitializeSkill(skill);
-                        AddBladeSkillAction(newDamage);
-                        battleSkills.Add(newDamage);
+
+                        if (newDamage.skillDetectionPartEnums.Count > 0)
+                        { 
+                            if(newDamage.skillDetectionPartEnums.Contains(SkillDetectionPartEnum.BladeOnlyDetection))
+                            {
+                                AddToBladeSkillAction(newDamage);
+                            }
+                            if(newDamage.skillDetectionPartEnums.Contains(SkillDetectionPartEnum.HiltOnlyDetection))
+                            {
+                                AddToHiltSkillAction(newDamage);
+                            }
+                            battleSkills.Add(newDamage);
+                        }
+                        
                         break;
                     case SkillTypeEnum.Heal:
                         break;
                     case SkillTypeEnum.Movement:
+
+                        MovementBattleSkillBehavior newMovement = new MovementBattleSkillBehavior();
+                        newMovement.InitializeSkill(skill);
+
+                        if (newMovement.skillDetectionPartEnums.Count > 0)
+                        {
+                            if (newMovement.skillDetectionPartEnums.Contains(SkillDetectionPartEnum.BladeOnlyDetection))
+                            {
+                                AddToBladeSkillAction(newMovement);
+                            }
+                            if (newMovement.skillDetectionPartEnums.Contains(SkillDetectionPartEnum.HiltOnlyDetection))
+                            {
+                                AddToHiltSkillAction(newMovement);
+                            }
+                            battleSkills.Add(newMovement);
+                        }
                         break;
                     default:
                         break;
@@ -92,9 +125,22 @@ namespace WeaponRelated
             }
         }
 
-        private void AddBladeSkillAction(DamageBattleSkillBehavior action)
+        private void AddToBladeSkillAction(DamageBattleSkillBehavior action)
         {
             weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
+        }
+        private void AddToBladeSkillAction(MovementBattleSkillBehavior action)
+        {
+            weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
+        }
+
+        private void AddToHiltSkillAction(DamageBattleSkillBehavior action)
+        {
+            weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
+        }
+        private void AddToHiltSkillAction(MovementBattleSkillBehavior action)
+        {
+            weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
 
         public void AddBladeActionsForOpposingUserInterfaceUpdateOnHit(Action<float> action)

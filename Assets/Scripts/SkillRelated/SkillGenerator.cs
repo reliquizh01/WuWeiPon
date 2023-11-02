@@ -22,6 +22,7 @@ namespace SkillRelated
 
                     skillData.isSkillConditionOnHit = true;
 
+                    skillData.skillValues.Add(SkillVariableNames.SET_DETECTION_TO_BLADE_ONLY, true);
                     skillData.skillValues.Add(SkillVariableNames.SET_TARGET_TO_HILTS, true);
                     skillData.skillValues.Add(SkillVariableNames.SET_MAXIMUM_USAGE, true);
                     skillData.skillValues.Add(SkillVariableNames.ADD_MAXIMUM_USAGE, 1);
@@ -33,12 +34,15 @@ namespace SkillRelated
                     skillData.description = SkillVariableNames.CORNERBOOST_DESCRIPTION;
                     skillData.skillIconFileName = SkillEnum.CornerBoost.ToString() + "_Icon";
                     skillData.skillType = SkillTypeEnum.Movement;
-                
-                    skillData.isSkillConditionOnHit = true;
 
+                    skillData.isSkillConditionOnHit = true;
+                    
                     AddCooldown(skillData, 30.0f);
+                    
+                    skillData.skillValues.Add(SkillVariableNames.SET_DETECTION_TO_HILT_ONLY, true);
                     skillData.skillValues.Add(SkillVariableNames.SET_TARGET_TO_WALLS, true);
-                    skillData.skillValues.Add(SkillVariableNames.ADD_BURST_SPEED_FORCE, 150.0f);
+
+                    skillData.skillValues.Add(SkillVariableNames.ADD_BURST_SPEED_FORCE, 25.0f);
                     break;
                 default:
                     break;

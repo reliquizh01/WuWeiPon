@@ -19,6 +19,13 @@ public enum SkillTargetEnum
     Blade
 }
 
+public enum SkillDetectionPartEnum
+{
+    HiltOnlyDetection,
+    BladeOnlyDetection,
+    AllParts,
+}
+
 public enum SkillRankEnum
 {
     ordinary,

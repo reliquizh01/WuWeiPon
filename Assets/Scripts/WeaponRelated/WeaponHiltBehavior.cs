@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 namespace WeaponRelated
 {
-    public class WeaponHiltBehavior : MonoBehaviour
+    public class WeaponHiltBehavior : BaseWeaponPartsBehavior
     {
         public AudioSource sfx;
         internal bool isPlayingSFX = false;
@@ -17,15 +18,14 @@ namespace WeaponRelated
         private bool CanDetectCollision = false;
         private List<Action> OnDamageReceived = new List<Action>();
 
-        internal WeaponBehavior m_behavior;
-
         public void OnCollisionEnter2D(Collision2D col)
         {
             WeaponBehavior opposingWeapon = col.gameObject.GetComponent<WeaponBehavior>();
 
-            if(opposingWeapon != null )
+            if (opposingWeapon != null )
             {
                 WeaponHiltBehavior hilt = opposingWeapon.weaponHilts.FirstOrDefault(x => x.myCollision == col.collider);
+                WeaponBladeBehavior blade = opposingWeapon.weaponBlades.FirstOrDefault(x => x.myCollision == col.collider);
 
                 if (hilt != null)
                 {
@@ -33,6 +33,25 @@ namespace WeaponRelated
                     if (!hilt.isPlayingSFX)
                     {
                         PlayHiltToHiltImpact();
+                    }
+                }
+            }
+            else
+            {
+                // Wall Layer = 8
+                if(col.gameObject.layer == 8)
+                {
+                    if(OnMovementSkillCollisionActions.Count > 0)
+                    {
+                        List<MovementBattleSkillBehavior> copiedOnMovementSkillCollisionActions = new List<MovementBattleSkillBehavior>(OnMovementSkillCollisionActions);
+
+                        foreach (MovementBattleSkillBehavior skill in copiedOnMovementSkillCollisionActions)
+                        {
+                            if (skill.IsObjectInListOfTargetValues(SkillTargetEnum.Walls))
+                            {
+                                skill.AddSpeedForce(m_behavior.weaponMovement.weaponRigidBody);
+                            }
+                        }
                     }
                 }
             }
@@ -130,5 +149,14 @@ namespace WeaponRelated
             OnDamageReceived.Clear();
         }
 
+        internal void AddOnSkillCollisionActions(DamageBattleSkillBehavior action)
+        {
+            OnDamageSkillCollisionActions.Add(action);
+        }
+
+        internal void AddOnSkillCollisionActions(MovementBattleSkillBehavior action)
+        {
+            OnMovementSkillCollisionActions.Add(action);
+        }
     }
 }

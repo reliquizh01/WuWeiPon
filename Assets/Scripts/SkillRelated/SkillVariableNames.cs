@@ -17,6 +17,14 @@ public static class SkillVariableNames
     public const string SET_TARGET_TO_WALLS = "SET_TARGET_TO_WALLS";
     
     public const string SET_TARGET_TO_HILTS = "SET_TARGET_TO_HILTS";
+    
+    public const string SET_TARGET_TO_BLADES = "SET_TARGET_TO_BLADES";
+
+    public const string SET_DETECTION_TO_HILT_ONLY = "SET_DETECTION_TO_HILT_ONLY";
+
+    public const string SET_DETECTION_TO_BLADE_ONLY = "SET_DETECTION_TO_BLADE_ONLY";
+
+    public const string SET_DETECTION_TO_ALL_PARTS = "SET_DETECTION_TO_ALL_PARTS";
 
     public const string ADD_BURST_SPEED_FORCE = "ADD_BURST_SPEED_FORCE";
 

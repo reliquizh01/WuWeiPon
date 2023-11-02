@@ -8,7 +8,7 @@ using UnityEngine;
 namespace WeaponRelated
 {
 
-    public class WeaponBladeBehavior : MonoBehaviour
+    public class WeaponBladeBehavior : BaseWeaponPartsBehavior
     {
         public AudioSource sfx;
         internal bool isPlayingSFX = false;
@@ -17,9 +17,6 @@ namespace WeaponRelated
 
         private bool CanDetectCollision = false;
         private List<Action<float>> callBackOnceBladeHitsOpposingHilt = new List<Action<float>>();
-        private List<DamageBattleSkillBehavior> OnSkillCollisionActions = new List<DamageBattleSkillBehavior>();
-
-        internal WeaponBehavior m_behavior;
 
         public void OnCollisionEnter2D(Collision2D col)
         {
@@ -35,17 +32,29 @@ namespace WeaponRelated
                     m_behavior.nextDamageToInflict += m_behavior.currentDamage;
 
                     // Calls that are related to the Weapon Skill
-                    if (OnSkillCollisionActions.Count > 0)
+                    if (OnDamageSkillCollisionActions.Count > 0)
                     {
-                        List<DamageBattleSkillBehavior> copyOnSkillCollisionActions = new List<DamageBattleSkillBehavior>(OnSkillCollisionActions);
+                        List<DamageBattleSkillBehavior> copyOnSkillCollisionActions = new List<DamageBattleSkillBehavior>(OnDamageSkillCollisionActions);
 
                         foreach (DamageBattleSkillBehavior skill in copyOnSkillCollisionActions)
                         {
-                            if (skill.CheckSkillConditionOnHit(hilt) == SkillTargetEnum.Hilt)
+                            if (hilt != null && skill.IsObjectInListOfTargetValues(SkillTargetEnum.Hilt))
                             {
-                                skill.EnhanceDamageToBeInflicted(ref m_behavior.nextDamageToInflict);
+                                if (skill.hasDamageBonusByPercent)
+                                {
+                                    skill.EnhanceDamageToBeInflicted(ref m_behavior.nextDamageToInflict);
+                                }
+                            }
+                            else if(blade != null && skill.IsObjectInListOfTargetValues(SkillTargetEnum.Blade))
+                            {
+
                             }
                         }
+                    }
+
+                    if(OnMovementSkillCollisionActions.Count > 0)
+                    {
+
                     }
 
                     // Calls that are related to damaging the enemy weapon
@@ -160,7 +169,12 @@ namespace WeaponRelated
 
         public void AddOnSkillCollisionActions(DamageBattleSkillBehavior skill)
         {
-            OnSkillCollisionActions.Add(skill);
+            OnDamageSkillCollisionActions.Add(skill);
+        }
+
+        public void AddOnSkillCollisionActions(MovementBattleSkillBehavior skill)
+        {
+            OnMovementSkillCollisionActions.Add(skill);
         }
 
         public void AddCallBackOnceBladeHitsHilt(Action<float> action)
@@ -171,7 +185,7 @@ namespace WeaponRelated
         public void RemoveActionOnCollision()
         {
             callBackOnceBladeHitsOpposingHilt.Clear();
-            OnSkillCollisionActions.Clear();
+            OnDamageSkillCollisionActions.Clear();
         }
 
     }

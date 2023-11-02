@@ -18,6 +18,7 @@ public class BaseBattleSkillBehavior
     public int currentUseCount = 0;
 
     public List<SkillTargetEnum> skillTargetEnums = new List<SkillTargetEnum>();
+    public List<SkillDetectionPartEnum> skillDetectionPartEnums = new List<SkillDetectionPartEnum>();
 
     public List<Action> onMaxUsageReached = new List<Action>();
 
@@ -34,8 +35,8 @@ public class BaseBattleSkillBehavior
             }
             else
             {
-                currentCooldown = 0.0f;
                 cooldownStarted = false;
+                currentCooldown = 0.0f;
 
                 if(onCooldownFinish.Count > 0)
                 {
@@ -75,34 +76,30 @@ public class BaseBattleSkillBehavior
         {
             skillTargetEnums.Add(SkillTargetEnum.Walls);
         }
-    }
-    public virtual SkillTargetEnum CheckSkillConditionOnHit(object hitObject)
-    {
-        SkillTargetEnum hit = SkillTargetEnum.None;
 
-        foreach (SkillTargetEnum item in skillTargetEnums)
+        if (skillData.skillValues.ContainsKey(SkillVariableNames.SET_DETECTION_TO_ALL_PARTS))
         {
-            switch (item)
-            {
-                case SkillTargetEnum.Hilt:
-                    WeaponHiltBehavior hilt = (WeaponHiltBehavior)hitObject;
-                    if (hilt != null) hit = SkillTargetEnum.Hilt;
-                    break;
-                case SkillTargetEnum.Walls:
-                    int layer = LayerMask.NameToLayer("Walls");
-                    Collider2D obj = (Collider2D)hitObject;
-                    if (obj != null && obj.gameObject.layer == layer) hit = SkillTargetEnum.Walls;
-                    break;
-                case SkillTargetEnum.Blade:
-                    WeaponBladeBehavior blade = (WeaponBladeBehavior)hitObject;
-                    if (blade != null) hit = SkillTargetEnum.Blade;
-                    break;
-                default:
-                    break;
-            }
+            skillDetectionPartEnums.Add(SkillDetectionPartEnum.AllParts);
+        }
+        if (skillData.skillValues.ContainsKey(SkillVariableNames.SET_DETECTION_TO_BLADE_ONLY))
+        {
+            skillDetectionPartEnums.Add(SkillDetectionPartEnum.BladeOnlyDetection);
+        }
+        if (skillData.skillValues.ContainsKey(SkillVariableNames.SET_DETECTION_TO_HILT_ONLY))
+        {
+            skillDetectionPartEnums.Add(SkillDetectionPartEnum.HiltOnlyDetection);
         }
 
-        return hit;
+    }
+
+    /// <summary>
+    /// Method Checks if the object is in the list of target objects that can trigger this skill.
+    /// </summary>
+    /// <param name="objectType">Provides the type object that hit</param>
+    /// <returns>Returns True if its in the list.</returns>
+    public virtual bool IsObjectInListOfTargetValues(SkillTargetEnum objectType)
+    {
+        return (skillTargetEnums.Contains(objectType));
     }
 
     /// <summary>
@@ -139,7 +136,7 @@ public class BaseBattleSkillBehavior
 
     public virtual bool isSkillOnCooldown()
     {
-        if (hasCooldown)
+        if (hasCooldown && cooldownStarted)
         {
             return (currentCooldown < cooldown);
         }
@@ -153,11 +150,15 @@ public class BaseBattleSkillBehavior
 
         if (cooldownStarted)
         {
-            // Checks if Cooldown is ongoing, if not, call for the updates currently occurring.
-            if(!isSkillOnCooldown() && onCooldownUpdate.Count > 0) 
+            // Checks if Cooldown is ongoing, call for the updates currently occurring.
+            if(isSkillOnCooldown() && onCooldownUpdate.Count > 0) 
             { 
                 onCooldownUpdate.ForEach(x => x.Invoke());
             }
+        }
+        else
+        {
+            currentCooldown = 0.0f;
         }
     }
 

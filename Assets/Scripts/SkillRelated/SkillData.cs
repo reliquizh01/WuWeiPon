@@ -49,6 +49,9 @@ public class SkillData
     public SkillTypeEnum skillType;
 
     [DataMember]
+    public List<SkillDetectionPartEnum> detectionParts = new List<SkillDetectionPartEnum>();
+
+    [DataMember]
     public Dictionary<string, object> skillValues = new Dictionary<string, object>();
 
     [DataMember]

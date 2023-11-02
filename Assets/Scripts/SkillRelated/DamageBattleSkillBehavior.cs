@@ -45,4 +45,6 @@ public class DamageBattleSkillBehavior : BaseBattleSkillBehavior
             IncrementMaxUsage();
         }
     }
+
+
 }

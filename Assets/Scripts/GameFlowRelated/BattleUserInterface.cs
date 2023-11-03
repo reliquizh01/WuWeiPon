@@ -8,6 +8,7 @@ public class BattleUserInterface : MonoBehaviour
 {
     public Button speedUpButton;
     public TextMeshProUGUI speedupText;
+    public CanvasGroup canvasGroup;
 
     public Button FightButton;
 
@@ -32,5 +33,21 @@ public class BattleUserInterface : MonoBehaviour
         speedUpButton.onClick.RemoveAllListeners();
 
         speedUpButton.onClick.AddListener(() => nextAction.Invoke());
+    }
+
+    internal void SetVisibility(bool v)
+    {
+        if (v)
+        {
+            canvasGroup.alpha = 1;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
+        else
+        {
+            canvasGroup.alpha = 0;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 }

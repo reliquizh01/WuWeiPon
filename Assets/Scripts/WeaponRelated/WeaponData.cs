@@ -75,6 +75,9 @@ public class WeaponData
     public List<SkillData> skills = new List<SkillData>();
 
     [DataMember]
+    public List<PillAttributeData> attributes = new List<PillAttributeData>();
+
+    [DataMember]
     public SkillData skillSlotInQuestion = null;
 
     [DataMember]

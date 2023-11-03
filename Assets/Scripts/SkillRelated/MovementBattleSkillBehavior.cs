@@ -14,6 +14,7 @@ public class MovementBattleSkillBehavior : BaseBattleSkillBehavior
         {
             hasMovementBonus = true;
             burstSpeedForce = (float)skillData.skillValues[SkillVariableNames.ADD_BURST_SPEED_FORCE];
+            SkillProgressionBonus.AmplifyMovementBurst(skillData, ref burstSpeedForce);
         }
     }
 

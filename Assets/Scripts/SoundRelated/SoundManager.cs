@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -69,5 +70,10 @@ public class SoundManager : MonoBehaviour
     {
         introbackgroundSource.Stop();
         loopBackgroundSource.Stop();
+    }
+
+    public MusicSetContainer GetMusicSet(string musicSetName)
+    {
+        return musicSets.First(x => x.musicSetName == musicSetName);
     }
 }

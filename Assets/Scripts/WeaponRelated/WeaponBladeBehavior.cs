@@ -17,6 +17,7 @@ namespace WeaponRelated
 
         private bool CanDetectCollision = false;
         private List<Action<float>> callBackOnceBladeHitsOpposingHilt = new List<Action<float>>();
+        private List<Action<float>> callBackForChangesInSelfHealth = new List<Action<float>>();
 
         public void OnCollisionEnter2D(Collision2D col)
         {
@@ -55,6 +56,40 @@ namespace WeaponRelated
                     if(OnMovementSkillCollisionActions.Count > 0)
                     {
 
+                    }
+
+                    if(OnHealSkillCollisionActions.Count > 0)
+                    {
+                        List<HealBattleSkillBehavior> copyOnHealBattleSkillBehavior = new List<HealBattleSkillBehavior>(OnHealSkillCollisionActions);
+
+                        foreach (HealBattleSkillBehavior skill in copyOnHealBattleSkillBehavior)
+                        {
+                            if (hilt != null && skill.IsObjectInListOfTargetValues(SkillTargetEnum.Hilt))
+                            {
+                                if (skill.HealOnceOnCall)
+                                {
+                                    skill.HealWeaponBasedOnDamagePercentage(ref m_behavior.nextHealToInflict, ref m_behavior.nextDamageToInflict);
+                                }
+                            }
+                        }
+                    }
+
+                    // Calls that are related to healing self
+                    if(callBackForChangesInSelfHealth.Count > 0)
+                    {
+                        List<Action<float>> copyCallBackForChangesInSelfHealth = new List<Action<float>>(callBackForChangesInSelfHealth);
+
+                        foreach (Action<float> action in copyCallBackForChangesInSelfHealth)
+                        {
+                            action.Invoke(m_behavior.nextHealToInflict);
+                            if (callBackForChangesInSelfHealth.Count == 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        // Heal already provided, reset Next Heal to 0
+                        m_behavior.nextHealToInflict = 0;
                     }
 
                     // Calls that are related to damaging the enemy weapon
@@ -136,14 +171,20 @@ namespace WeaponRelated
         {
             int random = UnityEngine.Random.Range(0, SoundManager.Instance.hiltToHiltClips.Count);
             sfx.clip = SoundManager.Instance.hiltToHiltClips[random];
-            sfx.Play();
+            if (sfx.enabled)
+            {
+                sfx.Play();
+            }
         }
 
         public void PlayBladeToBladeImpact()
         {
             int random = UnityEngine.Random.Range(0, SoundManager.Instance.bladeToBladeClips.Count);
             sfx.clip = SoundManager.Instance.bladeToBladeClips[random];
-            sfx.Play();
+            if (sfx.enabled)
+            {
+                sfx.Play();
+            }
 
             isPlayingSFX = true;
             StartCoroutine(SetPlayingSFXToFalse(sfx.clip.length));
@@ -167,19 +208,14 @@ namespace WeaponRelated
             }
         }
 
-        public void AddOnSkillCollisionActions(DamageBattleSkillBehavior skill)
-        {
-            OnDamageSkillCollisionActions.Add(skill);
-        }
-
-        public void AddOnSkillCollisionActions(MovementBattleSkillBehavior skill)
-        {
-            OnMovementSkillCollisionActions.Add(skill);
-        }
-
         public void AddCallBackOnceBladeHitsHilt(Action<float> action)
         {
             callBackOnceBladeHitsOpposingHilt.Add(action);
+        }
+
+        public void AddCallBackForChangesInSelfHealth(Action<float> action)
+        {
+            callBackForChangesInSelfHealth.Add(action);
         }
 
         public void RemoveActionOnCollision()

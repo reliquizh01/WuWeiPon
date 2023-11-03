@@ -2,6 +2,7 @@ public enum SkillEnum
 {
     FirstBloodSpill,
     CornerBoost,
+    LifeSiphon,
 }
 
 public enum SkillTypeEnum

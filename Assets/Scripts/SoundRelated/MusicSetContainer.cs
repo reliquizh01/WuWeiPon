@@ -8,6 +8,6 @@ public class MusicSetContainer
 {
     public string musicSetName;
     public MusicTypeEnum musicType;
-    public bool isLoopable;
+    public bool loop;
     public List<AudioClip> musicList;
 }

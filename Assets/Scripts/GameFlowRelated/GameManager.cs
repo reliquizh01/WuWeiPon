@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     public WeaponContainer equippedWeaponContainer;
 
     public GameObject TrainingUi;
-    public GameObject BattleUi;
+    public BattleUserInterface BattleUi;
 
     #endregion References
     [SerializeField] internal GameStateEnum currentGameState;
@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     private bool cameraTransitioning = false;
     private float camTargetSize = 0.0f;
     private float camTransitonSpeed = 20.0f;
-    private List<Action> actionAfterTransiton = new List<Action>();
+    private List<Action> afterCameraTransitionActions = new List<Action>();
     private List<Action<CurrencyEnum>> updateCurrencyValue = new List<Action<CurrencyEnum>>();
 
     public void Awake()
@@ -113,40 +113,66 @@ public class GameManager : MonoBehaviour
         updateCurrencyValue.Remove(action);
     }
 
+    public void SetUserInterface(GameStateEnum gameState)
+    {
+        switch (gameState)
+        {
+            case GameStateEnum.Idle:
+                TrainingUi.SetActive(true);
+                BattleUi.SetVisibility(false);
+                break;
+            case GameStateEnum.Battle:
+                TrainingUi.SetActive(false);
+                BattleUi.SetVisibility(true);
+                break;
+            default:
+                break;
+        }
+    }
     public void SetGameState(GameStateEnum gameState, Action afterTransitionAction = null)
     {
         currentGameState = gameState;
 
-        if(afterTransitionAction != null)
-        {
-            actionAfterTransiton.Add(afterTransitionAction);
-        }
-
         switch (currentGameState)
         {
             case GameStateEnum.Idle:
-                camTargetSize = idleCameSize;
-                TrainingUi.SetActive(true);
-                BattleUi.SetActive(false);
-
                 SoundManager.Instance.PlayBackgroundTheme(LocationEnum.GreenlandMountains);
                 break;
             case GameStateEnum.Battle:
-                camTargetSize = battleCameSize;
-                TrainingUi.SetActive(false);
-                BattleUi.SetActive(true);
-
                 SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalBattle);
                 break;
             default:
                 break;
         }
 
-        if(mainCam.orthographicSize != camTargetSize)
+        SetUserInterface(currentGameState);
+        if(afterTransitionAction != null)
+        {
+            afterTransitionAction.Invoke();
+        }
+    }
+
+    public void SetCameraNextSize(GameStateEnum nextState)
+    {
+
+        switch (nextState)
+        {
+            case GameStateEnum.Idle:
+                camTargetSize = idleCameSize;
+                break;
+            case GameStateEnum.Battle:
+                camTargetSize = battleCameSize;
+                break;
+            default:
+                break;
+        }
+
+        if (mainCam.orthographicSize != camTargetSize)
         {
             cameraTransitioning = true;
         }
     }
+
     private void loadPlayerEquippedWeapon()
     {
         GameObject weapon = PrefabManager.Instance.CreateWeaponContainer(Vector2.zero);
@@ -185,8 +211,8 @@ public class GameManager : MonoBehaviour
                 mainCam.orthographicSize = camTargetSize;
                 cameraTransitioning = false;
 
-                actionAfterTransiton.ForEach(x => x.Invoke());
-                actionAfterTransiton.Clear();
+                afterCameraTransitionActions.ForEach(x => x.Invoke());
+                afterCameraTransitionActions.Clear();
             }
         }
         else
@@ -198,8 +224,8 @@ public class GameManager : MonoBehaviour
                 mainCam.orthographicSize = camTargetSize;
                 cameraTransitioning = false;
 
-                actionAfterTransiton.ForEach(x => x.Invoke());
-                actionAfterTransiton.Clear();
+                afterCameraTransitionActions.ForEach(x => x.Invoke());
+                afterCameraTransitionActions.Clear();
             }
         }
     }

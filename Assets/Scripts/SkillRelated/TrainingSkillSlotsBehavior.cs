@@ -12,6 +12,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     public SpriteRenderer fakeCurrentSkillSlot;
 
     public BaseNotificationBehavior expNotif;
+    public AudioContainer audioContainer;
 
     bool isOtherSlotSpinning
     {
@@ -55,6 +56,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
             currentTransactionResult = UserDataBehavior.PurchaseSkill(slotNumber);
 
             finalizedPurchase();
+            audioContainer.SetAndPlay("SpinSkillSlot");
         }
         else
         {
@@ -70,7 +72,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
         if (isClicked)
         {
             clickCounter += Time.deltaTime;
-            if(clickCounter > 0.15f)
+            if(clickCounter > 0.35f)
             {
                 // Show Skill Information
                 InformationPopUpContainer.Instance.SetupSkillInformation(currentSkillData);
@@ -85,7 +87,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     public void OnMouseUp()
     {
-        if(clickCounter <= 0.15f)
+        if(clickCounter <= 0.35f)
         {
             SlotClicked();
         }
@@ -102,6 +104,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     public void PlayUpgrade()
     {
         expNotif.Play();
+        audioContainer.SetAndPlay("SpinSkillResult");
     }
 
     private void finalizedPurchase()

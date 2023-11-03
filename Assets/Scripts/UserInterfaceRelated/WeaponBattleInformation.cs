@@ -14,6 +14,10 @@ namespace WeaponRelated
         private float currentHealth = 0;
         private float maxHealth = 0;
 
+
+        internal bool enableExtraHealth = false;
+        private float extraHealth = 0;
+        
         public void LoadWeaponInformation(WeaponData weaponData,ref List<BaseBattleSkillBehavior> currentEquippedSkills)
         {
             for (int i = 0; i < slots.Count; i++)
@@ -21,6 +25,9 @@ namespace WeaponRelated
                 if (i < weaponData.behaviorSkillSlotCount)
                 {
                     slots[i].gameObject.SetActive(true);
+
+                    slots[i].skillIcon.gameObject.SetActive(weaponData.skills.Count > i);
+                    
                     if(weaponData.skills.Count > i)
                     {
                         BaseBattleSkillBehavior skillBehavior = currentEquippedSkills.FirstOrDefault(x => x.skillName == weaponData.skills[i].skillName);
@@ -32,6 +39,10 @@ namespace WeaponRelated
                             slots[i].AttachToSkillBehavior(ref skillBehavior);
                         }
                     }
+                    else
+                    {
+
+                    }
                 }
             }
 
@@ -42,6 +53,8 @@ namespace WeaponRelated
                 if (i < weaponData.attributeSlotCount)
                 {
                     attributes[i].gameObject.SetActive(true);
+
+                    attributes[i].behaviorPill.gameObject.SetActive(weaponData.attributes.Count > i);
                 }
             }
 
@@ -68,7 +81,29 @@ namespace WeaponRelated
                 damageCount = x.ReceiveDamage(damageCount);
             });
 
-            currentHealth -= damageCount;
+            if(enableExtraHealth && extraHealth > 0)
+            {
+                if(extraHealth >= damageCount)
+                {
+                    extraHealth -= damageCount;
+                }
+                else
+                {
+                    damageCount -= extraHealth;
+                    extraHealth = 0;
+
+                    currentHealth -= damageCount;
+                }
+            }
+            else if((enableExtraHealth && extraHealth <= 0))
+            {
+                currentHealth -= damageCount;
+            }
+            else
+            {
+                currentHealth -= damageCount;
+            }
+
             healthPointsbar.fillAmount = currentHealth / maxHealth;
 
             // All HP is gone
@@ -76,6 +111,35 @@ namespace WeaponRelated
             {
                 BattleManager.Instance.EndBattle(this);
             }
+        }
+
+        public void OnWeaponHeal(float healCount)
+        {
+            attributes.ForEach(x =>
+            {
+                healCount = x.ReceiveHealing(healCount);
+            });
+
+            float tmpHealth = currentHealth + healCount;
+            
+            if(tmpHealth > maxHealth && enableExtraHealth)
+            {
+                float difference = maxHealth - currentHealth;
+                healCount -= difference;
+                currentHealth += difference;
+
+                extraHealth += healCount;
+            }
+            else if(tmpHealth > maxHealth && !enableExtraHealth)
+            {
+                currentHealth = maxHealth;
+            }
+            else
+            {
+                currentHealth += healCount;
+            }
+
+            healthPointsbar.fillAmount = currentHealth / maxHealth;
         }
     }
 }

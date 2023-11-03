@@ -18,6 +18,9 @@ public static class UniformityConverter
             case SkillEnum.CornerBoost:
                 skillName = "Corner Boost";
                 break;
+            case SkillEnum.LifeSiphon:
+                skillName = "Life Siphon";
+                break;
             default:
                 break;
         }
@@ -66,10 +69,22 @@ public static class UniformityConverter
                     skillData.skillValues[SkillVariableNames.ADD_MAXIMUM_USAGE]);
                 break;
             case SkillEnum.CornerBoost:
+                float burstAmount = 0;
+                burstAmount += (float)skillData.skillValues[SkillVariableNames.ADD_BURST_SPEED_FORCE];
+                SkillProgressionBonus.AmplifyMovementBurst(skillData, ref burstAmount);
+
                 description = string.Format(
                     SkillVariableNames.CORNERBOOST_DESCRIPTION,
-                    skillData.skillValues[SkillVariableNames.ADD_BURST_SPEED_FORCE],
+                    burstAmount,
                     skillData.skillValues[SkillVariableNames.ADD_COOLDOWN]);
+                break;
+            case SkillEnum.LifeSiphon:
+                float lifestealPercentage = 0;
+                lifestealPercentage += (float)skillData.skillValues[SkillVariableNames.ADD_HEALING_PERCENTAGE];
+                SkillProgressionBonus.AmplifyHealingPercentage(skillData, ref lifestealPercentage);
+
+                description = string.Format(SkillVariableNames.LIFESIPHON_DESCRIPTION,
+                    lifestealPercentage);
                 break;
             default:
                 break;

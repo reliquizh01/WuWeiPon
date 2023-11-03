@@ -94,21 +94,31 @@ namespace WeaponRelated
         {
             int random = UnityEngine.Random.Range(0, SoundManager.Instance.hiltToHiltClips.Count);
             sfx.clip = SoundManager.Instance.hiltToHiltClips[random];
-            sfx.Play();
+
+            if (sfx.enabled)
+            {
+                sfx.Play();
+            }
         }
 
         public void PlayHiltToBladeImpact()
         {
             int random = UnityEngine.Random.Range(0, SoundManager.Instance.bladeToHiltClips.Count);
             sfx.clip = SoundManager.Instance.bladeToHiltClips[random];
-            sfx.Play();
+            if (sfx.enabled)
+            {
+                sfx.Play();
+            }
         }
 
         public void PlayHiltToHiltImpact()
         {
             int random = UnityEngine.Random.Range(0, SoundManager.Instance.hiltToHiltClips.Count);
             sfx.clip = SoundManager.Instance.hiltToHiltClips[random];
-            sfx.Play();
+            if (sfx.enabled)
+            {
+                sfx.Play();
+            }
 
             isPlayingSFX = true;
 
@@ -139,24 +149,9 @@ namespace WeaponRelated
             }
         }
 
-        public void AddActionOnCollision(Action action)
-        {
-
-        }
-
         public void RemoveActionOnCollision()
         {
             OnDamageReceived.Clear();
-        }
-
-        internal void AddOnSkillCollisionActions(DamageBattleSkillBehavior action)
-        {
-            OnDamageSkillCollisionActions.Add(action);
-        }
-
-        internal void AddOnSkillCollisionActions(MovementBattleSkillBehavior action)
-        {
-            OnMovementSkillCollisionActions.Add(action);
         }
     }
 }

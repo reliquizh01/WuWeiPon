@@ -54,7 +54,7 @@ namespace WeaponRelated
             }
         }
 
-        public void SetWeaponState  (WeaponBehaviorStateEnum nextState)
+        public void SetWeaponState  (WeaponBehaviorStateEnum nextState, Action weaponStateCallback = null)
         {
             state = nextState;
 
@@ -77,7 +77,14 @@ namespace WeaponRelated
                     Play("WeaponFromChest", () => SetWeaponState(WeaponBehaviorStateEnum.Idle));
                     break;
                 case WeaponBehaviorStateEnum.ToBattlePosition:
-                    Play("WeaponGoToPosition_1");
+                    Play("WeaponGoToPosition_1", () =>
+                    {
+                        if(weaponStateCallback != null)
+                        {
+                            weaponStateCallback.Invoke();
+                        }
+                    });
+
                     container.localPosition = Vector2.zero;
                     container.localRotation = Quaternion.identity;
                     break;

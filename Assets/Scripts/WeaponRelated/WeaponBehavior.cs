@@ -17,6 +17,7 @@ namespace WeaponRelated
 
         internal float currentDamage = 1;
         internal float nextDamageToInflict = 0;
+        internal float nextHealToInflict = 0;
         internal int teamNumber = -1;
 
         public void Start()
@@ -77,6 +78,21 @@ namespace WeaponRelated
                         
                         break;
                     case SkillTypeEnum.Heal:
+                        HealBattleSkillBehavior newHeal = new HealBattleSkillBehavior();
+                        newHeal.InitializeSkill(skill);
+
+                        if(newHeal.skillDetectionPartEnums.Count > 0)
+                        {
+                            if (newHeal.skillDetectionPartEnums.Contains(SkillDetectionPartEnum.BladeOnlyDetection))
+                            {
+                                AddToBladeSkillAction(newHeal);
+                            }
+                            if (newHeal.skillDetectionPartEnums.Contains(SkillDetectionPartEnum.HiltOnlyDetection))
+                            {
+                                AddToHiltSkillAction(newHeal);
+                            }
+                            battleSkills.Add(newHeal);
+                        }
                         break;
                     case SkillTypeEnum.Movement:
 
@@ -100,6 +116,14 @@ namespace WeaponRelated
                         break;
                 }
             }
+
+            battleSkills.ForEach(x =>
+            {
+                if(x.hasCooldown)
+                {
+                    x.SetSkillOnCooldown(true);
+                }
+            });
 
             return battleSkills;
         }
@@ -134,10 +158,20 @@ namespace WeaponRelated
             weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
 
+        private void AddToBladeSkillAction(HealBattleSkillBehavior action)
+        {
+            weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
+
+        }
         private void AddToHiltSkillAction(DamageBattleSkillBehavior action)
         {
             weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
+        private void AddToHiltSkillAction(HealBattleSkillBehavior action)
+        {
+            weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
+        }
+
         private void AddToHiltSkillAction(MovementBattleSkillBehavior action)
         {
             weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
@@ -146,6 +180,11 @@ namespace WeaponRelated
         public void AddBladeActionsForOpposingUserInterfaceUpdateOnHit(Action<float> action)
         {
             weaponBlades.ForEach(x => x.AddCallBackOnceBladeHitsHilt(action));
+        }
+
+        public void AddBladeActonForSelfUserInterfaceUpdateOnHit(Action<float> action)
+        {
+            weaponBlades.ForEach(x => x.AddCallBackForChangesInSelfHealth(action));
         }
 
         public void ResestActons()

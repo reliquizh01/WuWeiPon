@@ -8,6 +8,8 @@ public static class SkillVariableNames
 
     public const string ADD_DAMAGE_PERCENTAGE = "ADD_DAMAGE_PERCENTAGE";
 
+    public const string GET_DAMAGE_PERCENTAGE = "GET_DAMAGE_PERCENTAGE";
+
     public const string SET_MAXIMUM_USAGE = "SET_MAXIMUM_USAGE";
 
     public const string ADD_MAXIMUM_USAGE = "ADD_MAXIMUM_USAGE";
@@ -28,6 +30,12 @@ public static class SkillVariableNames
 
     public const string ADD_BURST_SPEED_FORCE = "ADD_BURST_SPEED_FORCE";
 
+    public const string SET_HEALING_ONCE = "SET_HEALING_ONCE";
+
+    public const string ADD_HEALING_VALUE = "ADD_HEALING_VALUE";
+
+    public const string ADD_HEALING_PERCENTAGE = "ADD_HEALING_PERCENTAGE";
+
     #endregion Skill Values
 
     #region Skill Description
@@ -36,5 +44,15 @@ public static class SkillVariableNames
 
     public const string CORNERBOOST_DESCRIPTION = "Bursts speed by {0} once every {1} seconds";
 
+    public const string LIFESIPHON_DESCRIPTION = "A passive skill, when you hit an enemy, convert {0}% damage dealt to health";
+
     #endregion Skill Description
+
+    #region Skill Misc
+
+    public const string _Icon = "_Icon";
+
+    #endregion Skill Misc
+
+    
 }

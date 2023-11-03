@@ -17,8 +17,9 @@ public class BattleManager : MonoBehaviour
 
     public Transform playerPosition;
     public Transform enemyPosition;
-    
-    WeaponContainer enemyWeapon;
+    public Vector2 enemyWeaponIdlePosition = new Vector2(0, -17.36f);
+
+    public WeaponContainer enemyWeapon;
     WeaponContainer playerWeapon;
 
     #endregion References
@@ -54,14 +55,20 @@ public class BattleManager : MonoBehaviour
 
     public void PrepareBattle(WeaponData enemyInformation)
     {
+        GameManager.Instance.SetCameraNextSize(GameStateEnum.Battle);
+        GameManager.Instance.SetUserInterface(GameStateEnum.Battle);
+
         playerWeapon = GameManager.Instance.equippedWeaponContainer;
         playerWeapon.MoveToPosition(playerPosition.position);
-        playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.ToBattlePosition);
+        playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.ToBattlePosition, () =>
+        {
+            GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
+        });
 
-        enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position).GetComponent<WeaponContainer>();
+        enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position, null).GetComponent<WeaponContainer>();
         enemyWeapon.SetWeaponData(enemyInformation);
 
-        if(playerWeapon.dataBehavior.weaponData.weaponType == 
+        if (playerWeapon.dataBehavior.weaponData.weaponType == 
             enemyWeapon.dataBehavior.weaponData.weaponType)
         {
             enemyWeapon.currentWeapon.weaponSprite.color = Color.red;
@@ -77,17 +84,15 @@ public class BattleManager : MonoBehaviour
         
         // Add blade action on trigger2D
         enemyWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.playerInformaton.OnWeaponDamaged);
-        playerWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.enemyInformation.OnWeaponDamaged);
+        enemyWeapon.currentWeapon.AddBladeActonForSelfUserInterfaceUpdateOnHit(userInterface.enemyInformation.OnWeaponHeal);
 
+        playerWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.enemyInformation.OnWeaponDamaged);
+        playerWeapon.currentWeapon.AddBladeActonForSelfUserInterfaceUpdateOnHit(userInterface.playerInformaton.OnWeaponHeal);
 
         // Setup User Interface for Weapon
         userInterface.gameObject.SetActive(true);
         userInterface.playerInformaton.LoadWeaponInformation(playerWeapon.dataBehavior.weaponData,ref playerSkills);
         userInterface.enemyInformation.LoadWeaponInformation(enemyWeapon.dataBehavior.weaponData, ref enemySkills);
-
-
-
-        GameManager.Instance.SetGameState(GameStateEnum.Battle, StartBattle);
     }
 
     public void UpdateBattleSpeed(bool reset = false)
@@ -106,9 +111,12 @@ public class BattleManager : MonoBehaviour
 
     public void EndBattle(WeaponBattleInformation weaponThatHasLost)
     {
+        GameManager.Instance.SetCameraNextSize(GameStateEnum.Idle);
+
         enemyWeapon.ResetWeaponCallbacks();
         enemyWeapon.ResetWeaponPhysics();
         Destroy(enemyWeapon.gameObject);
+        enemyWeapon = null;
 
         playerWeapon.ResetWeaponCallbacks();
         playerWeapon.ResetWeaponPhysics();

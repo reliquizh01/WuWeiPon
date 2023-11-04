@@ -67,6 +67,7 @@ public class BattleManager : MonoBehaviour
 
         enemyWeapon = PrefabManager.Instance.CreateWeaponContainer(enemyPosition.position, null).GetComponent<WeaponContainer>();
         enemyWeapon.SetWeaponData(enemyInformation);
+        enemyWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
 
         if (playerWeapon.dataBehavior.weaponData.weaponType == 
             enemyWeapon.dataBehavior.weaponData.weaponType)

@@ -20,15 +20,30 @@ public class WeaponData
         weaponRank = weaponData.weaponRank;
         weaponType = weaponData.weaponType;
 
-        weaponHealth = weaponData.weaponHealth;
+        weapon_Health = weaponData.weapon_Health;
+        spirit_Experience = weaponData.spirit_Experience;
 
         skills = new List<SkillData>(weaponData.skills);
 
-        damage_physical = weaponData.damage_physical;
-        damage_magic = weaponData.damage_magic;
+        damage_Physical = weaponData.damage_Physical;
+        damage_Magic = weaponData.damage_Magic;
 
-        durability = weaponData.durability;
-        spirit_Experience = weaponData.spirit_Experience;
+        critChance = weaponData.critChance;
+        critPercentDamage = weaponData.critPercentDamage;
+
+        cooldown_Reduction = weaponData.cooldown_Reduction;
+        
+        armor_Penetration = weaponData.armor_Penetration;
+        armor_Physical = weaponData.armor_Physical;
+        armor_Magic = weaponData.armor_Magic;
+
+        status_Resistance = weaponData.status_Resistance;
+        poison_Resistance = weaponData.poison_Resistance;
+
+        monster_Damage = weaponData.monster_Damage;
+        luck = weaponData.luck;
+        evasion = weaponData.evasion;
+        spin_Speed = weaponData.spin_Speed;
 
         behaviorSkillSlotCount = weaponData.behaviorSkillSlotCount;
         attributeSlotCount  = weaponData.attributeSlotCount;
@@ -50,17 +65,54 @@ public class WeaponData
     [DataMember]
     public WeaponTypeEnum weaponType;
 
-    [DataMember]
-    public float weaponHealth = 0;
+    #region Stats
 
     [DataMember]
-    public float damage_physical = 0;
+    public float weapon_Health = 0;
 
     [DataMember]
-    public float damage_magic = 0;
+    public float damage_Physical = 0;
 
     [DataMember]
-    public float durability = 0;
+    public float damage_Magic = 0;
+
+    [DataMember]
+    public float cooldown_Reduction = 0;
+
+    [DataMember]
+    public float armor_Penetration = 0;
+
+    [DataMember]
+    public float armor_Physical = 0;
+    
+    [DataMember]
+    public float armor_Magic = 0;
+
+    [DataMember]
+    public float status_Resistance = 0;
+
+    [DataMember]
+    public float poison_Resistance = 0;
+    
+    [DataMember]
+    public float monster_Damage = 0;
+
+    [DataMember]
+    public float luck = 0;
+    
+    [DataMember]
+    public float evasion = 0;
+
+    [DataMember]
+    public float spin_Speed = 0;
+
+    [DataMember]
+    public float critChance = 0;
+
+    [DataMember]
+    public float critPercentDamage = 0;
+
+    #endregion Stats
 
     [DataMember]
     public float spirit_Experience = 0;

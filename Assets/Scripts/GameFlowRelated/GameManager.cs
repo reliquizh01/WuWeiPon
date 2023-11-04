@@ -24,7 +24,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string userLoggedIn;
 
     internal bool loadPlayerDataComplete = false;
+
     private float battleCameSize = 15.0f;
+    private float belowThresholdBattleCamSize = 28.0f;
+
     private float idleCameSize = 11.0f;
     private bool cameraTransitioning = false;
     private float camTargetSize = 0.0f;
@@ -161,7 +164,14 @@ public class GameManager : MonoBehaviour
                 camTargetSize = idleCameSize;
                 break;
             case GameStateEnum.Battle:
-                camTargetSize = battleCameSize;
+                if(Screen.width > 1050)
+                {
+                    camTargetSize = battleCameSize;
+                }
+                else
+                {
+                    camTargetSize = belowThresholdBattleCamSize;
+                }
                 break;
             default:
                 break;

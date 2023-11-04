@@ -20,7 +20,7 @@ namespace WeaponRelated
 
         public WeaponSlotsContainer weaponSlotsContainer;
         public WeaponBehavior currentWeapon;
-
+        public WeaponOverallStatsContainer weaponOverallStatsContainer;
         #endregion Reference
 
         #region ForceMovement
@@ -54,6 +54,18 @@ namespace WeaponRelated
             }
         }
 
+        public void HideUI()
+        {
+            weaponSlotsContainer.gameObject.SetActive(false);
+            weaponOverallStatsContainer.HideWeaponStats();
+        }
+        
+        public void ShowUI()
+        {
+            weaponSlotsContainer.gameObject.SetActive(true);
+            weaponOverallStatsContainer.ShowWeaponStats();
+        }
+
         public void SetWeaponState  (WeaponBehaviorStateEnum nextState, Action weaponStateCallback = null)
         {
             state = nextState;
@@ -62,15 +74,15 @@ namespace WeaponRelated
             {
                 case WeaponBehaviorStateEnum.Idle:
                     Play("WeaponIdleAnimation_1");
-                    currentWeapon.SetWeaponDetection(false);
-                    weaponSlotsContainer.gameObject.SetActive(true);
+                    ShowUI();
+                    weaponOverallStatsContainer.ShowWeaponStats();
                     container.localPosition = Vector2.zero;
                     container.localRotation = Quaternion.identity;
                     break;
                 case WeaponBehaviorStateEnum.Battle:
                     myAnim.Stop();
-                    currentWeapon.SetWeaponDetection(true);
-                    weaponSlotsContainer.gameObject.SetActive(false);
+                    HideUI();
+                    weaponOverallStatsContainer.HideWeaponStats();
                     break;
                 case WeaponBehaviorStateEnum.FromChest:
                     MoveToPosition(Vector2.zero);
@@ -84,6 +96,8 @@ namespace WeaponRelated
                             weaponStateCallback.Invoke();
                         }
                     });
+
+                    HideUI();
 
                     container.localPosition = Vector2.zero;
                     container.localRotation = Quaternion.identity;
@@ -102,6 +116,7 @@ namespace WeaponRelated
         {
             dataBehavior.weaponData = new WeaponData(weaponData);
             weaponSlotsContainer.SetupSkillSlots(weaponData);
+            weaponOverallStatsContainer.SetWeaponStats(weaponData);
 
             //TODO
             //LOAD THE DATA AND ITS PROPER EFFECTS HERE (WEAPON LOOKS SHOULD CHANGE)

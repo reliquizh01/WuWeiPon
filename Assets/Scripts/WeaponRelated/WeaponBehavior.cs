@@ -48,7 +48,7 @@ namespace WeaponRelated
             weapon = weaponData;
             teamNumber = team;
 
-            currentDamage = weaponData.damage_physical;
+            currentDamage = weaponData.damage_Physical;
         }
 
         public List<BaseBattleSkillBehavior> SetupWeaponSkills()

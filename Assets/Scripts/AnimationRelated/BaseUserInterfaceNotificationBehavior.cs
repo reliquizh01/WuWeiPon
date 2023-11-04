@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class BaseNotificationBehavior : MonoBehaviour
+
+public class BaseUserInterfaceNotificationBehavior : MonoBehaviour
 {
-    public SpriteRenderer spriteRend;
-    RectTransform myRectTransform;
+    public Image spriteRend;
+    public RectTransform myRectTransform;
 
     private bool isPlaying = false;
     [SerializeField] private float directionSpeed = 5.0f;
@@ -13,8 +15,9 @@ public class BaseNotificationBehavior : MonoBehaviour
     private float curDuration = 0.0f;
     private void Start()
     {
-        myRectTransform = spriteRend.GetComponent<RectTransform>();
+
     }
+
     private void Update()
     {
         if (isPlaying)
@@ -27,11 +30,11 @@ public class BaseNotificationBehavior : MonoBehaviour
 
             spriteRend.color = new Color(1, 1, 1, alpha);
 
-            if(curDuration > maxDuration)
+            if (curDuration > maxDuration)
             {
                 Reset();
             }
-        } 
+        }
     }
 
     public void Play()
@@ -43,8 +46,8 @@ public class BaseNotificationBehavior : MonoBehaviour
 
     public void Reset()
     {
-        spriteRend.transform.localPosition = Vector3.zero;
-        spriteRend.color = new Color(1, 1, 1, 0);       
+        myRectTransform.localPosition = Vector3.zero;
+        spriteRend.color = new Color(1, 1, 1, 0);
         isPlaying = false;
         curDuration = 0;
     }

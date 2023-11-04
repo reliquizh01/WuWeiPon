@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using User.Data;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 {
@@ -11,7 +12,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     public SpriteRenderer originalCurrentSkillSlot;
     public SpriteRenderer fakeCurrentSkillSlot;
 
-    public BaseNotificationBehavior expNotif;
+    public BaseSpriteRendererNotificationBehavior expNotif;
     public AudioContainer audioContainer;
 
     bool isOtherSlotSpinning
@@ -21,6 +22,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
             return (GameManager.Instance.equippedWeaponContainer.weaponSlotsContainer.skillSlots.FirstOrDefault(x => x.isSlotSpinning) != null);
         }
     }
+
     bool isSlotSpinning = false;
     bool stillProcessing = false;
 
@@ -82,12 +84,15 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     }
     public void OnMouseDown()
     {
-        isClicked = true;
+        if (!SkillPurchasePopUpContainer.Instance.popUpContainer.activeInHierarchy)
+        {
+            isClicked = true;
+        }
     }
 
     public void OnMouseUp()
     {
-        if(clickCounter <= 0.35f)
+        if(clickCounter <= 0.35f && isClicked)
         {
             SlotClicked();
         }

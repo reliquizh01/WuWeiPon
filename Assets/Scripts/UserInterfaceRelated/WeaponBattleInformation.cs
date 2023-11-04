@@ -58,8 +58,8 @@ namespace WeaponRelated
                 }
             }
 
-            currentHealth = weaponData.weaponHealth;
-            maxHealth = weaponData.weaponHealth;
+            currentHealth = weaponData.weapon_Health;
+            maxHealth = weaponData.weapon_Health;
             healthPointsbar.fillAmount = currentHealth / maxHealth;
         }
 

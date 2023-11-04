@@ -1,5 +1,6 @@
 public enum GameStateEnum
 {
     Idle,
-    Battle
+    Battle,
+    Condensing
 }

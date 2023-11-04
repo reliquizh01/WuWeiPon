@@ -18,6 +18,7 @@ public class PrefabManager : MonoBehaviour
     [Header("WeaponPrefabs")]
     public GameObject weaponPrefab;
     public GameObject treasureChest;
+    public GameObject floatingSpiritPrefab;
     #endregion References
 
     public void Awake()
@@ -73,5 +74,21 @@ public class PrefabManager : MonoBehaviour
         }
 
         return newChest;
+    }
+    
+    public GameObject CreateFloatingSpirit(Vector2 instantiateToPosition, Transform parent = null)
+    {
+        GameObject newFloatingSpirit = Instantiate(floatingSpiritPrefab, parent);
+
+        if (parent == null)
+        {
+            newFloatingSpirit.transform.position = instantiateToPosition;
+        }
+        else
+        {
+            newFloatingSpirit.transform.localPosition = instantiateToPosition;
+        }
+
+        return newFloatingSpirit;
     }
 }

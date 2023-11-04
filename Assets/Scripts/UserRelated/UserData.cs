@@ -19,6 +19,8 @@ namespace User.Data
             lastServerUpdate = userData.lastServerUpdate;
             playerOnBoardingProgress = new List<PlayerOnBoardingEnum>(userData.playerOnBoardingProgress);
 
+            currentSpiritCondensation = userData.currentSpiritCondensation;
+
             skillPills = userData.skillPills;
             spiritualEssence = userData.spiritualEssence;
             fateGems = userData.fateGems;
@@ -66,7 +68,10 @@ namespace User.Data
         /// -3.6% decrease on Rare/Ordinary pull rate on chests/treasure
         /// </summary>
         [DataMember]
-        public int consistencyPills = 1000; 
+        public int consistencyPills = 1000;
+
+        [DataMember]
+        public SpiritCondensation currentSpiritCondensation;
 
         [DataMember]
         public List<PlayerOnBoardingEnum> playerOnBoardingProgress = new List<PlayerOnBoardingEnum>();

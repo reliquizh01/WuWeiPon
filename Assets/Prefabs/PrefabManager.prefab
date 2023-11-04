@@ -46,3 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponPrefab: {fileID: 8380107889543179399, guid: d09d28791664b7540a50394f4826fcca, type: 3}
   treasureChest: {fileID: 9053133107282440225, guid: ab8c0f648dc39d14b9499afe38a82c98, type: 3}
+  floatingSpiritPrefab: {fileID: 4545603972887207781, guid: b25db9ff4f5550c4998754156ebb8be9, type: 3}

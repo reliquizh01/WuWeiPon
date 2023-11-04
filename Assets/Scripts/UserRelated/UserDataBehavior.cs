@@ -160,7 +160,95 @@ namespace User.Data
 
         #endregion Skill Purchase
 
+        #region Weapon Training
+
+        internal static void AddSpiritCondensation(SpiritCondensation newCondensation)
+        {
+            currentUserData.currentSpiritCondensation = newCondensation;
+            SaveLoadManager.SaveUser();
+        }
+
+        internal static SpiritCondensation GetUserCurrentCondensation()
+        {
+            return currentUserData.currentSpiritCondensation;
+        }
+
+        internal static void IncreaseCurrentEquippedWeaponStat(WeaponStatEnum weaponStat, float amount, bool save = false)
+        {
+            WeaponData currentWeapon = GetPlayerEquippedWeapon();
+
+            switch (weaponStat)
+            {
+                case WeaponStatEnum.weapon_Health:
+                    currentWeapon.weapon_Health += amount;
+                    break;
+                case WeaponStatEnum.damage_Physical:
+                    currentWeapon.damage_Physical += amount;
+                    break;
+                case WeaponStatEnum.damage_Magic:
+                    currentWeapon.damage_Magic += amount;
+                    break;
+                case WeaponStatEnum.cooldown_Reduction:
+                    currentWeapon.cooldown_Reduction += amount;
+                    break;
+                case WeaponStatEnum.armor_Penetration:
+                    currentWeapon.armor_Penetration += amount;
+                    break;
+                case WeaponStatEnum.armor_Physical:
+                    currentWeapon.armor_Physical += amount;
+                    break;
+                case WeaponStatEnum.armor_Magic:
+                    currentWeapon.armor_Magic += amount;
+                    break;
+                case WeaponStatEnum.status_Resistance:
+                    currentWeapon.status_Resistance += amount;
+                    break;
+                case WeaponStatEnum.poison_Resistance:
+                    currentWeapon.poison_Resistance += amount;
+                    break;
+                case WeaponStatEnum.monster_Damage:
+                    currentWeapon.monster_Damage += amount;
+                    break;
+                case WeaponStatEnum.luck:
+                    currentWeapon.luck += amount;
+                    break;
+                case WeaponStatEnum.evasion:
+                    currentWeapon.evasion += amount;
+                    break;
+                case WeaponStatEnum.spin_Speed:
+                    currentWeapon.spin_Speed += amount;
+                    break;
+                case WeaponStatEnum.critChance:
+                    currentWeapon.critChance += amount;
+                    break;
+                case WeaponStatEnum.critPercentDamage:
+                    currentWeapon.critPercentDamage += amount;
+                    break;
+                default:
+                    break;
+            }
+
+            if(save)
+            {
+                SaveLoadManager.SaveUser();
+            }
+        }
+
+        internal static void RemoveCurrentSpiritCondensation()
+        {
+            currentUserData.currentSpiritCondensation = null;
+            SaveLoadManager.SaveUser();
+        }
+
+        #endregion Weapon Training
+
         #region Currency
+
+        internal static void addSpiritualEssence(int amount)
+        {
+            currentUserData.spiritualEssence += amount;
+            GameManager.Instance.UpdateCurrencyValues(CurrencyEnum.spirtualEssence);            
+        }
 
         private static void addSpiritualEssenceNoSave(int amount)
         {
@@ -173,7 +261,6 @@ namespace User.Data
             currentUserData.skillPills += amount;
             GameManager.Instance.UpdateCurrencyValues(CurrencyEnum.skillPills);
         }
-
 
         #endregion Currency
     }

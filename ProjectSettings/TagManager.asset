@@ -14,8 +14,8 @@ TagManager:
   - Weapons
   - WeaponTriggers
   - Walls
-  - 
-  - 
+  - EnvironentThings
+  - Monsters
   - 
   - 
   - 
@@ -49,6 +49,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 650527271
+    locked: 0
+  - name: EnvironmentThings
+    uniqueID: 2935899537
     locked: 0
   - name: Weapons
     uniqueID: 1973468237

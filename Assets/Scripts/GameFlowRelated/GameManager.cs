@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
             DestroyImmediate(this);
         }
     }
+    
     public void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -123,10 +124,16 @@ public class GameManager : MonoBehaviour
             case GameStateEnum.Idle:
                 TrainingUi.SetActive(true);
                 BattleUi.SetVisibility(false);
+                equippedWeaponContainer.ShowUI();
                 break;
             case GameStateEnum.Battle:
                 TrainingUi.SetActive(false);
                 BattleUi.SetVisibility(true);
+                break;
+            case GameStateEnum.Condensing:
+                TrainingUi.SetActive(false);
+                BattleUi.SetVisibility(false);
+                equippedWeaponContainer.HideUI();
                 break;
             default:
                 break;
@@ -144,11 +151,32 @@ public class GameManager : MonoBehaviour
             case GameStateEnum.Battle:
                 SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalBattle);
                 break;
+            case GameStateEnum.Condensing:
+                SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalCondensation);
+                int spiritualEssence = UserDataBehavior.GetCurrency(CurrencyEnum.spirtualEssence);
+
+                if (spiritualEssence >= 1000)
+                {
+                    SpiritCondensationContainer.Instance.PrepareSpiritCondensation(1000);
+                    UserDataBehavior.addSpiritualEssence(-1000);
+                }
+                else if(spiritualEssence >= 200)
+                {
+                    SpiritCondensationContainer.Instance.PrepareSpiritCondensation(spiritualEssence);
+                    UserDataBehavior.addSpiritualEssence(-spiritualEssence);
+                }
+                else
+                {
+                    // TODO : Inform User of Insufficient Amount of spiritual Essence
+                }
+
+                break;
             default:
                 break;
         }
 
         SetUserInterface(currentGameState);
+
         if(afterTransitionAction != null)
         {
             afterTransitionAction.Invoke();

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using User.Data;
 
 public class WeaponOverallStatsContainer : MonoBehaviour
 {
@@ -14,6 +16,25 @@ public class WeaponOverallStatsContainer : MonoBehaviour
     public List<WeaponStatsContainer> currentWeaponStatsContainers;
     public CanvasGroup canvasGroup;
 
+    public Button condenseBtn;
+
+    public void Start()
+    {
+        GameManager.Instance.AddToUpdateCurrencyCallBacks(CheckCondendseBtn);
+
+        condenseBtn.onClick.AddListener(() =>
+        {
+            GameManager.Instance.SetGameState(GameStateEnum.Condensing);
+        });
+    }
+
+    internal void CheckCondendseBtn(CurrencyEnum currency)
+    {
+        if(currency == CurrencyEnum.spirtualEssence)
+        {
+            condenseBtn.interactable = (UserDataBehavior.GetCurrency(currency) >= 1000);
+        }
+    }
 
     public void UpdateCurrentStatContainers()
     {

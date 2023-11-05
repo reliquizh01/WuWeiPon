@@ -69,6 +69,70 @@ namespace User.Data
             return -1;
         }
 
+        public static int GetPlayerOnBoardingCount()
+        {
+            return currentUserData.playerOnBoardingProgress.Count;
+        }
+
+        public static float GetCurrentEquippedWeaponStat(WeaponStatEnum weaponStatEnum)
+        {
+            WeaponData weaponData = GetPlayerEquippedWeapon();
+            float statAmount = 0;
+
+            switch (weaponStatEnum)
+            {
+                case WeaponStatEnum.weapon_Health:
+                    statAmount = weaponData.weapon_Health;
+                    break;
+                case WeaponStatEnum.damage_Physical:
+                    statAmount = weaponData.damage_Physical;
+                    break;
+                case WeaponStatEnum.damage_Magic:
+                    statAmount = weaponData.damage_Magic;
+                    break;
+                case WeaponStatEnum.cooldown_Reduction:
+                    statAmount = weaponData.cooldown_Reduction;
+                    break;
+                case WeaponStatEnum.armor_Penetration:
+                    statAmount = weaponData.armor_Penetration;
+                    break;
+                case WeaponStatEnum.armor_Physical:
+                    statAmount = weaponData.armor_Physical;
+                    break;
+                case WeaponStatEnum.armor_Magic:
+                    statAmount = weaponData.armor_Magic;
+                    break;
+                case WeaponStatEnum.status_Resistance:
+                    statAmount = weaponData.status_Resistance;
+                    break;
+                case WeaponStatEnum.poison_Resistance:
+                    statAmount = weaponData.poison_Resistance;
+                    break;
+                case WeaponStatEnum.monster_Damage:
+                    statAmount = weaponData.monster_Damage;
+                    break;
+                case WeaponStatEnum.luck:
+                    statAmount = weaponData.luck;
+                    break;
+                case WeaponStatEnum.evasion:
+                    statAmount = weaponData.evasion;
+                    break;
+                case WeaponStatEnum.spin_Speed:
+                    statAmount = weaponData.spin_Speed;
+                    break;
+                case WeaponStatEnum.critChance:
+                    statAmount = weaponData.critChance;
+                    break;
+                case WeaponStatEnum.critPercentDamage:
+                    statAmount = weaponData.critPercentDamage;
+                    break;
+                default:;
+                    break;
+            }
+
+            return statAmount;
+        }
+
         #region Skill Purchase
 
         public static bool DoesUserHaveSkillPill()

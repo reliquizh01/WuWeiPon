@@ -245,7 +245,7 @@ public class GameManager : MonoBehaviour
     private void checkPlayerOnBoardingProgress()
     {
         int totalOnboardingSteps = Enum.GetNames(typeof(PlayerOnBoardingEnum)).Length;
-        int playerProgress = UserDataBehavior.currentUserData.playerOnBoardingProgress.Count;
+        int playerProgress = UserDataBehavior.GetPlayerOnBoardingCount();
 
         if (totalOnboardingSteps > playerProgress)
         {

@@ -114,6 +114,9 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
             UserDataBehavior.IncreaseCurrentEquippedWeaponStat(spirit, successfulCondensedSpirits[spirit]);
         }
 
+        SpiritCondensationConfirmPopUpContainer.Instance.SetupStatResult(successfulCondensedSpirits);
+        SpiritCondensationConfirmPopUpContainer.Instance.ShowStatResult();
+
         successfulCondensedSpirits.Clear();
     }
 
@@ -145,9 +148,6 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
                 }
             });
         }
-
-        IncreasePlayerStats();
-        UserDataBehavior.RemoveCurrentSpiritCondensation();
     }
 
     private void EndCondensation()
@@ -156,7 +156,9 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
         condensedSpirits.Clear();
         currentSpiritIdx = 0;
 
-        Play("BlackbackgroundHide", () => GameManager.Instance.SetGameState(GameStateEnum.Idle));
+        IncreasePlayerStats();
+        UserDataBehavior.RemoveCurrentSpiritCondensation();
+
     }
 
     internal void RemoveFloatingSpiritNoIncreaseStats(FloatingSpiritBehavior thisSpirit)

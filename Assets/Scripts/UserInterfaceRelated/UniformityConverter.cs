@@ -50,7 +50,7 @@ public static class UniformityConverter
 
     #endregion Skill Names
 
-    #region Skill Stat Description
+    #region Skill Stat Description and Name
 
     public static string SkillNameToStatDescription(SkillEnum skill, SkillData skillData)
     {
@@ -93,5 +93,151 @@ public static class UniformityConverter
         return description;
     }
 
-    #endregion Skill Stat Description
+    internal static string StatEnumToStatName(WeaponStatEnum weaponStatEnum)
+    {
+        string name = "";
+
+        switch (weaponStatEnum)
+        {
+            case WeaponStatEnum.weapon_Health:
+                name = "HP";
+                break;
+            case WeaponStatEnum.damage_Physical:
+                name = "P.ATK";
+                // Handle physical damage logic here
+                break;
+            case WeaponStatEnum.damage_Magic:
+                name = "M.DMG";
+                // Handle magic damage logic here
+                break;
+            case WeaponStatEnum.cooldown_Reduction:
+                name = "CD";
+                // Handle cooldown reduction logic here
+                break;
+            case WeaponStatEnum.armor_Penetration:
+                name = "A.PEN.";
+                // Handle armor penetration logic here
+                break;
+            case WeaponStatEnum.armor_Physical:
+                name = "P.Armor";
+                // Handle physical armor logic here
+                break;
+            case WeaponStatEnum.armor_Magic:
+                name = "M.Armor";
+                // Handle magic armor logic here
+                break;
+            case WeaponStatEnum.status_Resistance:
+                name = "Status Res.";
+                // Handle status resistance logic here
+                break;
+            case WeaponStatEnum.poison_Resistance:
+                name = "Poison Res.";
+                // Handle poison resistance logic here
+                break;
+            case WeaponStatEnum.monster_Damage:
+                name = "Monster DMG.";
+                // Handle monster damage logic here
+                break;
+            case WeaponStatEnum.luck:
+                name = "luck";
+                // Handle luck logic here
+                break;
+            case WeaponStatEnum.evasion:
+                name = "Evasion";
+                // Handle evasion logic here
+                break;
+            case WeaponStatEnum.spin_Speed:
+                name = "SPEED";
+                // Handle spin speed logic here
+                break;
+            case WeaponStatEnum.critChance:
+                name = "Crit. Rate";
+                // Handle critical chance logic here
+                break;
+            case WeaponStatEnum.critPercentDamage:
+                name = "Crit.DMG %";
+                // Handle critical percent damage logic here
+                break;
+            default:
+                // Handle unknown weapon stat logic here
+                break;
+        }
+
+        return name;
+    }
+
+    internal static string StatValueToStatString(WeaponStatEnum weaponStatEnum, float value)
+    {
+        string convertedString = "";
+
+        switch (weaponStatEnum)
+        {
+            case WeaponStatEnum.weapon_Health:
+                convertedString = value.ToString("N2");
+                break;
+            case WeaponStatEnum.damage_Physical:
+                convertedString = value.ToString("N2");
+                // Handle physical damage logic here
+                break;
+            case WeaponStatEnum.damage_Magic:
+                convertedString = value.ToString("N2");
+                // Handle magic damage logic here
+                break;
+            case WeaponStatEnum.cooldown_Reduction:
+                convertedString = value.ToString("N2") + "s";
+                // Handle cooldown reduction logic here
+                break;
+            case WeaponStatEnum.armor_Penetration:
+                convertedString = value.ToString("N1") + "%";
+                // Handle armor penetration logic here
+                break;
+            case WeaponStatEnum.armor_Physical:
+                convertedString = value.ToString("N1") + "%";
+                // Handle physical armor logic here
+                break;
+            case WeaponStatEnum.armor_Magic:
+                convertedString = value.ToString("N1") + "%";
+                // Handle magic armor logic here
+                break;
+            case WeaponStatEnum.status_Resistance:
+                convertedString = value.ToString("N1") + "%";
+                // Handle status resistance logic here
+                break;
+            case WeaponStatEnum.poison_Resistance:
+                convertedString = value.ToString("N1") + "%";
+                // Handle poison resistance logic here
+                break;
+            case WeaponStatEnum.monster_Damage:
+                convertedString = value.ToString("N2");
+                // Handle monster damage logic here
+                break;
+            case WeaponStatEnum.luck:
+                convertedString = value.ToString("N3");
+                // Handle luck logic here
+                break;
+            case WeaponStatEnum.evasion:
+                convertedString = value.ToString("N2");
+                // Handle evasion logic here
+                break;
+            case WeaponStatEnum.spin_Speed:
+                convertedString = value.ToString("N2");
+                // Handle spin speed logic here
+                break;
+            case WeaponStatEnum.critChance:
+                convertedString = value.ToString("N1") + "%";
+                // Handle critical chance logic here
+                break;
+            case WeaponStatEnum.critPercentDamage:
+                convertedString = value.ToString("N1") + "%";
+                // Handle critical percent damage logic here
+                break;
+            default:
+                // Handle unknown weapon stat logic here
+                break;
+        }
+
+        return convertedString;
+    }
+
+    #endregion Skill Stat Description and Name
 }

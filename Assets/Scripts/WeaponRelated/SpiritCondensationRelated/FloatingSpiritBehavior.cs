@@ -13,25 +13,50 @@ public class FloatingSpiritBehavior : MonoBehaviour
     private Action<WeaponStatEnum, float,FloatingSpiritBehavior> callBackOnClick;
 
     internal bool isMoving = false;
+    internal bool isClicked = false;
+    internal bool startSpinning = false;
 
     private WeaponStatEnum statTarget;
     private float statAmount;
 
     private float maxlifeSpan = 3.0f;
     private float curlifeSpan = 0.0f;
+
+    private float spinDelay = 2.0f;
+    private float curSpinDelay = 0.0f;
+
     internal int uniqId;
 
     public void Update()
     {
         if (isMoving)
         {
+            transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+
             curlifeSpan += Time.deltaTime;
+
             if(curlifeSpan >= maxlifeSpan)
             {
+                isMoving = false;
                 SpiritCondensationContainer.Instance.RemoveFloatingSpiritNoIncreaseStats(this);
             }
 
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        }
+        else if (startSpinning)
+        {
+            curSpinDelay += Time.deltaTime;
+            transform.eulerAngles += Vector3.forward * (speed*6);
+
+            if(curSpinDelay >= spinDelay)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, targetPosition, (speed*6) * Time.deltaTime);
+                float dist = Vector2.Distance(transform.position, targetPosition);
+
+                if (dist < 0.2f)
+                {
+                    SpiritCondensationContainer.Instance.FloatingSpiritReachedCenter(this);
+                }
+            }
         }
     }
     public void InitializeSprit(WeaponStatEnum spiritStats,float amount, Action<WeaponStatEnum,float, FloatingSpiritBehavior> callBackOnClick = null)
@@ -54,13 +79,21 @@ public class FloatingSpiritBehavior : MonoBehaviour
         isMoving = true;
     }
 
+    public void SpinToCenter()
+    {
+        startSpinning = true;
+        targetPosition = Vector2.zero;
+    }
+
     public void OnMouseDown()
     {
         if(callBackOnClick != null)
         {
+            isClicked = true;
+            isMoving = false;
+
             callBackOnClick.Invoke(statTarget, statAmount, this);
             blinkingSprite.gameObject.SetActive(true);
-            isMoving = false;
         }
     }
 

@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string userLoggedIn;
 
     internal bool loadPlayerDataComplete = false;
+    internal bool previousTransactionsInProgress = false;
 
     private float battleCameSize = 15.0f;
     private float belowThresholdBattleCamSize = 28.0f;
@@ -63,6 +64,7 @@ public class GameManager : MonoBehaviour
         
         checkPlayerOnBoardingProgress();
         checkPlayerPendingTransactions();
+        checkPlayerPendingWeaponCondensation();
 
         loadPlayerDataComplete = true;
 
@@ -71,7 +73,10 @@ public class GameManager : MonoBehaviour
             UpdateCurrencyValues((CurrencyEnum)i);
         }
 
-        SetGameState(GameStateEnum.Idle);
+        if (!previousTransactionsInProgress)
+        {
+            SetGameState(GameStateEnum.Idle);
+        }
     }
 
     private void checkPlayerPendingTransactions()
@@ -84,6 +89,18 @@ public class GameManager : MonoBehaviour
             {
                 SkillData skillEquippedInSlot = weapon.skills.FirstOrDefault(x => x.slotNumber == weapon.skillPurchased.slotNumber);
                 equippedWeaponContainer.weaponSlotsContainer.skillSlots.First(x => x.slotNumber == weapon.skillPurchased.slotNumber).ContinueLastTransaction();
+            }
+        }
+    }
+
+    private void checkPlayerPendingWeaponCondensation()
+    {
+        if(equippedWeaponContainer != null)
+        {
+            if(UserDataBehavior.GetUserCurrentCondensation() != null){
+                SpiritCondensationContainer.Instance.ContinueLastTransaction();
+                SetUserInterface(GameStateEnum.Condensing);
+                previousTransactionsInProgress = true;
             }
         }
     }
@@ -158,12 +175,10 @@ public class GameManager : MonoBehaviour
                 if (spiritualEssence >= 1000)
                 {
                     SpiritCondensationContainer.Instance.PrepareSpiritCondensation(1000);
-                    UserDataBehavior.addSpiritualEssence(-1000);
                 }
                 else if(spiritualEssence >= 200)
                 {
                     SpiritCondensationContainer.Instance.PrepareSpiritCondensation(spiritualEssence);
-                    UserDataBehavior.addSpiritualEssence(-spiritualEssence);
                 }
                 else
                 {

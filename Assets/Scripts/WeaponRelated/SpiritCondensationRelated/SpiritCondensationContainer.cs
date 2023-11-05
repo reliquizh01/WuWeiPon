@@ -16,7 +16,8 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
     public bool spiritCondensingOngoing = false;
     public SpriteRenderer blackBackground;
 
-    public List<FloatingSpiritBehavior> currentSpirits = new List<FloatingSpiritBehavior>();
+    List<FloatingSpiritBehavior> currentSpirits = new List<FloatingSpiritBehavior>();
+    List<FloatingSpiritBehavior> condensedSpirits = new List<FloatingSpiritBehavior>();
 
     float randomInterval = 0.0f;
     float currentInterval = 0.0f;
@@ -45,23 +46,31 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
         }
     }
 
-    public void PrepareSpiritCondensation(float condensedSpiritAmount)
+    public void ContinueLastTransaction()
+    {
+        PrepareSpiritCondensation(0);
+    }
+
+    public void PrepareSpiritCondensation(int condensedSpiritAmount)
     {
         GameManager.Instance.SetUserInterface(GameStateEnum.Condensing);
 
         WeaponData weaponData = UserDataBehavior.GetPlayerEquippedWeapon();
-        SpiritCondensation newCondensation = new SpiritCondensation(weaponData, condensedSpiritAmount);
         currentSpiritIdx = 0;
 
-        newCondensation.GenerateCondensation();
-
-        UserDataBehavior.AddSpiritCondensation(newCondensation);
+        if(UserDataBehavior.GetUserCurrentCondensation() == null)
+        {
+            SpiritCondensation newCondensation = new SpiritCondensation(weaponData, condensedSpiritAmount);
+            newCondensation.GenerateCondensation();
+            UserDataBehavior.AddSpiritCondensation(newCondensation);
+            UserDataBehavior.addSpiritualEssence(-condensedSpiritAmount);
+        }
 
         Play("BlackbackgroundShow", () => StartSpiritCondensation());
     }
 
     private void StartSpiritCondensation()
-    {  
+    {
         currentCondensation = new SpiritCondensation(UserDataBehavior.GetUserCurrentCondensation());
 
         statsList = new List<SpiritEnhancement>(currentCondensation.potentialSpiritEnhancements);
@@ -71,14 +80,30 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
         SetNewRandomInternal();
     }
 
+    /// <summary>
+    /// Adds the FloatingSpirit  to the list of successfully condensed Spirits.
+    /// </summary>
+    /// <param name="thisStat">stats</param>
+    /// <param name="amount"></param>
+    /// <param name="thisSpirit"></param>
     private void SuccessfullyCondensed(WeaponStatEnum thisStat, float amount, FloatingSpiritBehavior thisSpirit)
     {
-        successfulCondensedSpirits.Add(thisStat, amount);
+        condensedSpirits.Add(thisSpirit);
 
-        if (currentSpirits.Find(x => x.isMoving) == null && (currentSpiritIdx == statsList.Count))
+        if (successfulCondensedSpirits.ContainsKey(thisStat)){
+            successfulCondensedSpirits[thisStat] += amount;
+        }
+        else
         {
-            IncreasePlayerStats();
-            EndCondensation();
+            successfulCondensedSpirits.Add(thisStat, amount);        
+        }
+
+        if(currentSpiritIdx >= statsList.Count)
+        {
+            if (currentSpirits[currentSpirits.Count-1] == thisSpirit)
+            {
+                CheckCondensationProgress();
+            }
         }
     }
 
@@ -90,9 +115,6 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
         }
 
         successfulCondensedSpirits.Clear();
-        currentSpirits.Clear();
-
-        UserDataBehavior.RemoveCurrentSpiritCondensation();
     }
 
     internal void SummonFloatingSpirit()
@@ -109,25 +131,66 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
         }
     }
 
+    private void PrepareFinalCondensation()
+    {
+        FloatingSpiritBehavior lastSpirit = currentSpirits[currentSpirits.Count - 1];
+
+        if (condensedSpirits.Count > 0 && (lastSpirit == null || !lastSpirit.isMoving && lastSpirit.isClicked))
+        {
+            currentSpirits.ForEach(x =>
+            {
+                if(x != null)
+                {
+                    x.SpinToCenter();
+                }
+            });
+        }
+
+        IncreasePlayerStats();
+        UserDataBehavior.RemoveCurrentSpiritCondensation();
+    }
+
     private void EndCondensation()
     {
-        if(currentSpirits.Count > 0)
-        {
-            currentSpirits.ForEach(x => Destroy(x.gameObject));
-            currentSpirits.Clear();
-        }
+        currentSpirits.Clear();
+        condensedSpirits.Clear();
+        currentSpiritIdx = 0;
 
         Play("BlackbackgroundHide", () => GameManager.Instance.SetGameState(GameStateEnum.Idle));
     }
 
     internal void RemoveFloatingSpiritNoIncreaseStats(FloatingSpiritBehavior thisSpirit)
     {
-        currentSpirits.Remove(thisSpirit);
-        Destroy(thisSpirit.gameObject);
-        
-        if (currentSpirits.Find(x => x.isMoving) == null && (currentSpiritIdx == statsList.Count))
+        // If the final Spirit Is released, we can now check the progress.
+        if(currentSpiritIdx >= statsList.Count)
         {
-            currentSpirits.Clear();
+            if (currentSpirits[currentSpirits.Count-1] == thisSpirit)
+            {
+                currentSpirits[currentSpirits.Count - 1] = null;
+                CheckCondensationProgress();
+            }
+        }
+
+
+        Destroy(thisSpirit.gameObject);
+    }
+
+    private void CheckCondensationProgress()
+    {
+        // All Spirits have been summoned and were either Interacted or Destroyed.
+        if(currentSpiritIdx >= statsList.Count)
+        {
+            PrepareFinalCondensation();
+        }
+    }
+
+    internal void FloatingSpiritReachedCenter(FloatingSpiritBehavior thisSpirit)
+    {
+        condensedSpirits.Remove(thisSpirit);
+        Destroy(thisSpirit.gameObject);
+
+        if(condensedSpirits.Count <= 0)
+        {
             EndCondensation();
         }
     }

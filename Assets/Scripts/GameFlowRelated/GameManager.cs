@@ -141,7 +141,10 @@ public class GameManager : MonoBehaviour
             case GameStateEnum.Idle:
                 TrainingUi.SetActive(true);
                 BattleUi.SetVisibility(false);
-                equippedWeaponContainer.ShowUI();
+                if(equippedWeaponContainer != null)
+                {
+                    equippedWeaponContainer.ShowUI();
+                }
                 break;
             case GameStateEnum.Battle:
                 TrainingUi.SetActive(false);
@@ -150,7 +153,10 @@ public class GameManager : MonoBehaviour
             case GameStateEnum.Condensing:
                 TrainingUi.SetActive(false);
                 BattleUi.SetVisibility(false);
-                equippedWeaponContainer.HideUI();
+                if (equippedWeaponContainer != null)
+                {
+                    equippedWeaponContainer.HideUI();
+                }
                 break;
             default:
                 break;

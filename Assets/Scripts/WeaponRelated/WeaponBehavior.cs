@@ -138,15 +138,8 @@ namespace WeaponRelated
             {
                 weaponHilts.ForEach(x => x.SetCollisionDetection(setTo));
             }
-
-            if (setTo)
-            {
-                weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Dynamic;
-            }
-            else
-            {
-                weaponMovement.weaponRigidBody.bodyType = RigidbodyType2D.Static;
-            }
+            
+            weaponMovement.weaponRigidBody.simulated = setTo;
         }
 
         private void AddToBladeSkillAction(DamageBattleSkillBehavior action)

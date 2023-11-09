@@ -41,8 +41,6 @@ namespace PlayerPulls.Chest
                         GameManager.Instance.equippedWeaponContainer = behavior;
 
                         behavior.SetWeaponState(WeaponBehaviorStateEnum.FromChest);    
-
-                        weapons.isEquipped = true;
                     }
 
                     UserDataBehavior.AddNewWeapon(weapons);

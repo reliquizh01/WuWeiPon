@@ -66,7 +66,7 @@ public class SpiritCondensation
                     potentialSpiritEnhancements[thisStat].EnhancementAmount += 10.0f;
                     break;
                 case WeaponStatEnum.damage_Physical:
-                    potentialSpiritEnhancements[thisStat].EnhancementAmount += 0.25f;
+                    potentialSpiritEnhancements[thisStat].EnhancementAmount += 7.25f;
                     break;
                 case WeaponStatEnum.damage_Magic:
                     potentialSpiritEnhancements[thisStat].EnhancementAmount += 0.1f;

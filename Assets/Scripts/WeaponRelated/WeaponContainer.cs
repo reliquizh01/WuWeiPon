@@ -95,6 +95,7 @@ namespace WeaponRelated
                         {
                             weaponStateCallback.Invoke();
                         }
+                        currentWeapon.SetWeaponDetection(true);
                     });
 
                     HideUI();

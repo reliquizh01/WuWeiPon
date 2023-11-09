@@ -34,10 +34,15 @@ public class SpiritCondensationConfirmPopUpContainer : MonoBehaviour
 
     public void HideStatResult()
     {
-        ResetStatResult();
         raycastBlocker.SetActive(false);
         container.SetActive(false);
 
+        EndSpiritCondensation();
+    }
+
+    public void EndSpiritCondensation()
+    {
+        ResetStatResult();
         SpiritCondensationContainer.Instance.Play("BlackbackgroundHide", () => GameManager.Instance.SetGameState(GameStateEnum.Idle));
     }
 

@@ -188,24 +188,20 @@ public static class UniformityConverter
                 // Handle cooldown reduction logic here
                 break;
             case WeaponStatEnum.armor_Penetration:
-                convertedString = value.ToString("N1") + "%";
-                // Handle armor penetration logic here
-                break;
             case WeaponStatEnum.armor_Physical:
-                convertedString = value.ToString("N1") + "%";
-                // Handle physical armor logic here
-                break;
             case WeaponStatEnum.armor_Magic:
-                convertedString = value.ToString("N1") + "%";
-                // Handle magic armor logic here
-                break;
             case WeaponStatEnum.status_Resistance:
-                convertedString = value.ToString("N1") + "%";
-                // Handle status resistance logic here
-                break;
             case WeaponStatEnum.poison_Resistance:
-                convertedString = value.ToString("N1") + "%";
-                // Handle poison resistance logic here
+            case WeaponStatEnum.critChance:
+            case WeaponStatEnum.critPercentDamage:
+                if(value < 10.0f)
+                {
+                    convertedString = value.ToString("N2") + "%";
+                }
+                else
+                {
+                    convertedString = value.ToString("N1") + "%";
+                }
                 break;
             case WeaponStatEnum.monster_Damage:
                 convertedString = value.ToString("N2");
@@ -222,14 +218,6 @@ public static class UniformityConverter
             case WeaponStatEnum.spin_Speed:
                 convertedString = value.ToString("N2");
                 // Handle spin speed logic here
-                break;
-            case WeaponStatEnum.critChance:
-                convertedString = value.ToString("N1") + "%";
-                // Handle critical chance logic here
-                break;
-            case WeaponStatEnum.critPercentDamage:
-                convertedString = value.ToString("N1") + "%";
-                // Handle critical percent damage logic here
                 break;
             default:
                 // Handle unknown weapon stat logic here

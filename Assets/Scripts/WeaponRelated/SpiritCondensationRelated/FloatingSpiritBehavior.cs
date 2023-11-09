@@ -52,10 +52,14 @@ public class FloatingSpiritBehavior : MonoBehaviour
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, (speed*6) * Time.deltaTime);
                 float dist = Vector2.Distance(transform.position, targetPosition);
 
-                if (dist < 0.2f)
+                if (dist < 0.3f)
                 {
                     SpiritCondensationContainer.Instance.FloatingSpiritReachedCenter(this);
+        
+                    startSpinning = false;
+                    curSpinDelay = 0.0f;
                 }
+
             }
         }
     }

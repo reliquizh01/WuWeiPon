@@ -7,8 +7,12 @@ using UnityEngine;
 public class FloatingSpiritBehavior : MonoBehaviour
 {
     public SpriteRenderer blinkingSprite;
+    public SpriteRenderer blankSprite;
     public Vector2 targetPosition, direction;
     public float speed = 1.5f;
+    public AudioSource audioSource;
+    public AudioSource OnSpinSfx;
+    public AudioSource OnCenterSfx;
 
     private Action<WeaponStatEnum, float,FloatingSpiritBehavior> callBackOnClick;
 
@@ -24,6 +28,9 @@ public class FloatingSpiritBehavior : MonoBehaviour
 
     private float spinDelay = 2.0f;
     private float curSpinDelay = 0.0f;
+
+    private float centerSfxDelay = 1.5f;
+    private float curCenterSfxDelay = 0.0f;
 
     internal int uniqId;
 
@@ -54,10 +61,21 @@ public class FloatingSpiritBehavior : MonoBehaviour
 
                 if (dist < 0.3f)
                 {
-                    SpiritCondensationContainer.Instance.FloatingSpiritReachedCenter(this);
+                    if(curCenterSfxDelay == 0)
+                    {
+                        blinkingSprite.enabled = false;
+                        blankSprite.enabled = false;
+
+                        OnCenterSfx.Play();
+                    }
+                    else if(curCenterSfxDelay > centerSfxDelay)
+                    {
+                        SpiritCondensationContainer.Instance.FloatingSpiritReachedCenter(this);
         
-                    startSpinning = false;
-                    curSpinDelay = 0.0f;
+                        startSpinning = false;
+                        curSpinDelay = 0.0f;
+                    }
+                    curCenterSfxDelay += Time.deltaTime;
                 }
 
             }
@@ -85,16 +103,18 @@ public class FloatingSpiritBehavior : MonoBehaviour
 
     public void SpinToCenter()
     {
+        OnSpinSfx.Play();
         startSpinning = true;
         targetPosition = Vector2.zero;
     }
 
     public void OnMouseDown()
     {
-        if(callBackOnClick != null)
+        if(callBackOnClick != null && !isClicked)
         {
             isClicked = true;
             isMoving = false;
+            audioSource.Play();
 
             callBackOnClick.Invoke(statTarget, statAmount, this);
             blinkingSprite.gameObject.SetActive(true);

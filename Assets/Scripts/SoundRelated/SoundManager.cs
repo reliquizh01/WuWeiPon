@@ -45,7 +45,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBackgroundTheme(LocationEnum location)
     {
-        //ResetBackgroundTheme();
+        ResetBackgroundTheme();
 
         string theme = location.ToString();
 

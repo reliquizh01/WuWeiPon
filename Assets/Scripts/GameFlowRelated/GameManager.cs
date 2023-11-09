@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour
         if(equippedWeaponContainer != null)
         {
             if(UserDataBehavior.GetUserCurrentCondensation() != null){
+                SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalCondensation);
                 SpiritCondensationContainer.Instance.ContinueLastTransaction();
                 SetUserInterface(GameStateEnum.Condensing);
                 previousTransactionsInProgress = true;

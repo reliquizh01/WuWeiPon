@@ -101,10 +101,7 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
             successfulCondensedSpirits.Add(thisStat, amount);        
         }
 
-        if (currentSpirits[currentSpirits.Count-1] == thisSpirit)
-        {
-            CheckCondensationProgress();
-        }
+        CheckCondensationProgress();
     }
 
     private void IncreasePlayerStats()
@@ -180,12 +177,9 @@ public class SpiritCondensationContainer : AnimationMonoBehavior
     internal void RemoveFloatingSpiritNoIncreaseStats(FloatingSpiritBehavior thisSpirit)
     {
         removedSpiritCount++;
-            
+     
         // If the final Spirit Is released, we can now check the progress.
-        if (currentSpirits[currentSpirits.Count-1] == thisSpirit)
-        {
-            CheckCondensationProgress();
-        }
+        CheckCondensationProgress();
 
 
         Destroy(thisSpirit.gameObject);

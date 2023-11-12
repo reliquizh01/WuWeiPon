@@ -195,6 +195,12 @@ namespace User.Data
             return transactionResult;
         }
 
+        public static SkillData GetCurrentEquippedPurchaseSkill()
+        {
+            WeaponData weaponData = currentUserData.weapons.FirstOrDefault(x => x.isEquipped);
+            return (weaponData != null && weaponData.skillPurchased != null) ? weaponData.skillPurchased : null;
+        }
+
         public static void PlayerChooseCurrentSkill(int slotNumber)
         {
             WeaponData weapon = GetPlayerEquippedWeapon();

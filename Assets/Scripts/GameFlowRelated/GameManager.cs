@@ -67,8 +67,6 @@ public class GameManager : MonoBehaviour
         }
         
         checkPlayerOnBoardingProgress();
-        checkPlayerSkillPendingTransactions();
-        checkPlayerPendingWeaponCondensation();
         checkPlayerAutomationSetup();
 
         loadPlayerDataComplete = true;
@@ -210,10 +208,34 @@ public class GameManager : MonoBehaviour
         }
 
         SetUserInterface(currentGameState);
-
+        CheckLastTransactions(currentGameState);
         if(afterTransitionAction != null)
         {
             afterTransitionAction.Invoke();
+        }
+    }
+
+    private void CheckLastTransactions(GameStateEnum currentGameState)
+    {
+        switch (currentGameState)
+        {
+            case GameStateEnum.Idle:
+                if(UserDataBehavior.GetUserCurrentCondensation() != null)
+                {
+                    checkPlayerPendingWeaponCondensation();
+                }
+                else if(UserDataBehavior.GetCurrentEquippedPurchaseSkill() != null)
+                {
+                    checkPlayerSkillPendingTransactions();
+                }
+                break;
+
+            case GameStateEnum.Battle:
+                break;
+            case GameStateEnum.Condensing:
+                break;
+            default:
+                break;
         }
     }
 

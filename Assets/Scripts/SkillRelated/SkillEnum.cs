@@ -34,5 +34,5 @@ public enum SkillRankEnum
     transcendant,
     ancient,
     divine,
-    ancientDivine
+    deity
 }

@@ -14,6 +14,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     public BaseSpriteRendererNotificationBehavior expNotif;
     public AudioContainer audioContainer;
+    public AudioContainer audioSfx;
 
     bool isOtherSlotSpinning
     {
@@ -25,6 +26,8 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     bool isSlotSpinning = false;
     bool stillProcessing = false;
+    bool lastAutomationSetup = false;
+    List<SkillRankEnum> lastAutomationSkillRankSetup = new List<SkillRankEnum>();
 
     private SkillData currentSkillData;
     [SerializeField]internal int slotNumber;
@@ -33,7 +36,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
     float clickCounter = 0.0f;
     bool isClicked = false;
-    public void SetupSkillSlot(SkillData skillData)
+    public void SetupSkillSlotVisuals(SkillData skillData)
     {
         if(skillData == null)
         {
@@ -46,6 +49,9 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
                 DataVaultManager.Instance.GetSkillSprite(skillData.skillIconFileName);
 
             currentSkillData = skillData;
+
+            lastAutomationSkillRankSetup = UserDataBehavior.GetAutomationRankSkills();
+            lastAutomationSetup = UserDataBehavior.IsSkillSpinAutomated();
         }
     }
 
@@ -82,9 +88,11 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
             }
         }
     }
+
     public void OnMouseDown()
     {
-        if (!SkillPurchasePopUpContainer.Instance.popUpContainer.activeInHierarchy)
+        if (!SkillPurchasePopUpContainer.Instance.popUpContainer.activeInHierarchy &&
+            !AutomationSettingsBehavior.Instance.container.activeInHierarchy)
         {
             isClicked = true;
         }
@@ -109,7 +117,7 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     public void PlayUpgrade()
     {
         expNotif.Play();
-        audioContainer.SetAndPlay("SpinSkillResult");
+        audioSfx.SetAndPlay("SpinSkillResult");
     }
 
     private void finalizedPurchase()
@@ -119,10 +127,10 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
 
         switch (currentTransactionResult)
         {
-            case UserTransactionResultEnums.PurchasedSkillEquipped:
+            case UserTransactionResultEnums.PurchasedSkillGetsEquipped:
                 PlaySpinSlots(weapon.skills[lastSkillAdded]);
                 break;
-            case UserTransactionResultEnums.PurchasedSkillExists:
+            case UserTransactionResultEnums.PurchaseSkillHasExistingCopyInWeaponSkills:
                 PlaySpinSlots(weapon.lastUpgradedSkill);
                 break;
             case UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation:
@@ -161,30 +169,65 @@ public class TrainingSkillSlotsBehavior : AnimationMonoBehavior
     internal void EndSpinSlots()
     {
         isSlotSpinning = false;
-        stillProcessing = false;
 
         WeaponData weapon = UserDataBehavior.GetPlayerEquippedWeapon();
 
+        AnalyzeTransactionResult(weapon);
+    }
+
+    internal void AnalyzeTransactionResult(WeaponData weapon) 
+    {
         switch (currentTransactionResult)
         {
-            case UserTransactionResultEnums.PurchasedSkillEquipped:
+            case UserTransactionResultEnums.PurchasedSkillGetsEquipped:
                 SkillData equipThisSkill = weapon.skills[weapon.skills.Count - 1];
-                SetupSkillSlot(equipThisSkill);
+                SetupSkillSlotVisuals(equipThisSkill);
+                CheckSkillSlotAutomation();
                 break;
-            case UserTransactionResultEnums.PurchasedSkillExists:
+            case UserTransactionResultEnums.PurchaseSkillHasExistingCopyInWeaponSkills:
                 SkillData skillToUpgrade = weapon.skills.First(x => x.skillName == weapon.lastUpgradedSkill.skillName);
                 GameManager.Instance.equippedWeaponContainer.weaponSlotsContainer.UpgradeSkillSlot(skillToUpgrade);
-                SetupSkillSlot(currentSkillData);
+                SetupSkillSlotVisuals(currentSkillData);
+                CheckSkillSlotAutomation();
                 break;
             case UserTransactionResultEnums.PurchasedSkillOnFilledSkillSlotNeedsConfirmation:
-                SkillData skillInThisSlot = weapon.skills.First(x => x.slotNumber == slotNumber);
-                SkillPurchasePopUpContainer.Instance.SetupSkillPurchase(skillInThisSlot, weapon.skillPurchased, this);
+                if (UserDataBehavior.IsSkillSpinAutomated() &&
+                    lastAutomationSkillRankSetup.Contains(weapon.skillPurchased.skillRank))
+                {
+                    CheckSkillSlotAutomation();
+                }
+                else
+                {
+                    SkillData skillInThisSlot = weapon.skills.First(x => x.slotNumber == slotNumber);
+                    SkillPurchasePopUpContainer.Instance.SetupSkillPurchase(skillInThisSlot, weapon.skillPurchased, this);
+                }
+
                 break;
             case UserTransactionResultEnums.PurchaseFailed:
                 break;
             default:
                 break;
         }
+    }
+
+    public void CheckSkillSlotAutomation()
+    {
+        stillProcessing = false;
+
+        if (lastAutomationSetup && GameManager.Instance.currentGameState == GameStateEnum.Idle)
+        {
+            if (UserDataBehavior.DoesUserHaveSkillPill())
+            {
+                SlotClicked();
+            }
+            else
+            {
+                AutomationSettingsBehavior.Instance.skillAutomationToggle.ToggleAutomation();
+            }
+        }
+
+        lastAutomationSkillRankSetup = UserDataBehavior.GetAutomationRankSkills();
+        lastAutomationSetup = UserDataBehavior.IsSkillSpinAutomated();
     }
 
     internal void ContinueLastTransaction()

@@ -19,6 +19,7 @@ namespace SkillRelated
                     skillData.description = SkillVariableNames.FIRSTBLOODSPILL_DESCRIPTION;
                     skillData.skillIconFileName = SkillEnum.FirstBloodSpill.ToString() + SkillVariableNames._Icon;
                     skillData.skillType = SkillTypeEnum.Damage;
+                    skillData.skillRank = SkillRankEnum.ordinary;
 
                     skillData.isSkillConditionOnHit = true;
 
@@ -34,6 +35,7 @@ namespace SkillRelated
                     skillData.description = SkillVariableNames.CORNERBOOST_DESCRIPTION;
                     skillData.skillIconFileName = SkillEnum.CornerBoost.ToString() + SkillVariableNames._Icon;
                     skillData.skillType = SkillTypeEnum.Movement;
+                    skillData.skillRank = SkillRankEnum.ordinary;
 
                     skillData.isSkillConditionOnHit = true;
                     
@@ -47,6 +49,8 @@ namespace SkillRelated
                 case SkillEnum.LifeSiphon:
                     skillData.skillName = SkillEnum.LifeSiphon.ToString();
                     skillData.description = SkillVariableNames.LIFESIPHON_DESCRIPTION;
+                    skillData.skillRank = SkillRankEnum.rare;
+
                     skillData.skillIconFileName = SkillEnum.LifeSiphon.ToString() + SkillVariableNames._Icon;
                     skillData.skillType = SkillTypeEnum.Heal;
 

@@ -17,7 +17,7 @@ public class SkillData
         slotNumber = skillData.slotNumber;
         
         skillExperience = skillData.skillExperience;
-        skillRarity = skillData.skillRarity;
+        skillRank = skillData.skillRank;
 
         skillLevel = skillData.skillLevel;
         skillType = skillData.skillType;
@@ -37,7 +37,7 @@ public class SkillData
     public string skillIconFileName = "";
 
     [DataMember]
-    public SkillRankEnum skillRarity = SkillRankEnum.ordinary;
+    public SkillRankEnum skillRank = SkillRankEnum.ordinary;
 
     [DataMember]
     public int skillLevel = 0;

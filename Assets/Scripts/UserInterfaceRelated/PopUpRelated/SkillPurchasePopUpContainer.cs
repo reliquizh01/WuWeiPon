@@ -51,14 +51,16 @@ public class SkillPurchasePopUpContainer : MonoBehaviour
         currentSkillBtn.onClick.AddListener(()=> 
         {
             playerChooseCurrentSkill();
-            skillSlotRef.SetupSkillSlot(currentSkillSlotData);
+            skillSlotRef.SetupSkillSlotVisuals(currentSkillSlotData);
+            skillSlotRef.CheckSkillSlotAutomation();
         });
 
         purchasedSkillBtn.onClick.AddListener(()=>
         {
             playerChoosePurchasedSkill();
             WeaponData weapon = UserDataBehavior.GetPlayerEquippedWeapon();
-            skillSlotRef.SetupSkillSlot(weapon.skills[weapon.skills.Count - 1]);
+            skillSlotRef.SetupSkillSlotVisuals(weapon.skills[weapon.skills.Count - 1]);
+            skillSlotRef.CheckSkillSlotAutomation();
         });
     }
 

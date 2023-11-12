@@ -13,7 +13,8 @@ public class AnimationMonoBehavior : MonoBehaviour
 
         if(callback != null)
         {
-            StartCoroutine(doActionAfter(myAnim.GetClip(name).length, callback));
+            Action tmp = new Action(callback);
+            StartCoroutine(doActionAfter(myAnim.GetClip(name).length, tmp));
         }
     }
 

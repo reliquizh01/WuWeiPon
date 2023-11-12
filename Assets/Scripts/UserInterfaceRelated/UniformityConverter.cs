@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using UnityEngine;
 
 public static class UniformityConverter
 {
@@ -139,7 +141,7 @@ public static class UniformityConverter
                 // Handle monster damage logic here
                 break;
             case WeaponStatEnum.luck:
-                name = "luck";
+                name = "Luck";
                 // Handle luck logic here
                 break;
             case WeaponStatEnum.evasion:
@@ -147,7 +149,7 @@ public static class UniformityConverter
                 // Handle evasion logic here
                 break;
             case WeaponStatEnum.spin_Speed:
-                name = "SPEED";
+                name = "Speed";
                 // Handle spin speed logic here
                 break;
             case WeaponStatEnum.critChance:
@@ -227,5 +229,66 @@ public static class UniformityConverter
         return convertedString;
     }
 
+    internal static UnityEngine.Color SkillRankToColor(SkillRankEnum skillRank)
+    {
+        UnityEngine.Color color = UnityEngine.Color.white;
+
+        switch (skillRank)
+        {
+            case SkillRankEnum.ordinary:
+                ColorUtility.TryParseHtmlString("#0BFF00", out  color);
+                break;
+            case SkillRankEnum.rare:
+                ColorUtility.TryParseHtmlString("#FFBD00", out  color);
+                break;
+            case SkillRankEnum.transcendant:
+                ColorUtility.TryParseHtmlString("#FFE900", out  color);
+                break;
+            case SkillRankEnum.ancient:
+                ColorUtility.TryParseHtmlString("#FF9900", out  color);
+                break;
+            case SkillRankEnum.divine:
+                ColorUtility.TryParseHtmlString("#E700FF", out  color);
+                break;
+            case SkillRankEnum.deity:
+                ColorUtility.TryParseHtmlString("#FF1F00", out  color);
+                break;
+            default:
+                break;
+        }
+
+        return color;
+    }
+
+    internal static string SkillRankToString(SkillRankEnum skillRank)
+    {
+        string  convertedString = "";
+
+        switch (skillRank)
+        {
+            case SkillRankEnum.ordinary:
+                convertedString = "Ordinary";
+                break;
+            case SkillRankEnum.rare:
+                convertedString = "Rare";
+                break;
+            case SkillRankEnum.transcendant:
+                convertedString = "Trancendant";
+                break;
+            case SkillRankEnum.ancient:
+                convertedString = "Ancient";
+                break;
+            case SkillRankEnum.divine:
+                convertedString = "Divine";
+                break;
+            case SkillRankEnum.deity:
+                convertedString = "Deity";
+                break;
+            default:
+                break;
+        }
+
+        return convertedString;
+    }
     #endregion Skill Stat Description and Name
 }

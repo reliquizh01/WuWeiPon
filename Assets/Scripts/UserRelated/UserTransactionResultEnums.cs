@@ -1,7 +1,7 @@
 public enum UserTransactionResultEnums
 {
-    PurchasedSkillEquipped,
-    PurchasedSkillExists,
+    PurchasedSkillGetsEquipped,
+    PurchaseSkillHasExistingCopyInWeaponSkills,
     PurchasedSkillOnFilledSkillSlotNeedsConfirmation,
     PurchaseFailed,
 }

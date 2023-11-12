@@ -22,11 +22,11 @@ namespace WeaponRelated
 
                 if(weaponData.skills.Count > i)
                 {
-                    skillSlots[i].SetupSkillSlot(weaponData.skills.First(x => x.slotNumber == i));
+                    skillSlots[i].SetupSkillSlotVisuals(weaponData.skills.First(x => x.slotNumber == i));
                 }
                 else
                 {
-                    skillSlots[i].SetupSkillSlot(null);
+                    skillSlots[i].SetupSkillSlotVisuals(null);
                 }
             }
         }

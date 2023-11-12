@@ -30,7 +30,7 @@ namespace User.Data
 
         public static void AddNewWeapon(WeaponData weaponData)
         {
-            if (GetPlayerEquippedWeapon() != null)
+            if (GetPlayerEquippedWeapon() == null)
             {
                 weaponData.isEquipped = true;
             }
@@ -162,7 +162,7 @@ namespace User.Data
 
                 addSpiritualEssenceNoSave(spiritualEssenceForSkillPull);
 
-                transactionResult = UserTransactionResultEnums.PurchasedSkillExists;
+                transactionResult = UserTransactionResultEnums.PurchaseSkillHasExistingCopyInWeaponSkills;
             }
             else if (skillEquippedInSlotNumberProvided == null)
             {
@@ -173,7 +173,7 @@ namespace User.Data
 
                 addSpiritualEssenceNoSave(spiritualEssenceForSkillPull);
 
-                transactionResult = UserTransactionResultEnums.PurchasedSkillEquipped;
+                transactionResult = UserTransactionResultEnums.PurchasedSkillGetsEquipped;
             }
             else if(skillEquippedInSlotNumberProvided != null)
             {
@@ -327,5 +327,33 @@ namespace User.Data
         }
 
         #endregion Currency
+
+        #region Automation Skills
+
+        internal static List<SkillRankEnum> GetAutomatedSkillRarity()
+        {
+            return currentUserData.userSettingsData.acceptableSkillRankList;
+        }
+
+        internal static bool IsSkillSpinAutomated()
+        {
+            return currentUserData.userSettingsData.isAutoRollSkllsEnabled;
+        }
+
+        internal static bool IsSkillRankFilteredToIgnorInAutomation(SkillRankEnum skillRank)
+        {
+            return currentUserData.userSettingsData.acceptableSkillRankList.Contains(skillRank);
+        }
+
+        internal static List<SkillRankEnum> GetAutomationRankSkills()
+        {
+            return new List<SkillRankEnum>(currentUserData.userSettingsData.acceptableSkillRankList);
+        }
+
+        internal static void ToggleAutomation(bool setTo)
+        {
+            currentUserData.userSettingsData.isAutoRollSkllsEnabled = setTo;
+        }
+        #endregion Automation Skills
     }
 }

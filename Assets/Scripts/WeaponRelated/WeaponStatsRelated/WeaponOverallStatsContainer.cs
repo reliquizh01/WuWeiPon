@@ -38,8 +38,6 @@ public class WeaponOverallStatsContainer : MonoBehaviour
 
     public void UpdateCurrentStatContainers()
     {
-        Debug.Log(Screen.width);
-
         if (Screen.width > screenWidththreshold)
         {
             belowThreshold.SetActive(false);

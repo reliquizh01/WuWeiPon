@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using User.Data;
 using WeaponRelated;
 
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
     public BattleUserInterface BattleUi;
 
     #endregion References
+
     [SerializeField] internal GameStateEnum currentGameState;
     [SerializeField] private string userLoggedIn;
 
@@ -35,6 +37,8 @@ public class GameManager : MonoBehaviour
     private float camTransitonSpeed = 20.0f;
     private List<Action> afterCameraTransitionActions = new List<Action>();
     private List<Action<CurrencyEnum>> updateCurrencyValue = new List<Action<CurrencyEnum>>();
+
+    public Slider autoSpinSkill;
 
     public void Awake()
     {
@@ -63,8 +67,9 @@ public class GameManager : MonoBehaviour
         }
         
         checkPlayerOnBoardingProgress();
-        checkPlayerPendingTransactions();
+        checkPlayerSkillPendingTransactions();
         checkPlayerPendingWeaponCondensation();
+        checkPlayerAutomationSetup();
 
         loadPlayerDataComplete = true;
 
@@ -79,7 +84,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void checkPlayerPendingTransactions()
+    private void checkPlayerAutomationSetup()
+    {
+        AutomationSettingsBehavior.Instance.SetupAutomation();
+    }
+
+    private void checkPlayerSkillPendingTransactions()
     {
         if(equippedWeaponContainer != null)
         {
@@ -165,6 +175,8 @@ public class GameManager : MonoBehaviour
     }
     public void SetGameState(GameStateEnum gameState, Action afterTransitionAction = null)
     {
+        GameStateEnum prevGameState = currentGameState;
+
         currentGameState = gameState;
 
         switch (currentGameState)

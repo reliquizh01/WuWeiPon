@@ -41,29 +41,8 @@ public class InformationPopUpContainer : MonoBehaviour
         skillSlot.SetupCurrentSkillAttached(skillData);
         SkillEnum skillEnum = UniformityConverter.SkillStringToEnum(skillData.skillName);
 
-        switch (skillData.skillRarity)
-        {
-            case SkillRankEnum.ordinary:
-                rarityText.text = "Ordinary";
-                break;
-            case SkillRankEnum.rare:
-                rarityText.text = "Rare";
-                break;
-            case SkillRankEnum.transcendant:
-                rarityText.text = "Trancendant";
-                break;
-            case SkillRankEnum.ancient:
-                rarityText.text = "Ancient";
-                break;
-            case SkillRankEnum.divine:
-                rarityText.text = "Divine";
-                break;
-            case SkillRankEnum.ancientDivine:
-                rarityText.text = "Ancient Divine";
-                break;
-            default:
-                break;
-        }
+        rarityText.text = UniformityConverter.SkillRankToString(skillData.skillRank);
+        rarityText.color = UniformityConverter.SkillRankToColor(skillData.skillRank);
 
         levelText.text = "Level " + skillData.skillLevel.ToString();
         nameText.text = UniformityConverter.SkillStringToSkillName(skillData.skillName);

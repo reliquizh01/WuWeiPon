@@ -10,6 +10,7 @@ namespace User.Data
         #region Constructors
 
         public UserData() { }
+
         public UserData(UserData userData) 
         { 
             uniqueId = userData.uniqueId;
@@ -25,6 +26,11 @@ namespace User.Data
             spiritualEssence = userData.spiritualEssence;
             fateGems = userData.fateGems;
             consistencyPills = userData.consistencyPills;
+
+            if(userData.userSettingsData != null)
+            {
+                userSettingsData = new UserSettingsData(userData.userSettingsData);
+            }
         }
 
         #endregion Constructors
@@ -75,5 +81,8 @@ namespace User.Data
 
         [DataMember]
         public List<PlayerOnBoardingEnum> playerOnBoardingProgress = new List<PlayerOnBoardingEnum>();
+
+        [DataMember]
+        public UserSettingsData userSettingsData = new UserSettingsData();
     }
 }

@@ -15,7 +15,7 @@ public class WeaponMovement : MonoBehaviour
 
     }
 
-    public void AddTorqueForce(DirectionEnum direction, float torqueForce = 600.0f)
+    public void AddTorqueForce(DirectionEnum direction, float torqueForce = 100.0f)
     {
         switch (direction)
         {
@@ -34,7 +34,7 @@ public class WeaponMovement : MonoBehaviour
         }
     }
 
-    public void AddConstantRotationForce(DirectionEnum direction,float force = 100.0f)
+    public void AddConstantRotationForce(DirectionEnum direction,float force = 200.0f)
     {
         switch (direction)
         {
@@ -77,7 +77,7 @@ public class WeaponMovement : MonoBehaviour
     {
         constantForce2d.torque = (constantForce2d.torque > 0) ? -constantForce2d.torque: constantForce2d.torque;
         constantForce2d.force = Vector2.zero;
-
+        constantForce2d.enabled = false;
         weaponRigidBody.velocity = Vector2.zero;
     }
 }

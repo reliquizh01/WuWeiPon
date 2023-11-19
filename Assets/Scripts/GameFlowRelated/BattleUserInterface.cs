@@ -9,6 +9,7 @@ public class BattleUserInterface : MonoBehaviour
     public Button speedUpButton;
     public TextMeshProUGUI speedupText;
     public CanvasGroup canvasGroup;
+    public AnimationMonoBehavior battleCounterUi;
 
     public Button FightButton;
 

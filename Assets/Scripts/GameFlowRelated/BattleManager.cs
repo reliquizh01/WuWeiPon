@@ -1,4 +1,5 @@
 using DataManagement;
+using Identity.Randomizer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ public class BattleManager : MonoBehaviour
 
     public BattleUserInterface userInterface;
 
+    internal string currentBattleId = "";
     #region References
 
     public Transform playerPosition;
@@ -134,28 +136,22 @@ public class BattleManager : MonoBehaviour
 
     private void StartBattle()
     {
-        Debug.Log("Battle Starts");
-        playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
-        enemyWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
+        userInterface.battleCounterUi.Play("BattleReadyCount", () =>
+        {
+            currentBattleId = RandomIdentification.RandomString(18);
+            playerWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
+            enemyWeapon.SetWeaponState(WeaponBehaviorStateEnum.Battle);
 
-        playerWeapon.currentWeapon.weaponMovement.AddConstantRotationForce(DirectionEnum.Right);
-        playerWeapon.currentWeapon.weaponMovement.AddTorqueForce(DirectionEnum.Right);
+            playerWeapon.currentWeapon.weaponMovement.constantForce2d.enabled = true;
+            enemyWeapon.currentWeapon.weaponMovement.constantForce2d.enabled = true;
 
-        enemyWeapon.currentWeapon.weaponMovement.AddConstantRotationForce(DirectionEnum.Left);
-        enemyWeapon.currentWeapon.weaponMovement.AddTorqueForce(DirectionEnum.Left);
+            playerWeapon.currentWeapon.weaponMovement.AddConstantRotationForce(DirectionEnum.Left);
 
-        StartCoroutine(EnergizeBattle());
-    }
+            enemyWeapon.currentWeapon.weaponMovement.AddConstantRotationForce(DirectionEnum.Right);
 
-    private IEnumerator EnergizeBattle()
-    {
-        yield return new WaitForSeconds(2);
-
-        playerWeapon.currentWeapon.weaponMovement.AddForce(DirectionEnum.Right);
-        enemyWeapon.currentWeapon.weaponMovement.AddForce(DirectionEnum.Left);
-
-        playerWeapon.currentWeapon.weaponMovement.constantForce2d.enabled = true;
-        enemyWeapon.currentWeapon.weaponMovement.constantForce2d.enabled = true;
+            playerWeapon.currentWeapon.weaponMovement.AddForce(DirectionEnum.Right);
+            enemyWeapon.currentWeapon.weaponMovement.AddForce(DirectionEnum.Left);
+        });
     }
 
     private WeaponData generateRandomEnemy()

@@ -3,6 +3,7 @@ using Identity.Randomizer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using User.Data;
@@ -15,6 +16,7 @@ public class BattleManager : MonoBehaviour
     public BattleUserInterface userInterface;
 
     internal string currentBattleId = "";
+    internal BattleRecordLogs currentBattleLogs;
     #region References
 
     public Transform playerPosition;
@@ -57,6 +59,9 @@ public class BattleManager : MonoBehaviour
 
     public void PrepareBattle(WeaponData enemyInformation)
     {
+        currentBattleLogs = new BattleRecordLogs();
+        currentBattleLogs.battleId = currentBattleId;
+
         GameManager.Instance.SetCameraNextSize(GameStateEnum.Battle);
         GameManager.Instance.SetUserInterface(GameStateEnum.Battle);
 
@@ -86,11 +91,15 @@ public class BattleManager : MonoBehaviour
         List<BaseBattleSkillBehavior> playerSkills = playerWeapon.currentWeapon.SetupWeaponSkills();
         
         // Add blade action on trigger2D
-        enemyWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.playerInformaton.OnWeaponDamaged);
-        enemyWeapon.currentWeapon.AddBladeActonForSelfUserInterfaceUpdateOnHit(userInterface.enemyInformation.OnWeaponHeal);
+        enemyWeapon.currentWeapon.AddBladeActionOnceBladeHitsEnemyHilt(userInterface.playerInformaton.OnWeaponDamaged);
+        enemyWeapon.currentWeapon.AddWeaponActionOnChangesToSelfHealth(userInterface.enemyInformation.OnWeaponHeal);
 
-        playerWeapon.currentWeapon.AddBladeActionsForOpposingUserInterfaceUpdateOnHit(userInterface.enemyInformation.OnWeaponDamaged);
-        playerWeapon.currentWeapon.AddBladeActonForSelfUserInterfaceUpdateOnHit(userInterface.playerInformaton.OnWeaponHeal);
+        playerWeapon.currentWeapon.AddBladeActionOnceBladeHitsEnemyHilt(userInterface.enemyInformation.OnWeaponDamaged);
+        playerWeapon.currentWeapon.AddWeaponActionOnChangesToSelfHealth(userInterface.playerInformaton.OnWeaponHeal);
+
+        // Record Battle Logs
+        playerWeapon.currentWeapon.AddBladeActionOnceBladeHitsEnemyHilt(UpdateBattleLogDamageMade);
+        playerWeapon.currentWeapon.AddToHiltRecordLogs(UpdateBattleLogTotalDamageTaken);
 
         // Setup User Interface for Weapon
         userInterface.gameObject.SetActive(true);
@@ -112,12 +121,32 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    public void PrepareEndBattle(WeaponBattleInformation weaponThatHasLost)
+    {
+        // Camera Position, Slow Motion, and Camera Size
+        GameManager.Instance.SetGameState(GameStateEnum.EndBattle);
+
+        bool didPlayerLose = (playerWeapon.dataBehavior.weaponData.weaponId == weaponThatHasLost.curWeaponData.weaponId);
+        Transform losingWeapon = (didPlayerLose) ? playerWeapon.transform : enemyWeapon.transform;
+
+
+        UserDataBehavior.SaveBattleRecordLogs(new BattleRecordLogs(currentBattleLogs));
+
+
+        userInterface.setupResultEndbutton(() => EndBattle(weaponThatHasLost));
+
+        // Show Results User Interface AFTER Camera Zooming In.
+        GameManager.Instance.SetCameraPosition(losingWeapon.position, ()=>
+        {
+            userInterface.ShowBattleResults(didPlayerLose, currentBattleLogs);
+            enemyWeapon.PrepareWeaponDeath();
+        });
+    }
+
     public void EndBattle(WeaponBattleInformation weaponThatHasLost)
     {
         GameManager.Instance.SetCameraNextSize(GameStateEnum.Idle);
 
-        enemyWeapon.ResetWeaponCallbacks();
-        enemyWeapon.ResetWeaponPhysics();
         Destroy(enemyWeapon.gameObject);
         enemyWeapon = null;
 
@@ -158,7 +187,67 @@ public class BattleManager : MonoBehaviour
     {
         // TODO
         // Make a better way to generate an enemy
-        return new WeaponData(UserDataBehavior.GetPlayerEquippedWeapon());
+        WeaponData enemyWeapon = new WeaponData(UserDataBehavior.GetPlayerEquippedWeapon());
+        enemyWeapon.weaponId = RandomIdentification.RandomString(18);
+
+        return enemyWeapon;
     }
+
+    #region Battle Record Logs
+
+    internal void UpdateBattleLogDamageMade(float totalDamageMade)
+    {
+        BattleTransaction tmp = new BattleTransaction();
+        tmp.dealer = playerWeapon.dataBehavior.weaponData.weaponId;
+        tmp.receipient = enemyWeapon.dataBehavior.weaponData.weaponId;
+        tmp.amount = totalDamageMade;
+        tmp.recordStats = RecordStatsEnum.DamageTaken;
+
+        currentBattleLogs.battleTransactionLog.Add(tmp);
+
+        UpdateBattleLogHighestOneHtDamageMade(totalDamageMade);
+        UpdateBattleLogTotalDamageTaken(totalDamageMade);
+    }
+
+    internal void UpdateBattleLogHighestOneHtDamageMade(float highestOneHitDamage)
+    {
+        BattleTransaction highestHit = currentBattleLogs.battleTransactionLog.FirstOrDefault(x => x.recordStats == RecordStatsEnum.HighestOneHitDamage && x.amount > highestOneHitDamage);
+        if (highestHit == null)
+        {
+            highestHit = new BattleTransaction();
+            highestHit.amount = highestOneHitDamage;
+            highestHit.recordStats = RecordStatsEnum.HighestOneHitDamage;
+            highestHit.receipient = playerWeapon.dataBehavior.weaponData.weaponId;
+            highestHit.dealer = enemyWeapon.dataBehavior.weaponData.weaponId;
+
+            currentBattleLogs.battleTransactionLog.Add(highestHit);
+        }
+        else
+        {
+            highestHit.amount = highestOneHitDamage;
+        }
+    }
+
+    internal void UpdateBattleLogTotalDamageTaken(float totalDamageReceived)
+    {
+        BattleTransaction totalDamage = currentBattleLogs.battleTransactionLog.FirstOrDefault(x => x.recordStats == RecordStatsEnum.TotalDamage);
+        if (totalDamage == null)
+        {
+            totalDamage = new BattleTransaction();
+            totalDamage.receipient = playerWeapon.dataBehavior.weaponData.weaponId;
+            totalDamage.dealer = enemyWeapon.dataBehavior.weaponData.weaponId;
+            totalDamage.amount = totalDamageReceived;
+            totalDamage.recordStats = RecordStatsEnum.TotalDamage;
+
+            currentBattleLogs.battleTransactionLog.Add(totalDamage);
+        }
+        else
+        {
+            totalDamage.amount += totalDamageReceived;
+        }
+
+    }
+
+    #endregion Battle Record Logs
 
 }

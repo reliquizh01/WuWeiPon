@@ -151,5 +151,11 @@ namespace WeaponRelated
             forcedPositionReached.ForEach(x => x.Invoke());
             forcedPositionReached.Clear();
         }
+
+        public void PrepareWeaponDeath()
+        {
+            ResetWeaponCallbacks();
+            ResetWeaponPhysics();
+        }
     }
 }

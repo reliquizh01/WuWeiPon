@@ -17,9 +17,13 @@ namespace WeaponRelated
 
         internal bool enableExtraHealth = false;
         private float extraHealth = 0;
-        
+
+        internal WeaponData curWeaponData;
+
         public void LoadWeaponInformation(WeaponData weaponData,ref List<BaseBattleSkillBehavior> currentEquippedSkills)
         {
+            curWeaponData = weaponData;
+
             for (int i = 0; i < slots.Count; i++)
             {
                 if (i < weaponData.behaviorSkillSlotCount)
@@ -109,7 +113,7 @@ namespace WeaponRelated
             // All HP is gone
             if (currentHealth <= 0)
             {
-                BattleManager.Instance.EndBattle(this);
+                BattleManager.Instance.PrepareEndBattle(this);
             }
         }
 

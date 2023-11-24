@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 using WeaponRelated;
+using User.Data;
 
 public class BattleUserInterface : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class BattleUserInterface : MonoBehaviour
     public TextMeshProUGUI speedupText;
     public CanvasGroup canvasGroup;
     public AnimationMonoBehavior battleCounterUi;
+    public BattleResultPopUpContainer battleResultUi;
 
     public Button FightButton;
 
@@ -36,6 +38,12 @@ public class BattleUserInterface : MonoBehaviour
         speedUpButton.onClick.AddListener(() => nextAction.Invoke());
     }
 
+    internal void setupResultEndbutton(Action nextAction)
+    {
+        battleResultUi.confirmBtn.onClick.RemoveAllListeners();
+
+        battleResultUi.confirmBtn.onClick.AddListener(() => nextAction.Invoke());
+    }
     internal void SetVisibility(bool v)
     {
         if (v)
@@ -50,5 +58,12 @@ public class BattleUserInterface : MonoBehaviour
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
         }
+    }
+
+    internal void ShowBattleResults(bool didPlayerLose, BattleRecordLogs battleLog)
+    {
+        SetVisibility(true);
+        battleResultUi.container.SetActive(true);
+        battleResultUi.SetStatResults(battleLog);
     }
 }

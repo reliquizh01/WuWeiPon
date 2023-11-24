@@ -45,6 +45,8 @@ namespace WeaponRelated
                                 {
                                     skill.EnhanceDamageToBeInflicted(ref m_behavior.nextDamageToInflict);
                                 }
+
+                                hilt.DamageReceived(m_behavior.nextDamageToInflict);
                             }
                             else if(blade != null && skill.IsObjectInListOfTargetValues(SkillTargetEnum.Blade))
                             {

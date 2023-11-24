@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkillRelated;
+using UnityEngine.Profiling;
 
 namespace User.Data
 {
@@ -360,6 +361,120 @@ namespace User.Data
         {
             currentUserData.userSettingsData.isAutoRollSkllsEnabled = setTo;
         }
+
         #endregion Automation Skills
+
+        #region Battle Record Logs
+
+        internal static void SaveBattleRecordLogs(BattleRecordLogs battleRecordLogs)
+        {
+            currentUserData.userBattleRecordsData.battleRecordLogs.Add(battleRecordLogs);
+
+            SaveLoadManager.SaveUser();
+        }
+
+        internal static float GetHighestRecordedStats(RecordStatsEnum stats)
+        {
+            if(getHighestTransaction(stats) != null)
+            {
+                return getHighestTransaction(stats).amount;
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
+        private static BattleTransaction getHighestTransaction(RecordStatsEnum stats)
+        {
+            List<BattleRecordLogs> records = currentUserData.userBattleRecordsData.battleRecordLogs;
+
+            BattleTransaction currentHighest = null;
+
+            if (records.Count > 0)
+            {
+                List<BattleTransaction> transactions = new List<BattleTransaction>();
+    
+                records.ForEach(record =>
+                {
+                    transactions.AddRange(record.battleTransactionLog.Where(log => log.recordStats == stats).ToList());
+                });
+
+                transactions.ForEach(record =>
+                {
+                    if (currentHighest == null) currentHighest = record;
+                    else if (record.amount > currentHighest.amount)
+                    {
+                        currentHighest = record;
+                    }
+                });
+
+            }
+
+            return currentHighest;
+        }
+
+        internal static void SetHighestDamageTakenRecordNoSave(BattleRecordLogs battleLog)
+        {
+            BattleRecordLogs highestDamageTaken = currentUserData.userBattleRecordsData.highestDamageTakenLog;
+            if (highestDamageTaken != null)
+            {
+                float highestTotalDamage = highestDamageTaken.battleTransactionLog.First(
+                    x => x.recordStats == RecordStatsEnum.DamageTaken).amount;
+
+                if (highestTotalDamage < battleLog.battleTransactionLog.First(x => x.recordStats == RecordStatsEnum.DamageTaken).amount)
+                {
+                    currentUserData.userBattleRecordsData.highestDamageTakenLog = new BattleRecordLogs(battleLog);
+                }
+
+            }
+            else
+            {
+                currentUserData.userBattleRecordsData.highestDamageTakenLog = new BattleRecordLogs(battleLog);
+            }
+        }
+
+        internal static void SetOneHitDamageDealtRecordNoSave(BattleRecordLogs battleLog)
+        {
+            BattleRecordLogs oneHitRecord = currentUserData.userBattleRecordsData.highestOneHitDamage;
+            if (oneHitRecord != null)
+            {
+                float highestTotalDamage = oneHitRecord.battleTransactionLog.First(
+                    x => x.recordStats == RecordStatsEnum.HighestOneHitDamage).amount;
+
+                if (highestTotalDamage < battleLog.battleTransactionLog.First(x => x.recordStats == RecordStatsEnum.HighestOneHitDamage).amount)
+                {
+                    currentUserData.userBattleRecordsData.highestOneHitDamage = new BattleRecordLogs(battleLog);
+                }
+
+            }
+            else
+            {
+                currentUserData.userBattleRecordsData.highestOneHitDamage = new BattleRecordLogs(battleLog);
+            }
+        }
+
+        internal static void SetTotalDamageDealtRecordNoSave(BattleRecordLogs battleLog)
+        {
+            BattleRecordLogs highestTotalDamage = currentUserData.userBattleRecordsData.highestTotalDamage;
+            if (highestTotalDamage != null)
+            {
+                float totalDmg = highestTotalDamage.battleTransactionLog.First(
+                    x => x.recordStats == RecordStatsEnum.TotalDamage).amount;
+
+                if(totalDmg < battleLog.battleTransactionLog.First(x => x.recordStats == RecordStatsEnum.TotalDamage).amount)
+                {
+                    currentUserData.userBattleRecordsData.highestTotalDamage = new BattleRecordLogs(battleLog);
+                }
+
+            }
+            else
+            {
+                currentUserData.userBattleRecordsData.highestTotalDamage = new BattleRecordLogs(battleLog);
+            }
+        }
+
+        #endregion Battle Record Logs
     }
 }

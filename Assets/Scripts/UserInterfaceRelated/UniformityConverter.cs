@@ -290,5 +290,28 @@ public static class UniformityConverter
 
         return convertedString;
     }
+
+    internal static string RecordStatsResultToString(RecordStatsEnum statEnum)
+    {
+        string convertedString = "";
+
+        switch (statEnum)
+        {
+            case RecordStatsEnum.DamageTaken:
+                convertedString = "DMG TAKEN";
+                break;
+            case RecordStatsEnum.HighestOneHitDamage:
+                convertedString = "1-HIT DMG";
+                break;
+            case RecordStatsEnum.TotalDamage:
+                convertedString = "TOTAL DMG";
+                break;
+            default:
+                break;
+        }
+
+        return convertedString;
+    }
+
     #endregion Skill Stat Description and Name
 }

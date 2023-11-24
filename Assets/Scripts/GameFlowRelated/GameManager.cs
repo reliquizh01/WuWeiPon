@@ -29,10 +29,14 @@ public class GameManager : MonoBehaviour
     internal bool previousTransactionsInProgress = false;
 
     private float battleCameSize = 15.0f;
+    private float prepareBattleCameraSize = 11.0f;
+    private Vector2 cameraTargetPosition = new Vector2(0,0);
     private float belowThresholdBattleCamSize = 28.0f;
+
 
     private float idleCameSize = 11.0f;
     private bool cameraTransitioning = false;
+    private bool cameraMovementTransitioning = false;
     private float camTargetSize = 0.0f;
     private float camTransitonSpeed = 20.0f;
     private List<Action> afterCameraTransitionActions = new List<Action>();
@@ -180,10 +184,15 @@ public class GameManager : MonoBehaviour
         switch (currentGameState)
         {
             case GameStateEnum.Idle:
+                Time.timeScale = 1.0f;
                 SoundManager.Instance.PlayBackgroundTheme(LocationEnum.GreenlandMountains);
                 break;
             case GameStateEnum.Battle:
                 SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalBattle);
+                break;
+            case GameStateEnum.EndBattle:
+                SetCameraNextSize(GameStateEnum.EndBattle);
+                Time.timeScale = 0.2f;
                 break;
             case GameStateEnum.Condensing:
                 SoundManager.Instance.PlayBackgroundTheme(LocationEnum.NormalCondensation);
@@ -239,7 +248,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetCameraNextSize(GameStateEnum nextState)
+    public void SetCameraNextSize(GameStateEnum nextState, Action afterCameraTransitionAction = null)
     {
 
         switch (nextState)
@@ -257,6 +266,9 @@ public class GameManager : MonoBehaviour
                     camTargetSize = belowThresholdBattleCamSize;
                 }
                 break;
+            case GameStateEnum.EndBattle:
+                camTargetSize = prepareBattleCameraSize;
+                break;
             default:
                 break;
         }
@@ -267,6 +279,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetCameraPosition(Vector2 targetPosition, Action postTransitionAction = null)
+    {
+        cameraTargetPosition = targetPosition;
+        cameraMovementTransitioning = true;
+
+        afterCameraTransitionActions.Add(postTransitionAction);
+    }
     private void loadPlayerEquippedWeapon()
     {
         GameObject weapon = PrefabManager.Instance.CreateWeaponContainer(Vector2.zero);
@@ -304,9 +323,6 @@ public class GameManager : MonoBehaviour
             {
                 mainCam.orthographicSize = camTargetSize;
                 cameraTransitioning = false;
-
-                afterCameraTransitionActions.ForEach(x => x.Invoke());
-                afterCameraTransitionActions.Clear();
             }
         }
         else
@@ -317,10 +333,26 @@ public class GameManager : MonoBehaviour
             {
                 mainCam.orthographicSize = camTargetSize;
                 cameraTransitioning = false;
-
-                afterCameraTransitionActions.ForEach(x => x.Invoke());
-                afterCameraTransitionActions.Clear();
             }
+        }
+
+        if ((Vector2)transform.position != cameraTargetPosition && cameraTransitioning)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, cameraTargetPosition, 12.5f);
+    
+            float dist = Vector2.Distance(transform.position, cameraTargetPosition);
+
+            if (dist < 0.15f)
+            {
+                cameraMovementTransitioning = false;
+            }
+        }
+
+
+        if(!cameraTransitioning && !cameraMovementTransitioning)
+        {
+            afterCameraTransitionActions.ForEach(x => x.Invoke());
+            afterCameraTransitionActions.Clear();
         }
     }
 }

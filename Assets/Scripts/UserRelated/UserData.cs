@@ -31,6 +31,11 @@ namespace User.Data
             {
                 userSettingsData = new UserSettingsData(userData.userSettingsData);
             }
+
+            if(userData.userBattleRecordsData != null)
+            {
+                userBattleRecordsData = new UserBattleRecordsData(userData.userBattleRecordsData);
+            }
         }
 
         #endregion Constructors
@@ -84,5 +89,8 @@ namespace User.Data
 
         [DataMember]
         public UserSettingsData userSettingsData = new UserSettingsData();
+
+        [DataMember]
+        public UserBattleRecordsData userBattleRecordsData = new UserBattleRecordsData();
     }
 }

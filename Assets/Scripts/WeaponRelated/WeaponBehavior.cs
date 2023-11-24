@@ -142,42 +142,94 @@ namespace WeaponRelated
             weaponMovement.weaponRigidBody.simulated = setTo;
         }
 
+        /// <summary>
+        /// Adds a Damage Based Battle Skill Behavior to Blade when it detects a hit to an object
+        /// (blade,hilt,walls,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the blade triggers a hit.</param>
         private void AddToBladeSkillAction(DamageBattleSkillBehavior action)
         {
             weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
+
+        /// <summary>
+        /// Adds a Movement Based Battle Skill Behavior to Blade when it detects a hit to an object
+        /// (blade,hilt,walls,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the blade triggers a hit.</param>
         private void AddToBladeSkillAction(MovementBattleSkillBehavior action)
         {
             weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
 
+        /// <summary>
+        /// Adds a Heal Based Battle Skill Behavior to Blade when it detects a hit to an object
+        /// (blade,hilt,walls,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the blade triggers a hit.</param>
         private void AddToBladeSkillAction(HealBattleSkillBehavior action)
         {
             weaponBlades.ForEach(x => x.AddOnSkillCollisionActions(action));
 
         }
+
+        /// <summary>
+        /// Adds a Damage Based Battle Skill Behavior to Hilt when it detects a hit on an object
+        /// (blade,hilt,walls,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the hilt triggers a hit.</param>
         private void AddToHiltSkillAction(DamageBattleSkillBehavior action)
         {
             weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
+
+        /// <summary>
+        /// Adds a Heal Based Battle Skill Behavior to Hilt when it detects a hit on an object
+        /// (blade,hilt,walls,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the hilt triggers a hit.</param>
         private void AddToHiltSkillAction(HealBattleSkillBehavior action)
         {
             weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
 
+        /// <summary>
+        /// Adds a Movement Based Battle Skill Behavior to Hilt when it detects a hit on an object
+        /// (blade,hilt,walls,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the hilt triggers a hit.</param>
         private void AddToHiltSkillAction(MovementBattleSkillBehavior action)
         {
             weaponHilts.ForEach(x => x.AddOnSkillCollisionActions(action));
         }
 
-        public void AddBladeActionsForOpposingUserInterfaceUpdateOnHit(Action<float> action)
+        /// <summary>
+        /// Adds an Amount Change to UI when Blade hits the opposing weapon.
+        /// (blade,hilt,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the blade triggers an enemy hit that represents a UI.</param>
+        public void AddBladeActionOnceBladeHitsEnemyHilt(Action<float> action)
         {
             weaponBlades.ForEach(x => x.AddCallBackOnceBladeHitsHilt(action));
         }
 
-        public void AddBladeActonForSelfUserInterfaceUpdateOnHit(Action<float> action)
+        /// <summary>
+        /// Adds an Amount Change to UI when there are any changes to health.
+        /// (blade,hilt,etc).
+        /// </summary>
+        /// <param name="action">action that will be called once the current weapon health changes.</param>
+        public void AddWeaponActionOnChangesToSelfHealth(Action<float> action)
         {
             weaponBlades.ForEach(x => x.AddCallBackForChangesInSelfHealth(action));
+        }
+
+        /// <summary>
+        /// Add Record Logging when weapons' Hilt is hit
+        /// </summary>
+        /// <param name="action"></param>
+        internal void AddToHiltRecordLogs(Action<float> action)
+        {
+            weaponHilts.ForEach(x => x.AddOnDamageReceived(action));
         }
 
         public void ResestActons()

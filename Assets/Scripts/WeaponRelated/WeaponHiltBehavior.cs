@@ -16,7 +16,7 @@ namespace WeaponRelated
         public Collider2D myCollision;
 
         private bool CanDetectCollision = false;
-        private List<Action> OnDamageReceived = new List<Action>();
+        private List<Action<float>> OnDamageReceived = new List<Action<float>>();
 
         public void OnCollisionEnter2D(Collision2D col)
         {
@@ -131,11 +131,12 @@ namespace WeaponRelated
 
             isPlayingSFX = false;
         }
-        public void DamageReceived()
+
+        public void DamageReceived(float amount)
         {
             if (OnDamageReceived.Count > 0)
             {
-                OnDamageReceived.ForEach(x => x.Invoke());
+                OnDamageReceived.ForEach(x => x.Invoke(amount));
             }
         }
 
@@ -152,6 +153,11 @@ namespace WeaponRelated
         public void RemoveActionOnCollision()
         {
             OnDamageReceived.Clear();
+        }
+
+        internal void AddOnDamageReceived(Action<float> action)
+        {
+            OnDamageReceived.Add(action);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.IO;
 using Unity.VisualScripting;
 using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace DataManagement.Adapter
 {
@@ -30,67 +31,55 @@ namespace DataManagement.Adapter
         {
             if (ServerCallManager.IsConnectedToServer)
             {
-                DateTime latestUserServerUpdate = getPlayerDataFromServer().lastServerUpdate;
+                // TODO: Find a way to cross reference server data and client Data
 
-                if (latestUserServerUpdate > UserDataBehavior.currentUserData.lastServerUpdate)
-                {
-                    // Disconnect Player if a someone else updated the savefile
-                    Application.Quit();
-                }
-                else if(latestUserServerUpdate == UserDataBehavior.currentUserData.lastServerUpdate ||
-                    latestUserServerUpdate < DateTime.UtcNow)
-                {
-                    UserDataBehavior.currentUserData.lastServerUpdate = DateTime.UtcNow;
-                }
+                //if (latestUserServerUpdate > UserDataBehavior.currentUserData.lastServerUpdate)
+                //{
+                //    // Disconnect Player if a someone else updated the savefile
+                //    Application.Quit();
+                //}
+                //else if(latestUserServerUpdate == UserDataBehavior.currentUserData.lastServerUpdate ||
+                //    latestUserServerUpdate < DateTime.UtcNow)
+                //{
+                //    UserDataBehavior.currentUserData.lastServerUpdate = DateTime.UtcNow;
+                //}
             }
 
-            // TODO: Once DB Server is available, replace localFilePath with a way to connect to server
-            if(!Directory.Exists(localFilePath))
-            {
-                Directory.CreateDirectory(localFilePath);
-            }
-
-            DataContractSerializer serializer = new DataContractSerializer(typeof(UserData));
-            FileStream writer = new FileStream(localSavedFile, FileMode.Create);
-            serializer.WriteObject(writer, UserDataBehavior.currentUserData);
-            writer.Close();
+            // PLAYFAB
+            PlayfabManager playfab = new PlayfabManager();
+            string convertedData = JsonConvert.SerializeObject(UserDataBehavior.currentUserData);
+            playfab.SavePlayerData(convertedData);
         }   
 
-        private UserData getPlayerDataFromServer()
+        /// <summary>
+        /// gets the player data directly from the server, used for cross referencing with server data.
+        /// </summary>
+        /// <returns>UserData from the server</returns>
+        private void getPlayerDataFromServer()
         {
-            UserData serverData = null;
-
-            if (File.Exists(localSavedFile))
-            {
-                FileStream fs = new FileStream(localSavedFile, FileMode.Open);
-
-                XmlDictionaryReader reader =
-                XmlDictionaryReader.CreateTextReader(fs, new XmlDictionaryReaderQuotas());
-                DataContractSerializer ser = new DataContractSerializer(typeof(UserData));
-
-                serverData = (UserData)ser.ReadObject(reader, true);
-                reader.Close();
-                fs.Close();
-            }
-            else
-            {
-                serverData = CreatePlayerData();
-            }
-
-            return serverData;
+            // TODO : FIND A WAY TO CROSS REFERENCE SERVER DATA AND LOCAL DATA
         }
 
-        private UserData CreatePlayerData()
-        {
-            UserData newUserData = new UserData();
-            newUserData.email = AuthenticationManager.playerIdentification;
-
-            return newUserData;
-        }
-
+        /// <summary>
+        /// Loads Player Data and directly sets it as the current user data.
+        /// </summary>
         internal void LoadPlayerData()
         {
-            UserDataBehavior.LoadUser(getPlayerDataFromServer());
+            PlayfabManager playfab = new();
+            playfab.LoadPlayerData((userData) =>
+            {
+                if (userData != null)
+                {
+                    UserDataBehavior.LoadUser(userData);
+                }
+                else
+                {
+                    UserDataBehavior.currentUserData = new UserData();
+
+                }
+
+                GameManager.Instance.InitializePlayer();
+            });
         }
     }
 

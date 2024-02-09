@@ -64,12 +64,15 @@ public class GameManager : MonoBehaviour
         SaveLoadManager.ConnectAdapter();
 
         userLoggedIn = AuthenticationManager.playerIdentification;
+    }
 
-        if(UserDataBehavior.GetPlayerEquippedWeapon() != null)
+    internal void InitializePlayer()
+    {
+        if (UserDataBehavior.GetPlayerEquippedWeapon() != null)
         {
             loadPlayerEquippedWeapon();
         }
-        
+
         checkPlayerOnBoardingProgress();
         checkPlayerAutomationSetup();
 

@@ -21,7 +21,11 @@ namespace DataManagement
         /// </summary>
         public static void LoadUser()
         {
-            adapter.LoadPlayerData();
+            PlayfabManager playFab = new();
+            playFab.Login(() =>
+            {
+                adapter.LoadPlayerData();
+            });
         }
 
         public static void ConnectAdapter()

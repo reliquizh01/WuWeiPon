@@ -11,24 +11,22 @@ namespace WeaponRelated
         
         public void SetupSkillSlots(WeaponData weaponData)
         {
+            // Resets Skill Slots to remove old data
             ResetSkillSlots();
+
 
             for (int i = 0; i < skillSlots.Count; i++)
             {
+                // Enable Skill Slots that are available
                 if(weaponData.behaviorSkillSlotCount > i)
                 {
                     skillSlots[i].gameObject.SetActive(true);
                 }
 
-                if(weaponData.skills.Count > i)
-                {
-                    skillSlots[i].SetupSkillSlotVisuals(weaponData.skills.First(x => x.slotNumber == i));
-                }
-                else
-                {
-                    skillSlots[i].SetupSkillSlotVisuals(null);
-                }
+                skillSlots[i].SetupSkillSlotVisuals(weaponData.skills.Find(x => x.slotNumber == skillSlots[i].slotNumber));
             }
+
+
         }
 
         public void ResetSkillSlots()
